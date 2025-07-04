@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+            color: white;
+            padding: 30px;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .welcome-text h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .user-info p {
+            margin: 0;
+            font-size: 16px;
+            text-align: right;
+        }
+
+        .main-content {
+            padding: 40px;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            gap: 20px;
+        }
+
+        .content-title {
+            color: #1e40af;
+            font-size: 28px;
+            font-weight: 600;
+            flex: 1;
+            text-align: center;
+        }
+
+        .date-section {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .date-box, .date-filter {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border: 2px solid #3b82f6;
+            border-radius: 12px;
+            padding: 15px 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.15);
+            width: 180px; /* Fixed width for both boxes */
+        }
+
+        .date-filter-label, .date-label {
+            font-size: 12px;
+            color: #1e40af;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .date-filter input {
+            width: 100%;
+            border: none;
+            background: transparent;
+            color: #1e40af;
+            font-weight: 700;
+            font-size: 16px;
+            text-align: center;
+            cursor: pointer;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .date-filter input:focus {
+            outline: none;
+        }
+
+        .date-filter input::-webkit-calendar-picker-indicator {
+            cursor: pointer;
+            color: #1e40af;
+        }
+
+        .date-value {
+            font-size: 16px;
+            color: #1e40af;
+            font-weight: 700;
+        }
+
+        .controls-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 20px;
+        }
+
+        .add-btn {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            border: none;
+            padding: 12px 34px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+            height: 40px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 500px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px 20px;
+            border: 2px solid #3b82f6;
+            border-radius: 10px;
+            font-size: 14px;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: #1e40af;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .data-table {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(30, 64, 175, 0.1);
+            border: 2px solid #e5e7eb;
+        }
+
+        .table-header {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            display: grid;
+            grid-template-columns: 1fr 2fr 1.5fr 1.5fr 1fr 100px;
+            gap: 20px;
+            padding: 20px 30px;
+            font-weight: 600;
+            color: #1e40af;
+            border-bottom: 2px solid #3b82f6;
+        }
+
+        .table-row {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1.5fr 1.5fr 1fr 100px;
+            gap: 20px;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .table-row:hover {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            transform: translateX(5px);
+        }
+
+        .table-row:hover::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        }
+
+        .table-cell {
+            display: flex;
+            align-items: center;
+            color: #374151;
+        }
+
+        .customer-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .customer-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .edit-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .delete-btn {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+        }
+
+        .cancel-btn {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .amount {
+            font-weight: 600;
+            color: #1e40af;
+        }
+
+        /* Edit mode styles */
+        .edit-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        .edit-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        .edit-select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 14px;
+            background-color: white;
+        }
+
+        .edit-select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        .edit-date {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        .edit-date:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        .editing {
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+            box-shadow: 0 0 0 2px #3b82f6;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .content-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .date-section {
+                flex-direction: column-reverse;
+                gap: 15px;
+            }
+
+            .date-box, .date-filter {
+                width: 100%;
+            }
+
+            .controls-section {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .search-bar {
+                max-width: 100%;
+            }
+
+            .table-header,
+            .table-row {
+                grid-template-columns: 1fr;
+                gap: 10px;
+                text-align: left;
+            }
+
+            .table-header > div:before,
+            .table-row .table-cell:before {
+                content: attr(data-label) ": ";
+                font-weight: 600;
+                color: #1e40af;
+                margin-right: 10px;
+            }
+
+            .data-table {
+                max-height: 600px;
+                overflow-y: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <div class="welcome-text">
+                    <h2>Welcome</h2>
+                </div>
+                <div class="user-info">
+                    <p>ID: USR001 | Role: Admin</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="content-header">
+                <div class="content-title">Dashboard Overview</div>
+                <div class="date-section">
+                    <div class="date-filter">
+                        <div class="date-filter-label">Filter by Date</div>
+                        <input type="date" id="dateFilter" onchange="filterByDate()">
+                    </div>
+                    <div class="date-box">
+                        <div class="date-label">Current Date</div>
+                        <div class="date-value" id="currentDate"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls-section">
+                <!-- Search bar moved to left -->
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="🔍 Search by Customer Name or Serial No.">
+                </div>
+                
+                <!-- Add button moved to right -->
+                <a href="{% url 'neworder' %}" class="add-btn">+ Add</a>
+            </div>
+
+            <div class="data-table">
+                <div class="table-header">
+                    <div>Serial No.</div>
+                    <div>Customer</div>
+                    <div>Total Quantity</div>
+                    <div>Amount</div>
+                    <div>Order Date</div>
+                    <div>Actions</div>
+                </div>
+
+                <!-- Sample data with dates -->
+                <div class="table-row" data-date="2023-10-15" data-id="1">
+                    <div class="table-cell" data-label="Serial No"><span>#001</span></div>
+                    <div class="table-cell" data-label="Customer">
+                        <div class="customer-info">
+                            <div class="customer-avatar">AC</div>
+                            <span class="customer-name">Acme Corp</span>
+                        </div>
+                    </div>
+                    <div class="table-cell" data-label="Total Quantity"><span class="quantity">125</span> units</div>
+                    <div class="table-cell" data-label="Amount"><span class="amount">$2,450.00</span></div>
+                    <div class="table-cell" data-label="Order Date"><span class="order-date">15/10/2023</span></div>
+                    <div class="table-cell" data-label="Actions">
+                        <div class="actions">
+                            <button class="action-btn edit-btn" onclick="editEntry(this)" title="Edit Entry">✏️</button>
+                            <button class="action-btn delete-btn" onclick="deleteEntry(this)" title="Delete Entry">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-row" data-date="2023-10-16" data-id="2">
+                    <div class="table-cell" data-label="Serial No"><span>#002</span></div>
+                    <div class="table-cell" data-label="Customer">
+                        <div class="customer-info">
+                            <div class="customer-avatar">NT</div>
+                            <span class="customer-name">NextTech</span>
+                        </div>
+                    </div>
+                    <div class="table-cell" data-label="Total Quantity"><span class="quantity">210</span> units</div>
+                    <div class="table-cell" data-label="Amount"><span class="amount">$4,725.00</span></div>
+                    <div class="table-cell" data-label="Order Date"><span class="order-date">16/10/2023</span></div>
+                    <div class="table-cell" data-label="Actions">
+                        <div class="actions">
+                            <button class="action-btn edit-btn" onclick="editEntry(this)" title="Edit Entry">✏️</button>
+                            <button class="action-btn delete-btn" onclick="deleteEntry(this)" title="Delete Entry">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-row" data-date="2023-10-17" data-id="3">
+                    <div class="table-cell" data-label="Serial No"><span>#003</span></div>
+                    <div class="table-cell" data-label="Customer">
+                        <div class="customer-info">
+                            <div class="customer-avatar">SP</div>
+                            <span class="customer-name">SpeedPro</span>
+                        </div>
+                    </div>
+                    <div class="table-cell" data-label="Total Quantity"><span class="quantity">73</span> units</div>
+                    <div class="table-cell" data-label="Amount"><span class="amount">$1,460.00</span></div>
+                    <div class="table-cell" data-label="Order Date"><span class="order-date">17/10/2023</span></div>
+                    <div class="table-cell" data-label="Actions">
+                        <div class="actions">
+                            <button class="action-btn edit-btn" onclick="editEntry(this)" title="Edit Entry">✏️</button>
+                            <button class="action-btn delete-btn" onclick="deleteEntry(this)" title="Delete Entry">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-row" data-date="2023-10-18" data-id="4">
+                    <div class="table-cell" data-label="Serial No"><span>#004</span></div>
+                    <div class="table-cell" data-label="Customer">
+                        <div class="customer-info">
+                            <div class="customer-avatar">TD</div>
+                            <span class="customer-name">TechDynamics</span>
+                        </div>
+                    </div>
+                    <div class="table-cell" data-label="Total Quantity"><span class="quantity">56</span> units</div>
+                    <div class="table-cell" data-label="Amount"><span class="amount">$1,120.00</span></div>
+                    <div class="table-cell" data-label="Order Date"><span class="order-date">18/10/2023</span></div>
+                    <div class="table-cell" data-label="Actions">
+                        <div class="actions">
+                            <button class="action-btn edit-btn" onclick="editEntry(this)" title="Edit Entry">✏️</button>
+                            <button class="action-btn delete-btn" onclick="deleteEntry(this)" title="Delete Entry">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-row" data-date="2023-10-19" data-id="5">
+                    <div class="table-cell" data-label="Serial No"><span>#005</span></div>
+                    <div class="table-cell" data-label="Customer">
+                        <div class="customer-info">
+                            <div class="customer-avatar">IN</div>
+                            <span class="customer-name">InnoWave</span>
+                        </div>
+                    </div>
+                    <div class="table-cell" data-label="Total Quantity"><span class="quantity">134</span> units</div>
+                    <div class="table-cell" data-label="Amount"><span class="amount">$3,350.00</span></div>
+                    <div class="table-cell" data-label="Order Date"><span class="order-date">19/10/2023</span></div>
+                    <div class="table-cell" data-label="Actions">
+                        <div class="actions">
+                            <button class="action-btn edit-btn" onclick="editEntry(this)" title="Edit Entry">✏️</button>
+                            <button class="action-btn delete-btn" onclick="deleteEntry(this)" title="Delete Entry">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-row" data-date="2023-10-20" data-id="6">
+                    <div class="table-cell" data-label="Serial No"><span>#006</span></div>
+                    <div class="table-cell" data-label="Customer">
+                        <div class="customer-info">
+                            <div class="customer-avatar">MB</div>
+                            <span class="customer-name">MacroBuild</span>
+                        </div>
+                    </div>
+                    <div class="table-cell" data-label="Total Quantity"><span class="quantity">77</span> units</div>
+                    <div class="table-cell" data-label="Amount"><span class="amount">$1,925.00</span></div>
+                    <div class="table-cell" data-label="Order Date"><span class="order-date">20/10/2023</span></div>
+                    <div class="table-cell" data-label="Actions">
+                        <div class="actions">
+                            <button class="action-btn edit-btn" onclick="editEntry(this)" title="Edit Entry">✏️</button>
+                            <button class="action-btn delete-btn" onclick="deleteEntry(this)" title="Delete Entry">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-row" data-date="2023-10-21" data-id="7">
+                    <div class="table-cell" data-label="Serial No"><span>#007</span></div>
+                    <div class="table-cell" data-label="Customer">
+                        <div class="customer-info">
+                            <div class="customer-avatar">BF</div>
+                            <span class="customer-name">BlueFin</span>
+                        </div>
+                    </div>
+                    <div class="table-cell" data-label="Total Quantity"><span class="quantity">88</span> units</div>
+                    <div class="table-cell" data-label="Amount"><span class="amount">$2,040.00</span></div>
+                    <div class="table-cell" data-label="Order Date"><span class="order-date">21/10/2023</span></div>
+                    <div class="table-cell" data-label="Actions">
+                        <div class="actions">
+                            <button class="action-btn edit-btn" onclick="editEntry(this)" title="Edit Entry">✏️</button>
+                            <button class="action-btn delete-btn" onclick="deleteEntry(this)" title="Delete Entry">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-row" data-date="2023-10-22" data-id="8">
+                    <div class="table-cell" data-label="Serial No"><span>#008</span></div>
+                    <div class="table-cell" data-label="Customer">
+                        <div class="customer-info">
+                            <div class="customer-avatar">ZT</div>
+                            <span class="customer-name">Zentech</span>
+                        </div>
+                    </div>
+                    <div class="table-cell" data-label="Total Quantity"><span class="quantity">102</span> units</div>
+                    <div class="table-cell" data-label="Amount"><span class="amount">$2,730.00</span></div>
+                    <div class="table-cell" data-label="Order Date"><span class="order-date">22/10/2023</span></div>
+                    <div class="table-cell" data-label="Actions">
+                        <div class="actions">
+                            <button class="action-btn edit-btn" onclick="editEntry(this)" title="Edit Entry">✏️</button>
+                            <button class="action-btn delete-btn" onclick="deleteEntry(this)" title="Delete Entry">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-row" data-date="2023-10-23" data-id="9">
+                    <div class="table-cell" data-label="Serial No"><span>#009</span></div>
+                    <div class="table-cell" data-label="Customer">
+                        <div class="customer-info">
+                            <div class="customer-avatar">CR</div>
+                            <span class="customer-name">CoreRise</span>
+                        </div>
+                    </div>
+                    <div class="table-cell" data-label="Total Quantity"><span class="quantity">49</span> units</div>
+                    <div class="table-cell" data-label="Amount"><span class="amount">$980.00</span></div>
+                    <div class="table-cell" data-label="Order Date"><span class="order-date">23/10/2023</span></div>
+                    <div class="table-cell" data-label="Actions">
+                        <div class="actions">
+                            <button class="action-btn edit-btn" onclick="editEntry(this)" title="Edit Entry">✏️</button>
+                            <button class="action-btn delete-btn" onclick="deleteEntry(this)" title="Delete Entry">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-row" data-date="2023-10-24" data-id="10">
+                    <div class="table-cell" data-label="Serial No"><span>#010</span></div>
+                    <div class="table-cell" data-label="Customer">
+                        <div class="customer-info">
+                            <div class="customer-avatar">UX</div>
+                            <span class="customer-name">UltraX</span>
+                        </div>
+                    </div>
+                    <div class="table-cell" data-label="Total Quantity"><span class="quantity">61</span> units</div>
+                    <div class="table-cell" data-label="Amount"><span class="amount">$1,530.00</span></div>
+                    <div class="table-cell" data-label="Order Date"><span class="order-date">24/10/2023</span></div>
+                    <div class="table-cell" data-label="Actions">
+                        <div class="actions">
+                            <button class="action-btn edit-btn" onclick="editEntry(this)" title="Edit Entry">✏️</button>
+                            <button class="action-btn delete-btn" onclick="deleteEntry(this)" title="Delete Entry">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Auto-update current date
+        function updateCurrentDate() {
+            const now = new Date();
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const year = now.getFullYear();
+            const formattedDate = `${day}/${month}/${year}`;
+            document.getElementById('currentDate').textContent = formattedDate;
+            
+            // Set today's date as default in the filter
+            const todayISO = now.toISOString().split('T')[0];
+            document.getElementById('dateFilter').value = todayISO;
+        }
+
+        // Format currency
+        document.addEventListener('DOMContentLoaded', function () {
+            // Update date when page loads
+            updateCurrentDate();
+            
+            // Update date every minute (optional - in case page stays open overnight)
+            setInterval(updateCurrentDate, 60000);
+            
+            const amounts = document.querySelectorAll('.amount');
+            amounts.forEach(span => {
+                const number = parseFloat(span.textContent.replace(/[^0-9.]/g, ''));
+                if (!isNaN(number)) {
+                    span.textContent = new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'USD'
+                    }).format(number);
+                }
+            });
+        });
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function () {
+            const filter = this.value.toLowerCase();
+            const rows = document.querySelectorAll('.table-row');
+            rows.forEach(row => {
+                const rowText = row.textContent.toLowerCase();
+                row.style.display = rowText.includes(filter) ? '' : 'none';
+            });
+        });
+
+        // Date filter functionality
+        function filterByDate() {
+            const selectedDate = document.getElementById('dateFilter').value;
+            if (selectedDate) {
+                // Update the current date display to show selected date
+                const dateObj = new Date(selectedDate);
+                const day = String(dateObj.getDate()).padStart(2, '0');
+                const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+                const year = dateObj.getFullYear();
+                const formattedDate = `${day}/${month}/${year}`;
+                document.getElementById('currentDate').textContent = formattedDate;
+                
+                // Filter table rows based on selected date
+                filterTableByDate(selectedDate);
+            } else {
+                // Reset to current date if no date selected
+                updateCurrentDate();
+                // Show all rows
+                const rows = document.querySelectorAll('.table-row');
+                rows.forEach(row => {
+                    row.style.display = '';
+                });
+            }
+        }
+
+        // Function to filter table by date
+        function filterTableByDate(selectedDate) {
+            const rows = document.querySelectorAll('.table-row');
+            rows.forEach(row => {
+                const rowDate = row.getAttribute('data-date');
+                if (rowDate === selectedDate) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        function editEntry(button) {
+            const row = button.closest('.table-row');
+            const id = row.getAttribute('data-id');
+            
+            // Check if already in edit mode
+            if (row.classList.contains('editing')) {
+                return;
+            }
+            
+            // Add editing class to highlight the row
+            row.classList.add('editing');
+            
+            // Get current values
+            const serialNo = row.querySelector('.table-cell span').textContent;
+            const customerName = row.querySelector('.customer-name').textContent;
+            const quantity = row.querySelector('.quantity').textContent;
+            const amount = parseFloat(row.querySelector('.amount').textContent.replace(/[^0-9.]/g, ''));
+            const orderDate = row.querySelector('.order-date').textContent;
+            
+            // Convert DD/MM/YYYY to YYYY-MM-DD for date input
+            const dateParts = orderDate.split('/');
+            const isoDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+            
+            // Replace content with editable inputs
+            row.querySelector('.table-cell span').innerHTML = `<input type="text" class="edit-input" value="${serialNo}" disabled>`;
+            
+            const customerCell = row.querySelector('.customer-info');
+            customerCell.innerHTML = `
+                <div class="customer-avatar">${customerName.substring(0, 2).toUpperCase()}</div>
+                <input type="text" class="edit-input customer-name-input" value="${customerName}">
+            `;
+            
+            const quantityCell = row.querySelector('.table-cell:nth-child(3)');
+            quantityCell.innerHTML = `
+                <input type="number" class="edit-input quantity-input" value="${quantity}" style="width: 60px;">
+            `;
+            
+            const amountCell = row.querySelector('.table-cell:nth-child(4)');
+            amountCell.innerHTML = `
+                <input type="number" step="0.01" class="edit-input amount-input" value="${amount}" style="width: 100px;">
+            `;
+            
+            const dateCell = row.querySelector('.table-cell:nth-child(5)');
+            dateCell.innerHTML = `
+                <input type="date" class="edit-date date-input" value="${isoDate}" style="width: 120px;">
+            `;
+            
+            // Replace action buttons with save/cancel
+            const actionsCell = row.querySelector('.actions');
+            actionsCell.innerHTML = `
+                <button class="action-btn save-btn" onclick="saveEntry(this)" title="Save Changes">💾</button>
+                <button class="action-btn cancel-btn" onclick="cancelEdit(this)" title="Cancel Edit">✖️</button>
+            `;
+        }
+
+        function saveEntry(button) {
+            const row = button.closest('.table-row');
+            const id = row.getAttribute('data-id');
+            
+            // Get edited values
+            const serialNo = row.querySelector('.edit-input').value;
+            const customerName = row.querySelector('.customer-name-input').value;
+            const quantity = row.querySelector('.quantity-input').value;
+            const amount = parseFloat(row.querySelector('.amount-input').value);
+            const orderDate = row.querySelector('.date-input').value;
+            
+            // Format the date as DD/MM/YYYY
+            const dateObj = new Date(orderDate);
+            const day = String(dateObj.getDate()).padStart(2, '0');
+            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const year = dateObj.getFullYear();
+            const formattedDate = `${day}/${month}/${year}`;
+            
+            // Format currency
+            const formattedAmount = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD'
+            }).format(amount);
+            
+            // Update the row with new values
+            row.querySelector('.table-cell span').textContent = serialNo;
+            
+            const customerCell = row.querySelector('.customer-info');
+            customerCell.innerHTML = `
+                <div class="customer-avatar">${customerName.substring(0, 2).toUpperCase()}</div>
+                <span class="customer-name">${customerName}</span>
+            `;
+            
+            row.querySelector('.table-cell:nth-child(3)').innerHTML = `
+                <span class="quantity">${quantity}</span> units
+            `;
+            
+            row.querySelector('.table-cell:nth-child(4)').innerHTML = `
+                <span class="amount">${formattedAmount}</span>
+            `;
+            
+            row.querySelector('.table-cell:nth-child(5)').innerHTML = `
+                <span class="order-date">${formattedDate}</span>
+            `;
+            
+            // Update the data-date attribute
+            row.setAttribute('data-date', orderDate);
+            
+            // Restore action buttons
+            const actionsCell = row.querySelector('.actions');
+            actionsCell.innerHTML = `
+                <button class="action-btn edit-btn" onclick="editEntry(this)" title="Edit Entry">✏️</button>
+                <button class="action-btn delete-btn" onclick="deleteEntry(this)" title="Delete Entry">🗑️</button>
+            `;
+            
+            // Remove editing class
+            row.classList.remove('editing');
+            
+            // Here you would typically send the updated data to your server
+            console.log(`Saved changes for entry ${id}:`, {
+                serialNo,
+                customerName,
+                quantity,
+                amount,
+                orderDate
+            });
+        }
+
+        function cancelEdit(button) {
+            const row = button.closest('.table-row');
+            
+            // Get original values from data attributes
+            const serialNo = row.querySelector('.table-cell span').textContent;
+            const customerName = row.querySelector('.customer-name').textContent;
+            const quantity = row.querySelector('.quantity').textContent;
+            const amount = row.querySelector('.amount').textContent;
+            const orderDate = row.querySelector('.order-date').textContent;
+            
+            // Restore original content
+            row.querySelector('.table-cell span').textContent = serialNo;
+            
+            const customerCell = row.querySelector('.customer-info');
+            customerCell.innerHTML = `
+                <div class="customer-avatar">${customerName.substring(0, 2).toUpperCase()}</div>
+                <span class="customer-name">${customerName}</span>
+            `;
+            
+            row.querySelector('.table-cell:nth-child(3)').innerHTML = `
+                <span class="quantity">${quantity}</span> units
+            `;
+            
+            row.querySelector('.table-cell:nth-child(4)').innerHTML = `
+                <span class="amount">${amount}</span>
+            `;
+            
+            row.querySelector('.table-cell:nth-child(5)').innerHTML = `
+                <span class="order-date">${orderDate}</span>
+            `;
+            
+            // Restore action buttons
+            const actionsCell = row.querySelector('.actions');
+            actionsCell.innerHTML = `
+                <button class="action-btn edit-btn" onclick="editEntry(this)" title="Edit Entry">✏️</button>
+                <button class="action-btn delete-btn" onclick="deleteEntry(this)" title="Delete Entry">🗑️</button>
+            `;
+            
+            // Remove editing class
+            row.classList.remove('editing');
+        }
+
+        function deleteEntry(button) {
+            const row = button.closest('.table-row');
+            const id = row.getAttribute('data-id');
+            
+            if (confirm(`Are you sure you want to delete entry ${id}?`)) {
+                row.remove();
+                
+                // Reorder serial numbers and update delete buttons
+                const updatedRows = document.querySelectorAll('.table-row');
+                updatedRows.forEach((row, index) => {
+                    const serialSpan = row.querySelector('.table-cell span');
+                    if (serialSpan) {
+                        serialSpan.textContent = `#${String(index + 1).padStart(3, '0')}`;
+                    }
+                    
+                    row.setAttribute('data-id', index + 1);
+                });
+            }
+        }
+    </script>
+</body>
+</html>
