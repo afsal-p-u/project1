@@ -148,3 +148,7 @@ def order_view(request):
         'order_date': request.session.get('order_date', timezone.now().strftime('%Y-%m-%d %H:%M:%S')),
     }
     return render(request, 'order.html', context)
+
+  
+def cart_view(request):
+    return render(request, 'cart.html')

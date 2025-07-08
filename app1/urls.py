@@ -11,8 +11,8 @@ urlpatterns = [
     path('neworder/', views.neworder, name='neworder'),     # Form page
     path('saveorder/', views.save_order, name='saveorder'), # Form POST handler
     path('order/', views.order_view, name='order'),
-
-
+    
+    path('cart/', views.cart_view, name='cart'),
 
 
 

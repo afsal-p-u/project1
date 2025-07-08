@@ -13,7 +13,7 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            background: linear-gradient(135deg, #6477b3 0%, #3b82f6 100%);
             min-height: 100vh;
             padding: 20px;
         }
@@ -45,38 +45,78 @@
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
             opacity: 0.3;
         }
+.header-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 10px 20px;
+}
 
-        .header-content {
-            position: relative;
-            z-index: 1;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-        }
+/* Center welcome text absolutely */
+.welcome-text {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+}
 
-        .welcome-text h2 {
-            margin: 0;
-            font-size: 24px;
-        }
+.welcome-text h2 {
+    margin: 0;
+    font-size: 24px;
+}
 
-        .user-info p {
-            margin: 0;
-            font-size: 16px;
-            text-align: right;
+/* User info aligned to the right */
+.user-info {
+    margin-left: auto;
+}
+
+.user-info p {
+    margin: 0;
+    font-size: 16px;
+    text-align: right;
+}
+/* ↓ Responsive: stack vertically on tablet/mobile */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .user-info {
+        margin-left: 0;
+        text-align: center;
+        padding-top: 50px;
+    }
+
+    .user-info p {
+        text-align: center;
+    }
+}
+
+        .mobile-back-btn {
+            display: none;
         }
 
         .main-content {
+    
             padding: 40px;
         }
 
-        .content-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 30px;
-            gap: 20px;
-        }
+       .content-header {
+    display: flex;
+    justify-content: center; /* Adjust as needed */
+    align-items: center;
+    margin-bottom: 50px;
+    gap: 30px;
+}
+
+.center-heading {
+    flex: 1;
+    text-align: center;
+}
 
         .content-title {
             color: #1e40af;
@@ -144,6 +184,25 @@
             align-items: center;
             margin-bottom: 20px;
             gap: 20px;
+        }
+
+        .controls-section > div:first-child button {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        }
+
+        .controls-section > div:first-child button:hover {
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
         }
 
         .add-btn {
@@ -408,8 +467,55 @@
                 max-height: 600px;
                 overflow-y: auto;
             }
+
+            .mobile-back-btn {
+                display: block;
+                padding: 15px 20px 0;
+                text-align: left;
+            }
+
+            .mobile-back-btn button {
+                padding: 10px 20px;
+                background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+                color: white;
+                border: none;
+                border-radius: 10px;
+                cursor: pointer;
+                font-size: 14px;
+                font-weight: 600;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+            }
+
+            .mobile-back-btn button:hover {
+                background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+            }
+
+            /* Hide the back button in controls-section in mobile view */
+            .controls-section > div:first-child {
+                display: none;
+            }
         }
+     
     </style>
+       <style>
+    .content-title {
+    font-size: 34px;
+    font-weight: bold;
+    margin-left: 360px; /* Default for desktop */
+}
+
+/* On mobile view (up to 768px), center it */
+@media (max-width: 768px) {
+    .content-title {
+        margin-left: 0;
+        text-align: center;
+    }
+}
+
+</style>
 </head>
 <body>
     <div class="container">
@@ -424,9 +530,12 @@
             </div>
         </div>
 
+        
+
         <div class="main-content">
             <div class="content-header">
-                <div class="content-title">Dashboard Overview</div>
+               <div class="content-title">Dashboard Overview</div>
+
                 <div class="date-section">
                     <div class="date-filter">
                         <div class="date-filter-label">Filter by Date</div>
@@ -438,8 +547,11 @@
                     </div>
                 </div>
             </div>
-
             <div class="controls-section">
+                <div>
+                   
+                </div>
+                
                 <!-- Search bar moved to left -->
                 <div class="search-bar">
                     <input type="text" id="searchInput" placeholder="🔍 Search by Customer Name or Serial No.">
@@ -464,7 +576,7 @@
                     <div class="table-cell" data-label="Serial No"><span>#001</span></div>
                     <div class="table-cell" data-label="Customer">
                         <div class="customer-info">
-                            <div class="customer-avatar">AC</div>
+                           
                             <span class="customer-name">Acme Corp</span>
                         </div>
                     </div>
@@ -483,7 +595,7 @@
                     <div class="table-cell" data-label="Serial No"><span>#002</span></div>
                     <div class="table-cell" data-label="Customer">
                         <div class="customer-info">
-                            <div class="customer-avatar">NT</div>
+                           
                             <span class="customer-name">NextTech</span>
                         </div>
                     </div>
@@ -502,7 +614,7 @@
                     <div class="table-cell" data-label="Serial No"><span>#003</span></div>
                     <div class="table-cell" data-label="Customer">
                         <div class="customer-info">
-                            <div class="customer-avatar">SP</div>
+                          
                             <span class="customer-name">SpeedPro</span>
                         </div>
                     </div>
@@ -521,7 +633,7 @@
                     <div class="table-cell" data-label="Serial No"><span>#004</span></div>
                     <div class="table-cell" data-label="Customer">
                         <div class="customer-info">
-                            <div class="customer-avatar">TD</div>
+                            
                             <span class="customer-name">TechDynamics</span>
                         </div>
                     </div>
@@ -540,7 +652,7 @@
                     <div class="table-cell" data-label="Serial No"><span>#005</span></div>
                     <div class="table-cell" data-label="Customer">
                         <div class="customer-info">
-                            <div class="customer-avatar">IN</div>
+                            
                             <span class="customer-name">InnoWave</span>
                         </div>
                     </div>
@@ -559,7 +671,7 @@
                     <div class="table-cell" data-label="Serial No"><span>#006</span></div>
                     <div class="table-cell" data-label="Customer">
                         <div class="customer-info">
-                            <div class="customer-avatar">MB</div>
+                           
                             <span class="customer-name">MacroBuild</span>
                         </div>
                     </div>
@@ -578,7 +690,7 @@
                     <div class="table-cell" data-label="Serial No"><span>#007</span></div>
                     <div class="table-cell" data-label="Customer">
                         <div class="customer-info">
-                            <div class="customer-avatar">BF</div>
+                           
                             <span class="customer-name">BlueFin</span>
                         </div>
                     </div>
@@ -597,7 +709,7 @@
                     <div class="table-cell" data-label="Serial No"><span>#008</span></div>
                     <div class="table-cell" data-label="Customer">
                         <div class="customer-info">
-                            <div class="customer-avatar">ZT</div>
+                            
                             <span class="customer-name">Zentech</span>
                         </div>
                     </div>
@@ -616,7 +728,7 @@
                     <div class="table-cell" data-label="Serial No"><span>#009</span></div>
                     <div class="table-cell" data-label="Customer">
                         <div class="customer-info">
-                            <div class="customer-avatar">CR</div>
+                            
                             <span class="customer-name">CoreRise</span>
                         </div>
                     </div>
@@ -635,7 +747,7 @@
                     <div class="table-cell" data-label="Serial No"><span>#010</span></div>
                     <div class="table-cell" data-label="Customer">
                         <div class="customer-info">
-                            <div class="customer-avatar">UX</div>
+                           
                             <span class="customer-name">UltraX</span>
                         </div>
                     </div>
@@ -787,7 +899,7 @@
             const actionsCell = row.querySelector('.actions');
             actionsCell.innerHTML = `
                 <button class="action-btn save-btn" onclick="saveEntry(this)" title="Save Changes">💾</button>
-                <button class="action-btn cancel-btn" onclick="cancelEdit(this)" title="Cancel Edit">✖️</button>
+              
             `;
         }
 
