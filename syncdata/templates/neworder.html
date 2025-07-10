@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>New Order</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #2563eb 0%, #dbeafe 100%);
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 10px 30px rgba(37, 99, 235, 0.2);
+      border: 2px solid #2563eb;
+    }
+
+    h2 {
+      text-align: center;
+      color: #2563eb;
+      margin-bottom: 25px;
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #2563eb;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    input[type="text"],
+    input[type="tel"] {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #2563eb;
+      border-radius: 4px;
+      font-size: 16px;
+      background-color: #fff;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #1d4ed8;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .customer-dropdown-container {
+      position: relative;
+    }
+
+    .customer-dropdown-container input {
+      padding-right: 40px;
+    }
+
+    .dropdown-arrow {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #2563eb;
+      font-size: 12px;
+      user-select: none;
+      transition: transform 0.3s ease;
+    }
+
+    .dropdown-arrow:hover {
+      color: #1d4ed8;
+    }
+
+    .dropdown-arrow.open {
+      transform: translateY(-50%) rotate(180deg);
+    }
+
+    .custom-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 2px solid #2563eb;
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 1000;
+      display: none;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.15);
+    }
+
+    .custom-dropdown.show {
+      display: block;
+    }
+
+    .dropdown-item {
+      padding: 12px 16px;
+      cursor: pointer;
+      border-bottom: 1px solid #e5e7eb;
+      transition: background-color 0.2s ease;
+    }
+
+    .dropdown-item:last-child {
+      border-bottom: none;
+    }
+
+    .dropdown-item:hover {
+      background-color: #f0f9ff;
+    }
+
+    .dropdown-item.selected {
+      background-color: #dbeafe;
+    }
+
+    .customer-name {
+      font-weight: 600;
+      color: #1f2937;
+      font-size: 14px;
+    }
+
+    .customer-details {
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 2px;
+    }
+
+    .no-results {
+      padding: 12px 16px;
+      color: #6b7280;
+      font-style: italic;
+      text-align: center;
+    }
+
+    .submit-button {
+      width: 100%;
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: white;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+    }
+
+    .submit-button:hover {
+      background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 15px;
+      }
+      .container {
+        padding: 20px;
+      }
+      h2 {
+        font-size: 22px;
+        margin-bottom: 20px;
+      }
+      input[type="text"],
+      input[type="tel"],
+      select {
+        font-size: 16px;
+        padding: 10px;
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .container {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>New Order</h2>
+
+  <form method="POST" action="{% url 'orders' %}">
+    {% csrf_token %}
+
+    <div class="form-group">
+      <label for="customer">Customer</label>
+      <div class="customer-dropdown-container">
+        <input type="text" name="customer" id="customer" placeholder="Start typing customer name..." required autocomplete="off" />
+        <div class="dropdown-arrow" onclick="toggleDropdown()">▼</div>
+        <div class="custom-dropdown" id="customerDropdown">
+          <div class="dropdown-item" data-name="John Doe" data-phone="+1234567890" data-place="New York">
+            <div class="customer-name">John Doe</div>
+            <div class="customer-details">New York • +1234567890</div>
+          </div>
+          <div class="dropdown-item" data-name="Jane Smith" data-phone="+0987654321" data-place="Los Angeles">
+            <div class="customer-name">Jane Smith</div>
+            <div class="customer-details">Los Angeles • +0987654321</div>
+          </div>
+          <div class="dropdown-item" data-name="Mike Johnson" data-phone="+1122334455" data-place="Chicago">
+            <div class="customer-name">Mike Johnson</div>
+            <div class="customer-details">Chicago • +1122334455</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="place">Place</label>
+      <input type="text" name="place" id="place" placeholder="Enter place" required />
+    </div>
+
+    <div class="form-group">
+  <label for="phone">Phone Number</label>
+  <input type="tel" name="phone" id="phone" placeholder="Enter phone number" required />
+</div>
+
+
+
+<button type="submit" class="submit-button">Proceed</button>
+
+<div style="margin: 20px 0 10px 0;">
+  <a href="{% url 'index' %}" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block;">
+  ← Back
+</a>
+
+</div>
+
+</form>
+
+<script>
+  const customerData = {
+    'John Doe': { phone: '+1234567890', place: 'New York' },
+    'Jane Smith': { phone: '+0987654321', place: 'Los Angeles' },
+    'Mike Johnson': { phone: '+1122334455', place: 'Chicago' }
+  };
+
+  let isDropdownOpen = false;
+  let selectedIndex = -1;
+
+  function toggleDropdown() {
+    const dropdown = document.getElementById('customerDropdown');
+    const arrow = document.querySelector('.dropdown-arrow');
+    if (isDropdownOpen) closeDropdown();
+    else openDropdown();
+  }
+
+  function openDropdown() {
+    const dropdown = document.getElementById('customerDropdown');
+    const arrow = document.querySelector('.dropdown-arrow');
+    dropdown.classList.add('show');
+    arrow.classList.add('open');
+    isDropdownOpen = true;
+    filterDropdownItems('');
+  }
+
+  function closeDropdown() {
+    const dropdown = document.getElementById('customerDropdown');
+    const arrow = document.querySelector('.dropdown-arrow');
+    dropdown.classList.remove('show');
+    arrow.classList.remove('open');
+    isDropdownOpen = false;
+    selectedIndex = -1;
+    clearSelection();
+  }
+
+  function filterDropdownItems(searchTerm) {
+    const dropdown = document.getElementById('customerDropdown');
+    const items = dropdown.querySelectorAll('.dropdown-item');
+    let visibleCount = 0;
+    items.forEach(item => {
+      const name = item.getAttribute('data-name').toLowerCase();
+      const place = item.getAttribute('data-place').toLowerCase();
+      const phone = item.getAttribute('data-phone').toLowerCase();
+      if (name.includes(searchTerm.toLowerCase()) || place.includes(searchTerm.toLowerCase()) || phone.includes(searchTerm.toLowerCase())) {
+        item.style.display = 'block';
+        visibleCount++;
+      } else {
+        item.style.display = 'none';
+      }
+    });
+
+    let noResults = dropdown.querySelector('.no-results');
+    if (visibleCount === 0 && searchTerm !== '') {
+      if (!noResults) {
+        noResults = document.createElement('div');
+        noResults.className = 'no-results';
+        noResults.textContent = 'No customers found';
+        dropdown.appendChild(noResults);
+      }
+      noResults.style.display = 'block';
+    } else if (noResults) {
+      noResults.style.display = 'none';
+    }
+  }
+
+  function selectCustomer(name, phone, place) {
+    document.getElementById('customer').value = name;
+    document.getElementById('place').value = place;
+    document.getElementById('phone').value = phone;
+    closeDropdown();
+  }
+
+  function clearSelection() {
+    document.querySelectorAll('.dropdown-item').forEach(item => item.classList.remove('selected'));
+  }
+
+  function handleKeyNavigation(e) {
+    if (!isDropdownOpen) return;
+    const visibleItems = Array.from(document.querySelectorAll('.dropdown-item')).filter(item => item.style.display !== 'none');
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      selectedIndex = Math.min(selectedIndex + 1, visibleItems.length - 1);
+      updateSelection(visibleItems);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      selectedIndex = Math.max(selectedIndex - 1, -1);
+      updateSelection(visibleItems);
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (selectedIndex >= 0 && visibleItems[selectedIndex]) {
+        const item = visibleItems[selectedIndex];
+        selectCustomer(item.getAttribute('data-name'), item.getAttribute('data-phone'), item.getAttribute('data-place'));
+      }
+    } else if (e.key === 'Escape') {
+      closeDropdown();
+    }
+  }
+
+  function updateSelection(visibleItems) {
+    clearSelection();
+    if (selectedIndex >= 0 && visibleItems[selectedIndex]) {
+      visibleItems[selectedIndex].classList.add('selected');
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const customerInput = document.getElementById('customer');
+    const dropdown = document.getElementById('customerDropdown');
+
+    customerInput.addEventListener('input', function () {
+      const value = this.value.trim();
+      if (value.length > 0) {
+        openDropdown();
+        filterDropdownItems(value);
+      } else {
+        closeDropdown();
+      }
+    });
+
+    customerInput.addEventListener('focus', function () {
+      if (this.value.trim() === '') openDropdown();
+    });
+
+    customerInput.addEventListener('keydown', handleKeyNavigation);
+
+    dropdown.addEventListener('click', function (e) {
+      const item = e.target.closest('.dropdown-item');
+      if (item) {
+        selectCustomer(item.getAttribute('data-name'), item.getAttribute('data-phone'), item.getAttribute('data-place'));
+      }
+    });
+
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('.customer-dropdown-container')) {
+        closeDropdown();
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

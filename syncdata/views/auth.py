@@ -2,15 +2,21 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import AccessToken
-
+from django.shortcuts import render
 from syncdata.models import AccUsers
+
+
 
 class LoginView(APIView):
     """
     Login view that authenticates users from acc_users and returns a JWT token,
     username and client_id
     """
-
+    # new order created by vis
+    def get(self, request):
+        
+        return render(request, 'login.html')
+    
     def post(self, request):
         user_id = request.data.get("user_id")
         password = request.data.get("password")

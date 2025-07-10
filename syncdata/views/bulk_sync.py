@@ -3,6 +3,7 @@ from django.db import connection
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.shortcuts import render
 import logging
 
 from syncdata.models import AccProduct, AccMaster, AccProductBatch, AccUsers
@@ -12,10 +13,33 @@ from syncdata.serializers import (
 
 logger = logging.getLogger(__name__)
 
+    # new order created by vis
+def new_order_view(request):
+    return render(request, 'neworder.html')
+
+def index_view(request):
+    return render(request, 'index.html')
+
+def login_view(request):
+    return render(request, 'login.html')
+
+def order_view(request):
+    return render(request, 'order.html')
+
+def cart_view(request):
+   
+    return render(request, 'cart.html')
+
+
+
+
+
+
 
 class BulkSyncDataView(APIView):
     """Bulk sync endpoint that deletes data based on client_id before inserting"""
 
+                      
     def get_model_and_serializer(self, table_name):
         table_mapping = {
             'users': (AccUsers, AccUsersSerializer),
