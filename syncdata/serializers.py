@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import AccMaster, AccProduct, AccProductBatch, AccUsers, Client
+from .models import AccMaster, ManualCustomer, AccProduct, AccProductBatch, AccUsers, Client
 
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,6 +12,10 @@ class AccMasterSerializer(serializers.ModelSerializer):
         model = AccMaster
         fields = '__all__'
 
+class ManualCustomerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ManualCustomer
+        fields = '__all__'
 
 class AccProductSerializer(serializers.ModelSerializer):
     class Meta:
@@ -28,4 +32,4 @@ class AccProductBatchSerializer(serializers.ModelSerializer):
 class AccUsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = AccUsers
-        fields = ['id', 'pass_field', 'role', 'client_id']
+        fields = ['id', 'role', 'client_id']

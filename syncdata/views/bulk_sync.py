@@ -33,9 +33,6 @@ def cart_view(request):
 
 
 
-
-
-
 class BulkSyncDataView(APIView):
     """Bulk sync endpoint that deletes data based on client_id before inserting"""
 

@@ -6,17 +6,15 @@ from django.shortcuts import render
 from syncdata.models import AccUsers
 
 
-
 class LoginView(APIView):
     """
     Login view that authenticates users from acc_users and returns a JWT token,
-    username and client_id
+    user_id and client_id
     """
-    # new order created by vis
+
     def get(self, request):
-        
         return render(request, 'login.html')
-    
+
     def post(self, request):
         user_id = request.data.get("user_id")
         password = request.data.get("password")
@@ -36,12 +34,14 @@ class LoginView(APIView):
                 "message": "Invalid credentials."
             }, status=status.HTTP_401_UNAUTHORIZED)
 
-        # Generate token (no need to create a new model)
-        access_token = AccessToken.for_user(user)
+        # ✅ Create token manually and add required claims
+        token = AccessToken()
+        token["user_id"] = str(user.id)
+        token["client_id"] = user.client_id
 
         return Response({
             "success": True,
-            "token": str(access_token),
+            "token": str(token),
             "user_id": user.id,
             "client_id": user.client_id
         }, status=status.HTTP_200_OK)

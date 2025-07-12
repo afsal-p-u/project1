@@ -23,6 +23,18 @@ class AccMaster(models.Model):
         managed = False  # This tells Django not to try to create the table
 
 
+class ManualCustomer(models.Model):
+    client_id = models.CharField(max_length=50, primary_key=True)
+    name = models.CharField(max_length=250)
+    address = models.CharField(max_length=100, blank=True, null=True)
+    phone = models.CharField(max_length=60, blank=True, null=True)
+
+    class Meta:
+        db_table = 'acc_master_manual'
+        managed = False
+
+
+
 class AccProduct(models.Model):
     code = models.CharField(max_length=30, primary_key=True)
     name = models.CharField(max_length=200, blank=True, null=True)
