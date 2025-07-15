@@ -24,7 +24,8 @@ class AccMaster(models.Model):
 
 
 class ManualCustomer(models.Model):
-    client_id = models.CharField(max_length=50, primary_key=True)
+    id = models.AutoField(primary_key=True)
+    client_id = models.CharField(max_length=50)
     name = models.CharField(max_length=250)
     address = models.CharField(max_length=100, blank=True, null=True)
     phone = models.CharField(max_length=60, blank=True, null=True)
@@ -32,6 +33,7 @@ class ManualCustomer(models.Model):
     class Meta:
         db_table = 'acc_master_manual'
         managed = False
+        unique_together = ('client_id', 'name') 
 
 
 
