@@ -292,6 +292,26 @@
   let customerList = []
   let token = localStorage.getItem('access_token');
 
+  // Clear form fields
+  function clearFormFields() {
+    document.getElementById('customer').value = '';
+    document.getElementById('place').value = '';
+    document.getElementById('phone').value = '';
+  }
+
+  // Check if page is being loaded from cache (back/forward navigation)
+  window.addEventListener('pageshow', function(event) {
+    if (event.persisted) {
+      window.location.reload();
+    }
+  });
+
+  // Clear form on initial load
+  window.addEventListener('DOMContentLoaded', function() {
+    clearFormFields();
+    fetchCustomers();
+  });
+
   async function fetchCustomers() {
     try {
       const response = await fetch('/customers/', {
@@ -415,9 +435,6 @@ document.addEventListener('click', e => {
       }
     }
   });
-
-  // Initial fetch
-  window.addEventListener('DOMContentLoaded', fetchCustomers);
 </script>
 
 </body>

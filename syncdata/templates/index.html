@@ -929,6 +929,28 @@
             width: 100px;
         }
     }
+    .quantity-wrapper {
+  display: flex;
+  justify-content: center;  /* aligns everything to right */
+  gap: 4px;                   /* space between number and "units" */
+  min-width: 80px;  
+   margin-left: -80px;          /* adjust as needed for longer numbers */
+  /* white-space: nowrap; */
+  /* padding-left: -10px; */
+}
+
+.quantity {
+  font-weight: bold;
+  color: green;
+  text-align: right;
+  display: inline-block;
+  min-width: 40px; /* Ensures numbers align properly */
+}
+td .quantity {
+  margin-left: 20px;
+}
+
+
 </style>
 </head>
 <body>
@@ -1196,7 +1218,13 @@
                         <div class="customer-name">${order.customer}</div>
                     </td>
                     <td class="customer-phone">${order.phone}</td>
-                    <td><span class="quantity">${order.quantity}</span> units</td>
+                    <td>
+                        <div class="quantity-wrapper">
+                            <span class="quantity">${order.quantity}</span>
+                            <span class="unit-label">units</span>
+                        </div>
+                    </td>
+
                     <td><span class="amount">${formattedAmount}</span></td>
                     
                     <td>
@@ -1214,6 +1242,7 @@
             });
         }
 
+        
         // Search functionality by customer name or phone number
         function setupSearch() {
             document.getElementById('searchInput').addEventListener('input', function () {
