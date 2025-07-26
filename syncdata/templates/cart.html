@@ -214,48 +214,83 @@
             transform: scale(1.1);
         }
 
+        /* UPDATED ORDER SUMMARY SECTION (MOBILE-FRIENDLY) */
         .order-summary {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            padding: 20px;
+            background: #fff;
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             margin-top: 20px;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
         }
 
-        .subtotal {
+        .summary-title {
             font-size: 18px;
-            font-weight: 700;
-            text-align: right;
-            margin-bottom: 20px;
+            font-weight: 600;
             color: #004c8c;
+            margin-bottom: 16px;
             display: flex;
             align-items: center;
-            justify-content: flex-end;
+            gap: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+
+        .summary-label {
+            color: #666;
+        }
+
+        .summary-value {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .summary-total {
+            font-size: 18px;
+            font-weight: 700;
+            color: #004c8c;
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .total-label {
+            display: flex;
+            align-items: center;
             gap: 8px;
         }
 
-        .process-order {
-            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        .place-order-btn {
+            background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
             color: white;
             border: none;
-            padding: 12px 18px;
+            padding: 16px;
             width: 100%;
-            border-radius: 6px;
-            font-size: 16px;
+            border-radius: 8px;
+            font-size: 17px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            box-shadow: 0 3px 8px rgba(0, 123, 255, 0.3);
+            gap: 10px;
+            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);
+            margin-top: 20px;
         }
 
-        .process-order:hover {
-            background: linear-gradient(135deg, #0056b3 0%, #003d66 100%);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.4);
+        .place-order-btn:hover {
+            background: linear-gradient(135deg, #218838 0%, #155724 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(40, 167, 69, 0.4);
         }
 
         .empty-cart {
@@ -312,6 +347,77 @@
             }
         }
 
+        /* GPay-like button effects */
+        .place-order-btn {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .place-order-btn:active::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+            animation: ripple 0.6s ease-out;
+        }
+        
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+            20% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: scale(20, 20);
+                opacity: 0;
+            }
+        }
+        
+        .place-order-btn.processing {
+            pointer-events: none;
+        }
+        
+        .place-order-btn.processing::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #218838 0%, #155724 100%);
+            z-index: 1;
+            border-radius: 8px;
+        }
+        
+        .place-order-btn.processing::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 24px;
+            height: 24px;
+            margin: -12px 0 0 -12px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+            z-index: 2;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         /* Responsive styles */
         @media (max-width: 768px) {
             body {
@@ -356,11 +462,7 @@
             }
 
             .order-summary {
-                padding: 18px;
-            }
-
-            .subtotal {
-                font-size: 16px;
+                padding: 16px;
             }
         }
 
@@ -407,16 +509,9 @@
                 top: 10px;
             }
 
-            .subtotal {
-                font-size: 15px;
-                justify-content: center;
-                flex-direction: column;
-                gap: 4px;
-            }
-
-            .process-order {
-                padding: 10px 14px;
-                font-size: 15px;
+            .place-order-btn {
+                padding: 14px;
+                font-size: 16px;
             }
 
             .empty-cart i {
@@ -460,77 +555,6 @@
                 font-size: 14px;
             }
         }
-
-        /* NEW STYLES ADDED FOR GPAY-LIKE BUTTON EFFECT */
-        .process-order {
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .process-order:active::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 5px;
-            height: 5px;
-            background: rgba(255, 255, 255, 0.5);
-            opacity: 0;
-            border-radius: 100%;
-            transform: scale(1, 1) translate(-50%);
-            transform-origin: 50% 50%;
-            animation: gpay-ripple 0.6s ease-out;
-        }
-        
-        @keyframes gpay-ripple {
-            0% {
-                transform: scale(0, 0);
-                opacity: 0.5;
-            }
-            20% {
-                opacity: 0.7;
-            }
-            100% {
-                transform: scale(20, 20);
-                opacity: 0;
-            }
-        }
-        
-        .process-order.processing {
-            pointer-events: none;
-        }
-        
-        .process-order.processing::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, #0056b3 0%, #003d66 100%);
-            z-index: 1;
-            border-radius: 6px;
-        }
-        
-        .process-order.processing::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 24px;
-            height: 24px;
-            margin: -12px 0 0 -12px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: gpay-spin 1s linear infinite;
-            z-index: 2;
-        }
-        
-        @keyframes gpay-spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
     </style>
 </head>
 <body>
@@ -564,13 +588,36 @@
                 </div>
             </div>
             
+            <!-- UPDATED ORDER SUMMARY SECTION -->
             <div class="order-summary">
-                <div class="subtotal">
-                    <i class="fas fa-file-invoice-dollar"></i>
-                    Subtotal (<span id="itemCount">0</span> items): ₹<span id="cartTotal">0.00</span>
+                <div class="summary-card">
+                    <h3 class="summary-title">
+                        <i class="fas fa-receipt"></i>
+                        Order Summary
+                    </h3>
+                    <div class="summary-item">
+                        <span class="summary-label">Subtotal (<span id="itemCount">0</span> items)</span>
+                        <span class="summary-value">₹<span id="cartTotal">0.00</span></span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Delivery</span>
+                        <span class="summary-value">FREE</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Taxes</span>
+                        <span class="summary-value">₹0</span>
+                    </div>
+                    <div class="summary-total">
+                        <span class="total-label">
+                            <i class="fas fa-rupee-sign"></i>
+                            Total
+                        </span>
+                        <span class="summary-value">₹<span id="cartTotal">0.00</span></span>
+                    </div>
                 </div>
-                <button class="process-order" onclick="processOrder()">
-                    <i class="fas fa-check-circle"></i> Place Order
+                <button class="place-order-btn" onclick="processOrder()">
+                    <i class="fas fa-lock"></i>
+                    Place Order
                 </button>
             </div>
         </div>
@@ -701,7 +748,7 @@
         }
 
         function processOrder() {
-            const orderButton = document.querySelector('.process-order');
+            const orderButton = document.querySelector('.place-order-btn');
             orderButton.classList.add('processing');
             
             const cartProducts = products.filter(product => product.quantity > 0);

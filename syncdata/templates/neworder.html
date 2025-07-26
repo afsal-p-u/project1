@@ -115,7 +115,6 @@
       display: block;
     }
 
-    /* New search bar styles */
     .dropdown-search {
       position: sticky;
       top: 0;
@@ -143,7 +142,7 @@
     .dropdown-items-container {
       max-height: 150px;
       overflow-y: auto;
-      -webkit-overflow-scrolling: touch; /* PATCH: smoother iOS scroll */
+      -webkit-overflow-scrolling: touch;
     }
 
     .dropdown-item {
@@ -239,31 +238,35 @@
 <div class="container">
   <h2>Select Customer Name</h2>
 
-  <form method="POST" action="{% url 'orders' %}">
+  <form method="POST" action="{% url 'orders' %}" id="orderForm">
     {% csrf_token %}
 
     <div class="form-group">
       <label for="customer">Customer</label>
       <div class="customer-dropdown-container">
-        <input type="text" name="customer" id="customer" placeholder="Start typing customer name..." required autocomplete="off" aria-autocomplete="list" aria-controls="customerDropdown" aria-expanded="false" /> <!-- PATCH: ARIA -->
-        <div class="dropdown-arrow" onclick="toggleDropdown()">▼</div>
-        <div class="custom-dropdown" id="customerDropdown" role="listbox"> <!-- PATCH: ARIA -->
+        <input 
+          type="text" 
+          name="customer" 
+          id="customer" 
+          placeholder="Start typing customer name..." 
+          required 
+          autocomplete="off" 
+          aria-autocomplete="list" 
+          aria-controls="customerDropdown" 
+          aria-expanded="false"
+        />
+        <div class="dropdown-arrow" onclick="toggleDropdown()" tabindex="0" role="button" aria-label="Toggle customer dropdown">▼</div>
+        <div class="custom-dropdown" id="customerDropdown" role="listbox">
           <div class="dropdown-search">
-            <input type="text" placeholder="Search customers..." aria-label="Search customers" /> <!-- PATCH: removed id="dropdownSearch" -->
+            <input 
+              type="text" 
+              placeholder="Search customers..." 
+              aria-label="Search customers"
+              class="dropdown-search-input"
+            />
           </div>
           <div class="dropdown-items-container">
-            <div class="dropdown-item" data-name="John Doe" data-phone="+1234567890" data-place="New York" role="option" tabindex="0"> <!-- PATCH: ARIA -->
-              <div class="customer-name">John Doe</div>
-              <div class="customer-details">New York • +1234567890</div>
-            </div>
-            <div class="dropdown-item" data-name="Jane Smith" data-phone="+0987654321" data-place="Los Angeles" role="option" tabindex="0"> <!-- PATCH: ARIA -->
-              <div class="customer-name">Jane Smith</div>
-              <div class="customer-details">Los Angeles • +0987654321</div>
-            </div>
-            <div class="dropdown-item" data-name="Mike Johnson" data-phone="+1122334455" data-place="Chicago" role="option" tabindex="0"> <!-- PATCH: ARIA -->
-              <div class="customer-name">Mike Johnson</div>
-              <div class="customer-details">Chicago • +1122334455</div>
-            </div>
+            <!-- Removed hardcoded dropdown items -->
           </div>
         </div>
       </div>
@@ -271,7 +274,7 @@
 
     <div class="form-group">
       <label for="place">Place</label>
-      <input type="text" name="place" id="place" placeholder="Enter place" required />
+      <input type="text" name="place" id="place" placeholder="Enter place (optional)" />
     </div>
 
     <div class="form-group">
@@ -310,6 +313,14 @@
   window.addEventListener('DOMContentLoaded', function() {
     clearFormFields();
     fetchCustomers();
+    
+    // Prevent form submission on Enter key in customer field
+    document.getElementById('customer').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        return false;
+      }
+    });
   });
 
   async function fetchCustomers() {
@@ -332,14 +343,19 @@
     const container = document.querySelector('.dropdown-items-container');
     container.innerHTML = '';
 
+    if (customers.length === 0) {
+      container.innerHTML = '<div class="no-results">No customers found</div>';
+      return;
+    }
+
     customers.forEach(customer => {
       const item = document.createElement('div');
       item.className = 'dropdown-item';
       item.dataset.name = customer.name;
       item.dataset.phone = customer.phone;
       item.dataset.place = customer.address;
-      item.setAttribute('role', 'option');          // PATCH: ARIA
-      item.setAttribute('tabindex', '0');           // PATCH: keyboard focus
+      item.setAttribute('role', 'option');
+      item.setAttribute('tabindex', '0');
 
       item.innerHTML = `
         <div class="customer-name">${customer.name}</div>
@@ -347,7 +363,7 @@
       `;
 
       item.addEventListener('click', () => selectCustomer(customer));
-      item.addEventListener('keydown', e => {       // PATCH: keyboard selection
+      item.addEventListener('keydown', e => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           selectCustomer(customer);
@@ -374,13 +390,13 @@
     const open = force === null ? dropdown.style.display !== 'block' : force;
     dropdown.style.display = open ? 'block' : 'none';
     arrow.classList.toggle('open', open);
-    input.setAttribute('aria-expanded', open);               // PATCH: ARIA
+    input.setAttribute('aria-expanded', open);
   }
-  // PATCH: close dropdown on outside click
-document.addEventListener('click', e => {
-  const container = document.querySelector('.customer-dropdown-container');
-  if (!container.contains(e.target)) toggleDropdown(false);
-});
+
+  document.addEventListener('click', e => {
+    const container = document.querySelector('.customer-dropdown-container');
+    if (!container.contains(e.target)) toggleDropdown(false);
+  });
 
   // Filter dropdown on typing
   function handleFilter() {
@@ -396,12 +412,12 @@ document.addEventListener('click', e => {
   document.querySelector('.dropdown-search input').addEventListener('input', handleFilter);
 
   // Close on Escape
-  document.addEventListener('keydown', e => {                // PATCH: ESC key
+  document.addEventListener('keydown', e => {
     if (e.key === 'Escape') toggleDropdown(false);
   });
 
   // Handle form submit (create customer if not exist)
-  document.querySelector('form').addEventListener('submit', async function (e) {
+  document.getElementById('orderForm').addEventListener('submit', async function (e) {
     const customerName = document.getElementById('customer').value.trim();
     const place = document.getElementById('place').value.trim();
     const phone = document.getElementById('phone').value.trim();
