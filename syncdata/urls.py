@@ -6,7 +6,7 @@ from syncdata.views.protected_view import ProtectedView
 from syncdata.views.bulk_sync import BulkSyncDataView, new_order_view, cart_view, order_view, index_view
 
 
-from syncdata.views.app_view import CustomerView 
+from syncdata.views.app_view import CustomerView, ProductView
 
 urlpatterns = [
     # Auth
@@ -26,4 +26,7 @@ urlpatterns = [
     # 🧾 Customer Routes 
     # (Frontend dropdown & add customer)
     path('customers/', CustomerView.as_view(), name='customers'),
+
+    # 📦 Product Routes
+    path('products/', ProductView.as_view(), name='products'),
 ]

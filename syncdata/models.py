@@ -20,7 +20,7 @@ class AccMaster(models.Model):
 
     class Meta:
         db_table = 'acc_master'
-        managed = False  # This tells Django not to try to create the table
+        managed = False
 
 
 class ManualCustomer(models.Model):
