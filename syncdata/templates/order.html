@@ -327,6 +327,21 @@
             }
         }
 
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         /* Mobile Responsiveness */
         @media only screen and (max-width: 768px) {
             body {
@@ -433,192 +448,190 @@
         </div>
         
         <div class="cart-header">
-    <button onclick="window.history.back()" style="padding: 8px 15px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
-        ← Back
-    </button>
-    <a href="{% url 'cart' %}" class="cart-icon" style="text-decoration: none; font-size: 24px; position: relative;">
-        🛒
-        <span id="cartBadge" class="cart-badge" style="position: absolute; top: -8px; right: -10px; background-color: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px;">
-            0
-        </span>
-    </a>
-</div>
+            <button onclick="window.history.back()" style="padding: 8px 15px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                ← Back
+            </button>
+            <a href="{% url 'cart' %}" class="cart-icon" style="text-decoration: none; font-size: 24px; position: relative;">
+                🛒
+                <span id="cartBadge" class="cart-badge" style="position: absolute; top: -8px; right: -10px; background-color: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px;">
+                    0
+                </span>
+            </a>
+        </div>
 
-
-        <!-- Search Bar -->
         <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Search Product or Enter ID (e.g., P001)">
+            <input type="text" id="searchInput" placeholder="Search Product or Enter Code (e.g., 00001)">
             <button onclick="searchProduct()">Search</button>
         </div>
 
-        <!-- Products List -->
         <div class="product-list" id="productList">
-            <!-- Products will be loaded here -->
+            <div class="loading-spinner" id="loadingSpinner"></div>
         </div>
     </div>
 
     <script>
-        // Product data with formatted details
-        const products = [
-            {
-                id: 'P001',
-                name: 'OnePlus 13',
-                description: 'Smarter with OnePlus AI',
-                specs: 'Lifetime Display Warranty (12GB RAM, 256GB Storage Black Eclipse)',
-                price: 69999
-            },
-            {
-                id: 'P002',
-                name: 'Samsung Galaxy S24 Ultra',
-                description: 'Next-level photography with 200MP camera',
-                specs: 'Corning Gorilla Glass Victus 3 (16GB RAM, 512GB Storage Titanium Black)',
-                price: 129999
-            },
-            {
-                id: 'P003',
-                name: 'Apple iPhone 15 Pro Max',
-                description: 'Titanium design with A17 Pro chip',
-                specs: 'Ceramic Shield protection (8GB RAM, 1TB Storage Natural Titanium)',
-                price: 159900
-            },
-            {
-                id: 'P004',
-                name: 'Google Pixel 8 Pro',
-                description: 'Best-in-class AI features',
-                specs: 'Gorilla Glass Victus 2 (12GB RAM, 256GB Storage Obsidian)',
-                price: 106999
-            },
-            {
-                id: 'P005',
-                name: 'Xiaomi 14 Pro',
-                description: 'Leica co-engineered camera system',
-                specs: 'Dragon Crystal Glass (16GB RAM, 512GB Storage Black)',
-                price: 89999
-            },
-            {
-                id: 'P006',
-                name: 'Nothing Phone (2)',
-                description: 'Unique Glyph Interface',
-                specs: 'Gorilla Glass 5 (12GB RAM, 256GB Storage White)',
-                price: 44999
-            },
-            {
-                id: 'P007',
-                name: 'Vivo X100 Pro',
-                description: 'ZEISS professional imaging',
-                specs: 'IP68 Water Resistance (16GB RAM, 512GB Storage Asteroid Black)',
-                price: 89990
-            },
-            {
-                id: 'P008',
-                name: 'iQOO 12',
-                description: 'Esports-level performance',
-                specs: '3D Curved AMOLED (16GB RAM, 512GB Storage Legend)',
-                price: 62999
-            }
-        ];
-
-        // Cart quantities (persistent)
+        // Global variables
+        let products = [];
         let cartQuantities = {};
-        // Selected quantities (temporary)
         let selectedQuantities = {};
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize quantities
-            products.forEach(product => {
-                cartQuantities[product.id] = 0;
-                selectedQuantities[product.id] = 0;
-            });
-
-            loadCartFromLocalStorage();
-            loadProducts();
-            updateCartBadge();
             document.getElementById('currentDate').textContent = new Date().toLocaleDateString();
-
-            // Listen for storage events (when cart is updated from another tab/window)
-            window.addEventListener('storage', function(e) {
-                if (e.key === 'cartQuantities') {
-                    loadCartFromLocalStorage();
-                    updateCartBadge();
-                    updateProductHighlights();
-                    loadProducts();
-                }
-            });
-
-            // Listen for focus event (when user returns to this tab)
-            window.addEventListener('focus', function() {
-                loadCartFromLocalStorage();
-                updateCartBadge();
-                updateProductHighlights();
-                loadProducts();
+            fetchProducts();
+            
+            window.addEventListener('storage', handleStorageEvent);
+            window.addEventListener('focus', handleWindowFocus);
+            
+            document.getElementById('searchInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') searchProduct();
             });
         });
+
+        // Fixed product fetching
+        async function fetchProducts() {
+            try {
+                showLoading(true);
+                const token = localStorage.getItem('access_token');
+                
+                if (!token) {
+                    showErrorMessage("Please login first");
+                    return;
+                }
+
+                const response = await fetch('/products/', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    const error = await response.text();
+                    throw new Error(error || "Server returned an error");
+                }
+
+                const data = await response.json();
+                console.log(data)
+                products = Array.isArray(data.results) ? data.results : [];
+                
+                // Initialize quantities using 'code' as identifier
+                products.forEach(product => {
+                    if (!product.code) return;
+                    cartQuantities[product.code] = cartQuantities[product.code] || 0;
+                    selectedQuantities[product.code] = selectedQuantities[product.code] || 0;
+                });
+
+                loadCartFromLocalStorage();
+                loadProducts();
+                updateCartBadge();
+                
+            } catch (error) {
+                console.error("Fetch error:", error);
+                products = [];
+                showErrorMessage(error.message || "Failed to load products");
+                document.getElementById('productList').innerHTML = 
+                    '<div style="text-align: center; padding: 20px; color: #666;">' + 
+                    (error.message || "Failed to load products. Please try again.") + 
+                    '</div>';
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function showLoading(show) {
+            document.getElementById('loadingSpinner').style.display = show ? 'block' : 'none';
+        }
 
         function loadCartFromLocalStorage() {
             const savedQuantities = localStorage.getItem('cartQuantities');
             if (savedQuantities) {
                 try {
-                    cartQuantities = JSON.parse(savedQuantities);
-                    // Ensure all products have a quantity (even if 0)
-                    products.forEach(product => {
-                        if (cartQuantities[product.id] === undefined) {
-                            cartQuantities[product.id] = 0;
-                        }
+                    const parsed = JSON.parse(savedQuantities);
+                    Object.keys(parsed).forEach(code => {
+                        cartQuantities[code] = parsed[code];
                     });
                 } catch (e) {
-                    console.error('Error loading cart from localStorage:', e);
-                    // Reset to default if there's an error
-                    products.forEach(product => {
-                        cartQuantities[product.id] = 0;
-                    });
+                    console.error("Error loading cart:", e);
                 }
             }
         }
 
         function saveCartToLocalStorage() {
             localStorage.setItem('cartQuantities', JSON.stringify(cartQuantities));
-            // Dispatch storage event to sync other tabs
             window.dispatchEvent(new StorageEvent('storage', {
                 key: 'cartQuantities',
                 newValue: JSON.stringify(cartQuantities)
             }));
         }
 
+        function handleStorageEvent(e) {
+            if (e.key === 'cartQuantities') {
+                loadCartFromLocalStorage();
+                updateCartBadge();
+                updateProductHighlights();
+                loadProducts();
+            }
+        }
+
+        function handleWindowFocus() {
+            loadCartFromLocalStorage();
+            updateCartBadge();
+            updateProductHighlights();
+            loadProducts();
+        }
+
         function loadProducts() {
             const productList = document.getElementById('productList');
             productList.innerHTML = '';
 
+            if (!Array.isArray(products)) {
+                console.error("Products data is not an array!");
+                products = [];
+            }
+
+            if (products.length === 0) {
+                productList.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">No products available</div>';
+                return;
+            }
+
             products.forEach(product => {
+                if (!product.code) return;
+                
                 const productRow = document.createElement('div');
                 productRow.className = 'product-row';
-                productRow.id = `product-${product.id}`;
+                productRow.id = `product-${product.code}`;
                 
-                // Highlight if item is in cart
-                if (cartQuantities[product.id] > 0) {
+                if (cartQuantities[product.code] > 0) {
                     productRow.classList.add('in-cart');
                 }
                 
+                // Build description from available fields
+                let description = '';
+                if (product.product) description += product.product;
+                if (product.brand) description += (description ? ' - ' : '') + product.brand;
+                if (product.unit) description += (description ? ' ' : '') + product.unit;
+                
                 productRow.innerHTML = `
                     <div class="product-details">
-                        <div class="product-name">${product.name}</div>
-                        <div class="product-description">${product.description}</div>
-                        <div class="product-specs">${product.specs}</div>
-                        <div class="product-price">₹${product.price.toLocaleString()}</div>
-                        <div class="in-cart-quantity" id="in-cart-${product.id}" 
-                            style="${cartQuantities[product.id] > 0 ? '' : 'display: none;'}">
-                            In cart: ${cartQuantities[product.id]}
+                        <div class="product-name">${escapeHtml(product.name || '')}</div>
+                        <div class="product-description">${escapeHtml(description)}</div>
+                        <div class="product-specs">Code: ${escapeHtml(product.code || '')}</div>
+                        <div class="product-price">₹${product.price ? product.price.toLocaleString() : product.mrp ? product.mrp.toLocaleString() : '0'}</div>
+                        <div class="in-cart-quantity" id="in-cart-${product.code}" 
+                            style="${cartQuantities[product.code] > 0 ? '' : 'display: none;'}">
+                            In cart: ${cartQuantities[product.code]}
                         </div>
                     </div>
                     <div class="product-actions">
                         <div class="quantity-controls">
-                            <button onclick="changeSelectedQuantity('${product.id}', -1)" ${selectedQuantities[product.id] <= 0 ? 'disabled' : ''}>-</button>
-                            <div class="quantity-display" id="qty-${product.id}" onclick="enableQuantityInput('${product.id}')">${selectedQuantities[product.id]}</div>
-                            <button onclick="changeSelectedQuantity('${product.id}', 1)">+</button>
+                            <button onclick="changeSelectedQuantity('${product.code}', -1)" ${selectedQuantities[product.code] <= 0 ? 'disabled' : ''}>-</button>
+                            <div class="quantity-display" id="qty-${product.code}" onclick="enableQuantityInput('${product.code}')">${selectedQuantities[product.code]}</div>
+                            <button onclick="changeSelectedQuantity('${product.code}', 1)">+</button>
                         </div>
-                        <button class="add-to-cart-btn" onclick="addToCart('${product.id}')" 
-                                ${selectedQuantities[product.id] <= 0 ? 'disabled' : ''}
-                                title="Add ${selectedQuantities[product.id]} to Cart">
+                        <button class="add-to-cart-btn" onclick="addToCart('${product.code}')" 
+                                ${selectedQuantities[product.code] <= 0 ? 'disabled' : ''}
+                                title="Add ${selectedQuantities[product.code]} to Cart">
                         </button>
                     </div>
                 `;
@@ -626,22 +639,32 @@
             });
         }
 
-        function enableQuantityInput(productId) {
-            const qtyElement = document.getElementById(`qty-${productId}`);
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe.toString()
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function enableQuantityInput(productCode) {
+            const qtyElement = document.getElementById(`qty-${productCode}`);
             if (!qtyElement) return;
             
-            const currentValue = selectedQuantities[productId];
+            const currentValue = selectedQuantities[productCode];
             const input = document.createElement('input');
             input.type = 'number';
             input.className = 'quantity-input';
             input.value = currentValue;
             input.min = '0';
             input.onblur = function() {
-                updateQuantityFromInput(productId, this);
+                updateQuantityFromInput(productCode, this);
             };
             input.onkeypress = function(e) {
                 if (e.key === 'Enter') {
-                    updateQuantityFromInput(productId, this);
+                    updateQuantityFromInput(productCode, this);
                 }
             };
             
@@ -650,89 +673,73 @@
             input.select();
         }
 
-        function updateQuantityFromInput(productId, inputElement) {
+        function updateQuantityFromInput(productCode, inputElement) {
             const newValue = parseInt(inputElement.value) || 0;
             if (newValue >= 0) {
-                selectedQuantities[productId] = newValue;
-                
-                // Create the display element again
+                selectedQuantities[productCode] = newValue;
                 const displayElement = document.createElement('div');
                 displayElement.className = 'quantity-display';
-                displayElement.id = `qty-${productId}`;
+                displayElement.id = `qty-${productCode}`;
                 displayElement.textContent = newValue;
                 displayElement.onclick = function() {
-                    enableQuantityInput(productId);
+                    enableQuantityInput(productCode);
                 };
-                
                 inputElement.replaceWith(displayElement);
-                
-                // Update buttons and add to cart button
-                updateQuantityButtons(productId);
-                updateAddToCartButton(productId);
+                updateQuantityButtons(productCode);
+                updateAddToCartButton(productCode);
             }
         }
 
-        function changeSelectedQuantity(productId, change) {
-            const newQuantity = selectedQuantities[productId] + change;
-            
+        function changeSelectedQuantity(productCode, change) {
+            const newQuantity = selectedQuantities[productCode] + change;
             if (newQuantity >= 0) {
-                selectedQuantities[productId] = newQuantity;
-                updateQuantityDisplay(productId);
-                updateQuantityButtons(productId);
-                updateAddToCartButton(productId);
+                selectedQuantities[productCode] = newQuantity;
+                updateQuantityDisplay(productCode);
+                updateQuantityButtons(productCode);
+                updateAddToCartButton(productCode);
             }
         }
 
-        function addToCart(productId) {
-            if (selectedQuantities[productId] > 0) {
-                cartQuantities[productId] += selectedQuantities[productId];
-                selectedQuantities[productId] = 0;
-                
-                const product = products.find(p => p.id === productId);
-                showSuccessMessage(`${product.name} added to cart (${cartQuantities[productId]} total)`);
-                
-                // Update displays
-                updateQuantityDisplay(productId);
-                updateQuantityButtons(productId);
-                updateAddToCartButton(productId);
+        function addToCart(productCode) {
+            if (selectedQuantities[productCode] > 0) {
+                cartQuantities[productCode] += selectedQuantities[productCode];
+                selectedQuantities[productCode] = 0;
+                const product = products.find(p => p.code === productCode);
+                showSuccessMessage(`${product?.name || 'Item'} added to cart (${cartQuantities[productCode]} total)`);
+                updateQuantityDisplay(productCode);
+                updateQuantityButtons(productCode);
+                updateAddToCartButton(productCode);
                 updateCartBadge();
                 updateProductHighlights();
-                
-                // Update in-cart quantity display
-                const inCartElement = document.getElementById(`in-cart-${productId}`);
+                const inCartElement = document.getElementById(`in-cart-${productCode}`);
                 if (inCartElement) {
-                    inCartElement.textContent = `In cart: ${cartQuantities[productId]}`;
-                    inCartElement.style.display = cartQuantities[productId] > 0 ? 'block' : 'none';
+                    inCartElement.textContent = `In cart: ${cartQuantities[productCode]}`;
+                    inCartElement.style.display = cartQuantities[productCode] > 0 ? 'block' : 'none';
                 }
-                
                 saveCartToLocalStorage();
             }
         }
 
-        function updateQuantityDisplay(productId) {
-            const qtyElement = document.getElementById(`qty-${productId}`);
-            if (qtyElement) {
-                qtyElement.textContent = selectedQuantities[productId];
-            }
+        function updateQuantityDisplay(productCode) {
+            const qtyElement = document.getElementById(`qty-${productCode}`);
+            if (qtyElement) qtyElement.textContent = selectedQuantities[productCode];
         }
 
-        function updateQuantityButtons(productId) {
-            const productRow = document.getElementById(`product-${productId}`);
+        function updateQuantityButtons(productCode) {
+            const productRow = document.getElementById(`product-${productCode}`);
             if (productRow) {
                 const decreaseBtn = productRow.querySelector('.quantity-controls button');
-                if (decreaseBtn) {
-                    decreaseBtn.disabled = selectedQuantities[productId] <= 0;
-                }
+                if (decreaseBtn) decreaseBtn.disabled = selectedQuantities[productCode] <= 0;
             }
         }
 
-        function updateAddToCartButton(productId) {
-            const productRow = document.getElementById(`product-${productId}`);
+        function updateAddToCartButton(productCode) {
+            const productRow = document.getElementById(`product-${productCode}`);
             if (productRow) {
                 const addBtn = productRow.querySelector('.add-to-cart-btn');
                 if (addBtn) {
-                    addBtn.disabled = selectedQuantities[productId] <= 0;
-                    addBtn.title = `Add ${selectedQuantities[productId]} to Cart`;
+                    addBtn.disabled = selectedQuantities[productCode] <= 0;
+                    addBtn.title = `Add ${selectedQuantities[productCode]} to Cart`;
                 }
             }
         }
@@ -745,13 +752,10 @@
 
         function updateProductHighlights() {
             products.forEach(product => {
-                const productRow = document.getElementById(`product-${product.id}`);
+                if (!product.code) return;
+                const productRow = document.getElementById(`product-${product.code}`);
                 if (productRow) {
-                    if (cartQuantities[product.id] > 0) {
-                        productRow.classList.add('in-cart');
-                    } else {
-                        productRow.classList.remove('in-cart');
-                    }
+                    productRow.classList.toggle('in-cart', cartQuantities[product.code] > 0);
                 }
             });
         }
@@ -760,16 +764,16 @@
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const productList = document.getElementById('productList');
             
-            if (searchTerm === '') {
+            if (!searchTerm.trim()) {
                 loadProducts();
                 return;
             }
             
             const filteredProducts = products.filter(product => 
-                product.name.toLowerCase().includes(searchTerm) ||
-                product.id.toLowerCase().includes(searchTerm) ||
-                product.description.toLowerCase().includes(searchTerm) ||
-                product.specs.toLowerCase().includes(searchTerm)
+                (product.name && product.name.toLowerCase().includes(searchTerm)) ||
+                (product.code && product.code.toLowerCase().includes(searchTerm)) ||
+                (product.brand && product.brand.toLowerCase().includes(searchTerm)) ||
+                (product.product && product.product.toLowerCase().includes(searchTerm))
             );
             
             productList.innerHTML = '';
@@ -780,33 +784,38 @@
                 filteredProducts.forEach(product => {
                     const productRow = document.createElement('div');
                     productRow.className = 'product-row';
-                    productRow.id = `product-${product.id}`;
+                    productRow.id = `product-${product.code}`;
                     
-                    // Highlight if item is in cart
-                    if (cartQuantities[product.id] > 0) {
+                    if (cartQuantities[product.code] > 0) {
                         productRow.classList.add('in-cart');
                     }
                     
+                    // Build description from available fields
+                    let description = '';
+                    if (product.product) description += product.product;
+                    if (product.brand) description += (description ? ' - ' : '') + product.brand;
+                    if (product.unit) description += (description ? ' ' : '') + product.unit;
+                    
                     productRow.innerHTML = `
                         <div class="product-details">
-                            <div class="product-name">${product.name}</div>
-                            <div class="product-description">${product.description}</div>
-                            <div class="product-specs">${product.specs}</div>
-                            <div class="product-price">₹${product.price.toLocaleString()}</div>
-                            <div class="in-cart-quantity" id="in-cart-${product.id}" 
-                                style="${cartQuantities[product.id] > 0 ? '' : 'display: none;'}">
-                                In cart: ${cartQuantities[product.id]}
+                            <div class="product-name">${escapeHtml(product.name)}</div>
+                            <div class="product-description">${escapeHtml(description)}</div>
+                            <div class="product-specs">Code: ${escapeHtml(product.code || '')}</div>
+                            <div class="product-price">₹${product.price ? product.price.toLocaleString() : product.mrp ? product.mrp.toLocaleString() : '0'}</div>
+                            <div class="in-cart-quantity" id="in-cart-${product.code}" 
+                                style="${cartQuantities[product.code] > 0 ? '' : 'display: none;'}">
+                                In cart: ${cartQuantities[product.code]}
                             </div>
                         </div>
                         <div class="product-actions">
                             <div class="quantity-controls">
-                                <button onclick="changeSelectedQuantity('${product.id}', -1)" ${selectedQuantities[product.id] <= 0 ? 'disabled' : ''}>-</button>
-                                <div class="quantity-display" id="qty-${product.id}" onclick="enableQuantityInput('${product.id}')">${selectedQuantities[product.id]}</div>
-                                <button onclick="changeSelectedQuantity('${product.id}', 1)">+</button>
+                                <button onclick="changeSelectedQuantity('${product.code}', -1)" ${selectedQuantities[product.code] <= 0 ? 'disabled' : ''}>-</button>
+                                <div class="quantity-display" id="qty-${product.code}" onclick="enableQuantityInput('${product.code}')">${selectedQuantities[product.code]}</div>
+                                <button onclick="changeSelectedQuantity('${product.code}', 1)">+</button>
                             </div>
-                            <button class="add-to-cart-btn" onclick="addToCart('${product.id}')" 
-                                    ${selectedQuantities[product.id] <= 0 ? 'disabled' : ''}
-                                    title="Add ${selectedQuantities[product.id]} to Cart">
+                            <button class="add-to-cart-btn" onclick="addToCart('${product.code}')" 
+                                    ${selectedQuantities[product.code] <= 0 ? 'disabled' : ''}
+                                    title="Add ${selectedQuantities[product.code]} to Cart">
                             </button>
                         </div>
                     `;
@@ -822,9 +831,7 @@
             document.body.appendChild(successDiv);
             
             setTimeout(() => {
-                if (document.body.contains(successDiv)) {
-                    document.body.removeChild(successDiv);
-                }
+                successDiv.remove();
             }, 3000);
         }
 
@@ -836,24 +843,16 @@
             document.body.appendChild(errorDiv);
             
             setTimeout(() => {
-                if (document.body.contains(errorDiv)) {
-                    document.body.removeChild(errorDiv);
-                }
+                errorDiv.remove();
             }, 3000);
         }
 
-        // Allow search on Enter key
-        document.getElementById('searchInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                searchProduct();
-            }
-        });
-
-        // Function to clear cart (call this after placing order)
         function clearCart() {
             products.forEach(product => {
-                cartQuantities[product.id] = 0;
-                selectedQuantities[product.id] = 0;
+                if (product.code) {
+                    cartQuantities[product.code] = 0;
+                    selectedQuantities[product.code] = 0;
+                }
             });
             saveCartToLocalStorage();
             updateCartBadge();
