@@ -425,32 +425,46 @@
     const existing = customerList.find(c => c.name.toLowerCase() === customerName.toLowerCase());
 
     if (!existing) {
-      e.preventDefault();
+        e.preventDefault();
 
-      try {
-        const response = await fetch('/customers/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ name: customerName, address: place, phone: phone })
-        });
+        try {
+            const response = await fetch('/customers/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ name: customerName, address: place, phone: phone })
+            });
 
-        const data = await response.json();
-        if (response.status === 201) {
-          alert('Customer added successfully!');
-          this.submit();
-        } else {
-          alert(data.message || 'Failed to add customer');
+            const data = await response.json();
+            if (response.status === 201) {
+                alert('Customer added successfully!');
+                // Save to localStorage
+                localStorage.setItem('selected_customer', JSON.stringify({
+                    name: customerName,
+                    place: place,
+                    phone: phone
+                }));
+                this.submit(); // Submit after storing
+            } else {
+                alert(data.message || 'Failed to add customer');
+            }
+
+        } catch (err) {
+            console.error('Error adding customer:', err);
+            alert('Network error while adding customer');
         }
-
-      } catch (err) {
-        console.error('Error adding customer:', err);
-        alert('Network error while adding customer');
-      }
+    } else {
+        // Store the existing customer details too
+        localStorage.setItem('selected_customer', JSON.stringify({
+            name: existing.name,
+            place: existing.address,
+            phone: existing.phone
+        }));
     }
-  });
+});
+
 </script>
 
 </body>

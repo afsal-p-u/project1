@@ -2,19 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Dashboard Overview</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #6477b3 0%, #3b82f6 100%);
             min-height: 100vh;
             padding: 20px;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
         }
 
         .container {
@@ -42,7 +45,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg  " viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
             opacity: 0.3;
         }
 
@@ -322,48 +325,48 @@
             border-collapse: collapse;
             min-width: 600px;
         }
-        
+
         th, td {
             padding: 12px 15px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
-        
+
         th {
             background-color: #f8f9fa;
             font-weight: bold;
             color: #495057;
             border-top: 2px solid #007bff;
         }
-        
+
         tr:hover {
             background-color: #f8f9fa;
         }
-        
+
         .customer-name {
             font-weight: bold;
             color: #333;
         }
-        
+
         .customer-phone {
             color: #666;
             font-size: 0.9em;
         }
-        
+
         .quantity {
             font-weight: bold;
             color: #28a745;
         }
-        
+
         .amount {
             font-weight: bold;
             color: #007bff;
         }
-        
+
         .order-date {
             color: #6c757d;
         }
-        
+
         .view-order-btn {
             background-color:#0056b3;
             color: white;
@@ -374,16 +377,16 @@
             font-size: 0.9em;
             white-space: nowrap;
         }
-        
+
         .view-order-btn:hover {
             background-color: #5294db;
         }
-        
+
         .actions {
             display: flex;
             gap: 8px;
         }
-        
+
         .action-btn {
             background: none;
             border: none;
@@ -397,8 +400,8 @@
             align-items: center;
             justify-content: center;
         }
-        
-        /* Modal Styles */
+
+        /* Enhanced Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -407,98 +410,162 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(5px);
-            animation: fadeIn 0.3s ease;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .modal-content {
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            margin: 5% auto;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(30, 64, 175, 0.3);
-            border: 2px solid #3b82f6;
-            width: 90%;
-            max-width: 800px;
-            max-height: 80vh;
-            overflow-y: auto;
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+            margin: 3% auto;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(30, 64, 175, 0.25);
+            border: 3px solid transparent;
+            background-clip: padding-box;
+            width: 95%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow: hidden;
             position: relative;
-            animation: slideUp 0.4s ease forwards;
+            animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            flex-direction: column;
         }
 
-        @keyframes slideUp {
-            from { transform: translateY(20px); }
-            to { transform: translateY(0); }
+        @keyframes modalSlideIn {
+            from { 
+                transform: translateY(-50px) scale(0.95);
+                opacity: 0;
+            }
+            to { 
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
+            border-radius: 20px;
+            padding: 3px;
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            z-index: -1;
         }
 
         .close-modal {
             position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 24px;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
             font-weight: bold;
             color: #1e40af;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
+            z-index: 10;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(59, 130, 246, 0.1);
         }
 
         .close-modal:hover {
             color: #ef4444;
-            transform: scale(1.1);
+            background: rgba(239, 68, 68, 0.1);
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            color: white;
+            padding: 25px 30px;
+            border-radius: 20px 20px 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="70" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
+            opacity: 0.6;
         }
 
         .modal-title {
-            color: #1e40af;
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #dbeafe;
-            padding-bottom: 10px;
-        }
-
-        .modal-customer-name {
-            color: #3b82f6;
+            color: white;
+            font-size: 24px;
             font-weight: 700;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         .order-info-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 15px;
+            gap: 25px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
         }
 
         .order-info-left, .order-info-right {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 12px;
         }
 
         .info-item {
             display: flex;
             align-items: center;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 12px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
         }
 
         .info-label {
-            font-weight: bold;
-            color: #555;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
             width: 120px;
             flex-shrink: 0;
+            font-size: 14px;
         }
 
         .info-value {
-            color: #333;
+            color: white;
             flex-grow: 1;
+            font-weight: 500;
         }
 
         .summary-stats {
             display: flex;
             justify-content: space-between;
-            background-color: #e9ecef;
-            padding: 10px 15px;
-            border-radius: 5px;
-            margin-top: 15px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 1;
         }
 
         .stat-item {
@@ -507,47 +574,79 @@
 
         .stat-label {
             font-size: 12px;
-            color: #666;
-            margin-bottom: 2px;
-            
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 5px;
+            font-weight: 500;
         }
 
         .stat-value {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: bold;
-            color: #333;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-body {
+            padding: 25px 30px;
+            flex: 1;
+            overflow: auto;
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+        }
+
+        .modal-table-container {
+            overflow: auto;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            background: white;
         }
 
         .order-items-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            min-width: 650px;
         }
 
         .order-items-table th {
-            background-color: #f8f9fa;
-            padding: 12px 8px;
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            padding: 15px 12px;
             text-align: left;
-            font-weight: bold;
-            border-bottom: 2px solid #dee2e6;
-            color: #555;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+            color: #1e40af;
+            font-size: 14px;
+            position: sticky;
+            top: 0;
+            z-index: 2;
         }
 
         .order-items-table td {
-            padding: 12px 8px;
-            border-bottom: 1px solid #dee2e6;
-            color: #333;
+            padding: 15px 12px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #374151;
+            font-size: 14px;
         }
 
         .order-items-table tr:hover {
-            background-color: #f8f9fa;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
         }
 
-        .text-right {
+        .order-items-table th:nth-child(3),
+        .order-items-table td:nth-child(3) {
             text-align: right;
         }
 
-        .text-center {
+        .order-items-table th:nth-child(4),
+        .order-items-table td:nth-child(4) {
+            text-align: center;
+        }
+
+        .order-items-table th:nth-child(5),
+        .order-items-table td:nth-child(5) {
+            text-align: right;
+        }
+
+        .order-items-table th:nth-child(6),
+        .order-items-table td:nth-child(6) {
             text-align: center;
         }
 
@@ -555,96 +654,126 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 5px;
+            gap: 8px;
+            min-width: 120px;
         }
 
         .quantity-btn {
-            width: 25px;
-            height: 25px;
-            border: 1px solid #ccc;
-            background-color: #f8f9fa;
+            width: 28px;
+            height: 28px;
+            border: 2px solid #3b82f6;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            border-radius: 3px;
+            border-radius: 6px;
             font-size: 14px;
+            transition: all 0.2s ease;
         }
 
         .quantity-btn:hover {
-            background-color: #e9ecef;
-            border-color: #007bff;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            transform: scale(1.05);
         }
 
         .quantity-btn:disabled {
-            background-color: #e9ecef;
-            color: #6c757d;
+            background: #f1f5f9;
+            color: #9ca3af;
             cursor: not-allowed;
-            border-color: #dee2e6;
+            border-color: #e5e7eb;
+            transform: none;
         }
 
-        .quantity-input {
-            width: 50px;
+        .quantity-value {
+            font-weight: 600;
+            color: #1e40af;
+            min-width: 25px;
             text-align: center;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-            padding: 4px;
-            font-size: 14px;
         }
 
         .modal-footer {
-            padding: 20px;
-            border-top: 1px solid #dee2e6;
-            background-color: #f8f9fa;
-            border-radius: 0 0 8px 8px;
+            padding: 25px 30px;
+            border-top: 1px solid #e5e7eb;
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+            border-radius: 0 0 20px 20px;
         }
 
         .total-section {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            border-radius: 12px;
+            color: white;
         }
 
         .total-amount {
             font-size: 24px;
             font-weight: bold;
-            color: #28a745;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         .footer-buttons {
             display: flex;
-            gap: 10px;
+            gap: 15px;
             justify-content: flex-end;
         }
 
         .btn {
-            padding: 8px 16px;
+            padding: 12px 24px;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 14px;
-            font-weight: bold;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         .btn-primary {
-            background-color: #007bff;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
             color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
         }
 
         .btn-secondary {
-            background-color: #6c757d;
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
             color: white;
+            box-shadow: 0 4px 15px rgba(107, 114, 128, 0.3);
         }
 
-        .btn-danger {
-            background-color: #dc3545;
-            color: white;
-        }
-
-        .btn:hover {
-            opacity: 0.9;
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(107, 114, 128, 0.4);
         }
 
         .logout-button {
@@ -759,12 +888,13 @@
             }
 
             .modal-content {
-                margin: 5% auto;
-                padding: 30px;
+                margin: 3% auto;
+                padding: 0;
+                width: 90%;
             }
 
             .modal-title {
-                font-size: 24px;
+                font-size: 26px;
             }
 
             .order-items-table {
@@ -772,10 +902,11 @@
             }
 
             .total-amount {
-                font-size: 18px;
+                font-size: 26px;
             }
         }
 
+        /* Mobile Optimizations */
         @media (max-width: 767px) {
             .header {
                 padding: 15px;
@@ -828,8 +959,9 @@
             }
 
             .view-order-btn {
-                padding: 6px 10px;
-                font-size: 12px;
+                padding: 12px 15px;
+                font-size: 13px;
+                min-width: 100px;
             }
 
             .actions {
@@ -837,29 +969,67 @@
             }
 
             .action-btn {
-                width: 28px;
-                height: 28px;
-                font-size: 1em;
+                width: 34px;
+                height: 34px;
+                font-size: 16px;
             }
 
             .modal-content {
-                margin: 10% auto;
-                padding: 15px;
+                width: 98%;
+                margin: 2% auto;
+                max-height: 95vh;
+                height: auto;
+            }
+
+            .modal-header {
+                padding: 20px;
+            }
+
+            .modal-title {
+                font-size: 20px;
             }
 
             .order-info-grid {
                 grid-template-columns: 1fr;
-                gap: 10px;
+                gap: 15px;
             }
 
             .summary-stats {
                 flex-direction: column;
-                gap: 10px;
+                gap: 15px;
+            }
+
+            .modal-body {
+                padding: 20px;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
             }
 
             .order-items-table th,
             .order-items-table td {
-                padding: 8px 4px;
+                padding: 12px 8px;
+                font-size: 13px;
+            }
+
+            .modal-footer {
+                padding: 20px;
+            }
+
+            .footer-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .btn {
+                width: 100%;
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+            
+            /* Ensure SLNO column is visible in mobile view */
+            .order-items-table th:nth-child(1),
+            .order-items-table td:nth-child(1) {
+                display: table-cell;
             }
         }
 
@@ -918,42 +1088,29 @@
             }
 
             .view-order-btn {
-                padding: 5px 8px;
-                font-size: 11px;
+                padding: 8px 10px;
+                font-size: 12px;
             }
 
-            .modal-content {
-                width: 95%;
-                margin: 5% auto;
+            /* Show SLNO column in mobile view */
+            th:nth-child(1),
+            td:nth-child(1) {
+                display: table-cell;
             }
-
-            .modal-title {
-                font-size: 18px;
-            }
-
-            .info-label {
-                width: 100px;
+            
+            /* Hide less important columns in mobile view */
+            th:nth-child(4),
+            td:nth-child(4) {
+                display: none;
             }
         }
-  
 
-  
-
-        /* Fix QTY column alignment in modal */
-.order-items-table th.text-center {
-    text-align: center !important;
-}
-
-/* Also fix the Total column if needed */
-.order-items-table th:nth-child(5) {
-    text-align: right;
-}
         /* Quantity wrapper styles */
-       .quantity-wrapper {
-           display: flex;
-           align-items: center;
-           justify-content: flex-start; /* Change from flex-end to flex-start */
-           gap: 4px;
+        .quantity-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 4px;
         }
 
         .quantity {
@@ -961,17 +1118,19 @@
             color: #28a745;
             text-align: right;
             min-width: 40px;
-            
         }
 
         .unit-label {
             color: #6c757d;
             font-size: 0.9em;
         }
- 
-        /* Added style for delete button in modal */
+
+        /* Delete button in modal */
         .modal .action-btn.delete-btn {
-          
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             background: none;
             border: none;
             cursor: pointer;
@@ -980,95 +1139,19 @@
             border-radius: 4px;
             width: 32px;
             height: 32px;
-           
-            align-items: center;
-            justify-content: left;
         }
 
         .modal .action-btn.delete-btn:hover {
             background-color: rgba(220, 53, 69, 0.1);
         }
 
-
+        .rupee:before {
+            content: "₹";
+            margin-right: 2px;
+        }
         /*  */
 
-                .order-items-table {
-            width: 100%;
-            border-collapse: collapse;
-            table-layout: fixed; /* Important for consistent column widths */
-        }
-
-        .order-items-table th,
-        .order-items-table td {
-            padding: 10px;
-            text-align: center;
-            vertical-align: middle;
-            box-sizing: border-box;
-        }
-
-        /* Specific column widths */
-        .order-items-table th:nth-child(1),
-        .order-items-table td:nth-child(1) { /* SL No */
-            width: 8%;
-        }
-
-        .order-items-table th:nth-child(2),
-        .order-items-table td:nth-child(2) { /* Item Name */
-            width: 25%;
-        }
-
-        .order-items-table th:nth-child(3),
-        .order-items-table td:nth-child(3) { /* Price */
-            width: 15%;
-        }
-
-        .order-items-table th:nth-child(4),
-        .order-items-table td:nth-child(4) { /* QTY */
-            width: 20%;
-        }
-
-        /* Align Total to right but match layout */
-        .order-items-table th:nth-child(5),
-        .order-items-table td:nth-child(5) {
-            width: 17%;
-            text-align: right;
-            padding-right: 15px;
-        }
-
-        /* Center Action icon with proper width */
-        .order-items-table th:nth-child(6),
-        .order-items-table td:nth-child(6) {
-            width: 15%;
-            text-align: center;
-        }
-
-        .order-items-table td:nth-child(6) img {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-        }
-     
-/* Style for the delete button in modal */
-.modal .action-btn.delete-btn {
-    margin: 0 auto; /* Center the button horizontally */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1.1em;
-    padding: 5px;
-    border-radius: 4px;
-    width: 32px;
-    height: 32px;
-}
- .rupee:before {
-  content: "₹";
-  margin-right: 2px;
-}
-                
+        
     </style>
 </head>
 <body>
@@ -1115,7 +1198,7 @@
                 <div class="search-bar ">
                     <input type="text" id="searchInput" placeholder=" Search by Customer Name or Phone Number">
                 </div>
-                
+
                 <div class="add-btn-container">
                     <a href="{% url 'neworder' %}" class="add-btn">+ Add</a>
                 </div>
@@ -1131,7 +1214,6 @@
                             <th>Phone Number</th>
                             <th>Total Quantity</th>
                             <th>Amount</th>
-                            
                             <th>View Order</th>
                             <th>Actions</th>
                         </tr>
@@ -1139,7 +1221,7 @@
                     <tbody id="orderTableBody">
                         <!-- Data will be populated by JavaScript -->
                     </tbody>
-                </table>        
+                </table>
             </div>
         </div>
     </div>
@@ -1147,10 +1229,11 @@
     <!-- Order History Modal -->
 <div id="orderHistoryModal" class="modal">
     <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        
         <div class="modal-header">
-            <span class="close-modal">&times;</span>
             <h2 class="modal-title">Order Details</h2>
-            
+
             <div class="order-info-grid">
                 <div class="order-info-left">
                     <div class="info-item">
@@ -1170,7 +1253,7 @@
                         <span class="info-value" id="modalPlace">Downtown Store</span>
                     </div>
                 </div>
-                
+
                 <div class="order-info-right">
                     <div class="info-item">
                         <span class="info-label">Created By:</span>
@@ -1182,71 +1265,72 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="summary-stats">
                 <div class="stat-item">
-                    <div class="stat-label">Item Total</div>
-                    <div class="stat-value" id="modalItemTotal">41</div>
+                    <div class="stat-label">Item Types</div>
+                    <div class="stat-value" id="modalItemTotal">4</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-label">Item Count</div>
+                    <div class="stat-label">Total Items</div>
                     <div class="stat-value" id="modalItemCount">14</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-label">Bill Total</div>
-                    <div class="stat-value rupee" id="modalBillTotal">62</div>
+                    <div class="stat-value rupee" id="modalBillTotal">59.00</div>
                 </div>
             </div>
         </div>
-        
+
         <div class="modal-body">
-            <table class="order-items-table">
-                <thead>
-                    <tr>
-                        <th class="text-center">SL No</th>
-                        <th>Item Name</th>
-                        <th class="text-right">Price</th>
-                        <th class="text-center">QTY</th>
-                        <th class="text-right">Total</th>
-                        <th class="text-right">Action</th>
-                    </tr>
-                </thead>
-                <tbody id="modalOrderItemsList">
-                    <!-- Items will be populated here -->
-                </tbody>
-            </table>
+            <div class="modal-table-container">
+                <table class="order-items-table">
+                    <thead>
+                        <tr>
+                            <th class="text-center">SL No</th>
+                            <th>Item Name</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="modalOrderItemsList">
+                        <!-- Items will be populated here -->
+                    </tbody>
+                </table>
+            </div>
         </div>
-        
+
         <div class="modal-footer">
-                <div class="total-section">
-            <span style="font-size: 18px; font-weight: bold;">Grand Total:</span>
-            <span class="total-amount rupee" id="modalGrandTotal">62.36</span>
-        </div>
+            <div class="total-section">
+                <span style="font-size: 20px; font-weight: 600;">Grand Total:</span>
+                <span class="total-amount rupee" id="modalGrandTotal">59.00</span>
+            </div>
             <div class="footer-buttons">
                 <button class="btn btn-primary" id="updateOrderBtn">Update Order</button>
-                <button class="btn btn-primary" onclick="closeModal()">Close</button>
+                <button class="btn btn-secondary" onclick="closeModal()">Close</button>
             </div>
         </div>
     </div>
 </div>
 
     <script>
-
-                function formatPrice(price) {
-            // If the price is a whole number, display without decimals
-            // Otherwise, display with 2 decimal places
-            return price % 1 === 0 ? price.toString() : price.toFixed(2);
+        function formatPrice(price) {
+            const num = typeof price === 'string' ? parseFloat(price) : price;
+            return num.toFixed(2); // Always show 2 decimal places
         }
+
         const userId = localStorage.getItem('user_id');
         const clientId = localStorage.getItem('client_id');
-        let currentOrderId = null; // To track which order is currently being viewed
-        let currentOrderDetails = null; // To store the current order details
-        let currentOrder = null; 
+        let currentOrderId = null;
+        let currentOrderDetails = null;
+        let currentOrder = null;
 
         const logoutButton = document.getElementById("logout-btn");
         logoutButton.addEventListener("click", () => {
             const confirmed = confirm("Are you sure you want to logout?");
-            
+
             if (confirmed) {
                 localStorage.removeItem("access_token")
                 localStorage.removeItem("user_id")
@@ -1264,7 +1348,6 @@
             userInfoText.textContent = "User not logged in";
         }
 
-        // Auto-update current date
         function updateCurrentDate() {
             const now = new Date();
             const todayISO = now.toISOString().split('T')[0];
@@ -1272,7 +1355,6 @@
             document.getElementById('toDate').value = todayISO;
         }
 
-        // Order data
         const orderData = [
             {
                 id: 1,
@@ -1321,22 +1403,27 @@
             }
         ];
 
-        // Function to populate the table
+        const modalItems = [
+            { id: 1, name: 'Burger Deluxe', price: 12.00, quantity: 2, total: 24.00 },
+            { id: 2, name: 'French Fries', price: 4.00, quantity: 2, total: 8.00 },
+            { id: 3, name: 'Coke', price: 2.90, quantity: 9, total: 26.10 },
+            { id: 4, name: 'Ice Cream', price: 3.00, quantity: 1, total: 3.00 }
+        ];
+
         function populateTable() {
             const tableBody = document.getElementById('orderTableBody');
-            tableBody.innerHTML = ''; // Clear existing content
-            
+            tableBody.innerHTML = '';
+
             orderData.forEach((order, index) => {
                 const row = document.createElement('tr');
                 row.setAttribute('data-id', order.id);
-                
-                // Convert DD/MM/YYYY to YYYY-MM-DD for date filtering
+
                 const dateParts = order.orderDate.split('/');
                 const isoDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
                 row.setAttribute('data-date', isoDate);
-                
+
                const formattedAmount = formatPrice(order.amount);
-                
+
                 row.innerHTML = `
                     <td>${order.serialNo}</td>
                     <td><span class="order-date">${order.orderDate}</span></td>
@@ -1351,8 +1438,8 @@
                         </div>
                     </td>
 
-                  <td><span class="amount">${formattedAmount}</span></td>
-                    
+                  <td><span class="amount rupee">${formattedAmount}</span></td>
+
                     <td>
                         <button class="view-order-btn" onclick="viewOrder(${order.id})">
                             Show Items
@@ -1368,73 +1455,65 @@
             });
         }
 
-        
-        // Search functionality by customer name or phone number
+
         function setupSearch() {
             document.getElementById('searchInput').addEventListener('input', function () {
                 const filter = this.value.toLowerCase();
                 const rows = document.querySelectorAll('#orderTableBody tr');
-                
+
                 rows.forEach(row => {
                     const customerName = row.querySelector('.customer-name').textContent.toLowerCase();
                     const phoneNumber = row.querySelector('.customer-phone').textContent.toLowerCase();
                     const rowText = customerName + ' ' + phoneNumber;
-                    
+
                     row.style.display = rowText.includes(filter) ? '' : 'none';
                 });
             });
         }
 
-        // Date range filter functionality
         function applyDateRangeFilter() {
             const fromDate = document.getElementById('fromDate').value;
             const toDate = document.getElementById('toDate').value;
-            
+
             if (fromDate && toDate) {
                 const fromDateObj = new Date(fromDate);
                 const toDateObj = new Date(toDate);
-                
-                // Validate date range
+
                 if (fromDateObj > toDateObj) {
                     alert('From Date cannot be after To Date');
                     return;
                 }
-                
-                // Filter table rows based on date range
+
                 filterTableByDateRange(fromDate, toDate);
             } else {
-                // Show all rows if no date range selected
                 const rows = document.querySelectorAll('#orderTableBody tr');
                 rows.forEach(row => {
                     row.style.display = '';
                 });
             }
         }
-        
+
         function clearDateRangeFilter() {
             document.getElementById('fromDate').value = '';
             document.getElementById('toDate').value = '';
-            
-            // Reset to current date
+
             updateCurrentDate();
-            
-            // Show all rows
+
             const rows = document.querySelectorAll('#orderTableBody tr');
             rows.forEach(row => {
                 row.style.display = '';
             });
         }
-        
-        // Function to filter table by date range
+
         function filterTableByDateRange(fromDate, toDate) {
             const fromDateObj = new Date(fromDate);
             const toDateObj = new Date(toDate);
-            
+
             const rows = document.querySelectorAll('#orderTableBody tr');
             rows.forEach(row => {
                 const rowDate = row.getAttribute('data-date');
                 const rowDateObj = new Date(rowDate);
-                
+
                 if (rowDateObj >= fromDateObj && rowDateObj <= toDateObj) {
                     row.style.display = '';
                 } else {
@@ -1443,19 +1522,16 @@
             });
         }
 
-        // Delete entry function
         function deleteEntry(id) {
             if (confirm(`Are you sure you want to delete entry #${id}?`)) {
                 const row = document.querySelector(`tr[data-id="${id}"]`);
                 row.remove();
-                
-                // Remove from orderData array
+
                 const orderIndex = orderData.findIndex(order => order.id === id);
                 if (orderIndex !== -1) {
                     orderData.splice(orderIndex, 1);
                 }
-                
-                // Reorder serial numbers
+
                 const tableBody = document.getElementById('orderTableBody');
                 const rows = tableBody.querySelectorAll('tr');
                 rows.forEach((row, index) => {
@@ -1465,16 +1541,14 @@
             }
         }
 
-        // View Order functionality
         function viewOrder(orderId) {
             const modal = document.getElementById('orderHistoryModal');
             const order = orderData.find(o => o.id === orderId);
-            
+
             if (!order) return;
-            
-            currentOrderId = orderId; // Set the current order ID
-            currentOrder   = order; 
-            // Sample order details - in a real app, you would fetch this from your backend
+
+            currentOrderId = orderId;
+            currentOrder   = order;
             currentOrderDetails = {
                 orderId: `ORD-${new Date().getFullYear()}-${String(orderId).padStart(3, '0')}`,
                 orderDate: order.orderDate,
@@ -1482,36 +1556,28 @@
                 place: "Main Branch",
                 createdBy: "Admin User",
                 createdOn: `${order.orderDate} ${new Date().getHours()}:${String(new Date().getMinutes()).padStart(2, '0')}`,
-                items: [
-                    { id: 1, name: 'Burger Deluxe', price: 12, quantity: 2, total: 25 },
-                    { id: 2, name: 'French Fries', price: 400, quantity: 2, total: 9 },
-                    { id: 3, name: 'Coke', price: 29, quantity: 9, total: 22 },
-                    { id: 4, name: 'Ice Cream', price: 3, quantity: 1, total: 3}
-                ]
+                items: JSON.parse(JSON.stringify(modalItems)) // Deep copy
             };
-            
-            // Populate modal with order details
+
             document.getElementById('modalOrderId').textContent = currentOrderDetails.orderId;
             document.getElementById('modalOrderDate').textContent = currentOrderDetails.orderDate;
             document.getElementById('modalCustomerName').textContent = currentOrderDetails.customerName;
             document.getElementById('modalPlace').textContent = currentOrderDetails.place;
             document.getElementById('modalCreatedBy').textContent = currentOrderDetails.createdBy;
             document.getElementById('modalCreatedOn').textContent = currentOrderDetails.createdOn;
-            
-            // Calculate and display totals
+
             updateOrderTotals();
-            
-            // Populate order items table
+
             const itemsList = document.getElementById('modalOrderItemsList');
             itemsList.innerHTML = '';
-            
+
             currentOrderDetails.items.forEach((item, index) => {
                 const row = document.createElement('tr');
                 row.setAttribute('data-item-id', item.id);
                 row.innerHTML = `
                     <td class="text-center">${index + 1}</td>
                     <td>${item.name}</td>
-                  <td class="text-right">${formatPrice(item.price)}</td>
+                    <td class="text-right rupee">${formatPrice(item.price)}</td>
                     <td class="text-center">
                         <div class="quantity-control">
                             <button class="quantity-btn" onclick="decreaseQuantity(${index})" ${item.quantity <= 1 ? 'disabled' : ''}>-</button>
@@ -1519,183 +1585,167 @@
                             <button class="quantity-btn" onclick="increaseQuantity(${index})">+</button>
                         </div>
                     </td>
-                    <td class="text-right">${formatPrice(item.total)}</td>
+                    <td class="text-right rupee">${formatPrice(item.total)}</td>
                     <td class="text-right">
                         <button class="action-btn delete-btn" onclick="deleteOrderItem(${index})" title="Delete Item">🗑️</button>
                     </td>
                 `;
                 itemsList.appendChild(row);
             });
-            
-            // Show the modal
+
             modal.style.display = 'block';
         }
 
-        // Function to update order totals in the modal
         function updateOrderTotals() {
             if (!currentOrderDetails) return;
-            
+
             const itemTotal = currentOrderDetails.items.length;
             const itemCount = currentOrderDetails.items.reduce((sum, item) => sum + item.quantity, 0);
             const billTotal = currentOrderDetails.items.reduce((sum, item) => sum + item.total, 0);
-            
+
             document.getElementById('modalItemTotal').textContent = itemTotal;
             document.getElementById('modalItemCount').textContent = itemCount;
             document.getElementById('modalBillTotal').textContent = formatPrice(billTotal);
             document.getElementById('modalGrandTotal').textContent = formatPrice(billTotal);
         }
 
-        // Function to delete an item from the current order
         function deleteOrderItem(itemIndex) {
             if (currentOrderDetails && confirm('Are you sure you want to delete this item?')) {
                 currentOrderDetails.items.splice(itemIndex, 1);
-                
-                // Re-render the items table
+
                 const itemsList = document.getElementById('modalOrderItemsList');
                 itemsList.innerHTML = '';
-                
-             currentOrderDetails.items.forEach((item, index) => {
-    const row = document.createElement('tr');
-    row.setAttribute('data-item-id', item.id);
-    row.innerHTML = `
-        <td class="text-center">${index + 1}</td>
-        <td>${item.name}</td>
-      <td class="text-right">${formatPrice(item.price)}</td>
-        <td class="text-center">
-            <div class="quantity-control">
-                <button class="quantity-btn" onclick="decreaseQuantity(${index})" ${item.quantity <= 1 ? 'disabled' : ''}>-</button>
-                <span class="quantity-value">${item.quantity}</span>
-                <button class="quantity-btn" onclick="increaseQuantity(${index})">+</button>
-            </div>
-        </td>
-        <td class="text-right">${formatPrice(item.total)}</td>
-        <td class="text-right">
-            <button class="action-btn delete-btn" onclick="deleteOrderItem(${index})" title="Delete Item">🗑️</button>
-        </td>
-    `;
-    itemsList.appendChild(row);
-});
-                
-                // Update the totals
+
+                currentOrderDetails.items.forEach((item, index) => {
+                    const row = document.createElement('tr');
+                    row.setAttribute('data-item-id', item.id);
+                    row.innerHTML = `
+                        <td class="text-center">${index + 1}</td>
+                        <td>${item.name}</td>
+                        <td class="text-right rupee">${formatPrice(item.price)}</td>
+                        <td class="text-center">
+                            <div class="quantity-control">
+                                <button class="quantity-btn" onclick="decreaseQuantity(${index})" ${item.quantity <= 1 ? 'disabled' : ''}>-</button>
+                                <span class="quantity-value">${item.quantity}</span>
+                                <button class="quantity-btn" onclick="increaseQuantity(${index})">+</button>
+                            </div>
+                        </td>
+                        <td class="text-right rupee">${formatPrice(item.total)}</td>
+                        <td class="text-right">
+                            <button class="action-btn delete-btn" onclick="deleteOrderItem(${index})" title="Delete Item">🗑️</button>
+                        </td>
+                    `;
+                    itemsList.appendChild(row);
+                });
+
                 updateOrderTotals();
             }
         }
 
-        // Function to update  the current order from the modal
-      function updateOrder() {
-    if (!currentOrder || !currentOrderDetails) return;
+        function updateOrder() {
+            if (!currentOrder || !currentOrderDetails) return;
 
-    const newQuantity = currentOrderDetails.items.reduce((sum, i) => sum + i.quantity, 0);
-    const newAmount   = currentOrderDetails.items.reduce((sum, i) => sum + i.total, 0);
+            const newQuantity = currentOrderDetails.items.reduce((sum, i) => sum + i.quantity, 0);
+            const newAmount   = currentOrderDetails.items.reduce((sum, i) => sum + i.total, 0);
 
-    currentOrder.quantity = newQuantity;
-    currentOrder.amount   = newAmount;
+            currentOrder.quantity = newQuantity;
+            currentOrder.amount   = newAmount;
 
-    const row = document.querySelector(`tr[data-id="${currentOrderId}"]`);
-    if (row) {
-        row.querySelector('.quantity').textContent = newQuantity;
-        row.querySelector('.amount').textContent   = formatPrice(newAmount);
-    }
+            const row = document.querySelector(`tr[data-id="${currentOrderId}"]`);
+            if (row) {
+                row.querySelector('.quantity').textContent = newQuantity;
+                row.querySelector('.amount').textContent   = formatPrice(newAmount);
+                row.querySelector('.amount').className = 'amount rupee';
+            }
 
-    alert('Order updated successfully!');
-    closeModal();
-}
+            alert('Order updated successfully!');
+            closeModal();
+        }
 
-        // Quantity adjustment functions
         function increaseQuantity(itemIndex) {
             if (!currentOrderDetails || itemIndex >= currentOrderDetails.items.length) return;
-            
+
             const item = currentOrderDetails.items[itemIndex];
             item.quantity += 1;
             item.total = item.price * item.quantity;
-            
-            // Update the quantity display
+
             const quantityElement = document.querySelectorAll('.quantity-value')[itemIndex];
             quantityElement.textContent = item.quantity;
-            
-            // Update the total display
+
             const totalElement = document.querySelectorAll('.order-items-table tr')[itemIndex + 1].querySelector('td:nth-child(5)');
-           totalElement.textContent = formatPrice(item.total);
-            
-            // Enable/disable minus button
+            totalElement.innerHTML = `<span class="rupee">${formatPrice(item.total)}</span>`;
+
             document.querySelectorAll('.quantity-btn')[itemIndex * 2].disabled = item.quantity <= 1;
-            
-            // Update the summary stats
+
             updateOrderTotals();
         }
 
         function decreaseQuantity(itemIndex) {
             if (!currentOrderDetails || itemIndex >= currentOrderDetails.items.length) return;
-            
+
             const item = currentOrderDetails.items[itemIndex];
             if (item.quantity > 1) {
                 item.quantity -= 1;
                 item.total = item.price * item.quantity;
-                
-                // Update the quantity display
+
                 const quantityElement = document.querySelectorAll('.quantity-value')[itemIndex];
                 quantityElement.textContent = item.quantity;
-                
-                // Update the total display
+
                 const totalElement = document.querySelectorAll('.order-items-table tr')[itemIndex + 1].querySelector('td:nth-child(5)');
-                totalElement.textContent = `${formatPrice(item.total)}`;
-                
-                // Disable minus button if quantity is 1
+                totalElement.innerHTML = `<span class="rupee">${formatPrice(item.total)}</span>`;
+
                 document.querySelectorAll('.quantity-btn')[itemIndex * 2].disabled = item.quantity <= 1;
-                
-                // Update the summary stats
+
                 updateOrderTotals();
             }
         }
 
-        // Close modal function
         function closeModal() {
             document.getElementById('orderHistoryModal').style.display = 'none';
-            currentOrderId = null; // Reset current order ID
-            currentOrderDetails = null; // Reset current order details
+            currentOrderId = null;
+            currentOrderDetails = null;
         }
 
-        // Initialize the page
         document.addEventListener('DOMContentLoaded', function () {
-            // Update date when page loads
             updateCurrentDate();
-            
-            // Populate the table with data
             populateTable();
-            
-            // Setup search functionality
             setupSearch();
-            
-            // Update date every minute (optional - in case page stays open overnight)
             setInterval(updateCurrentDate, 60000);
-            
-            // Setup modal close functionality
+
             const modal = document.getElementById('orderHistoryModal');
             const closeBtn = document.querySelector('.close-modal');
-            
+
             if (closeBtn) {
                 closeBtn.onclick = function() {
                     modal.style.display = 'none';
                 }
             }
-            
-            // Close modal when clicking outside of it
+
             window.onclick = function(event) {
                 if (event.target == modal) {
                     modal.style.display = 'none';
                 }
             }
-            
-            // Close modal with Escape key
+
             document.addEventListener('keydown', function(event) {
                 if (event.key === 'Escape') {
                     closeModal();
                 }
             });
-            
-            // Setup delete order button
-         document.getElementById('updateOrderBtn').addEventListener('click', updateOrder);
 
+            document.getElementById('updateOrderBtn').addEventListener('click', updateOrder);
+
+            // Mobile layout handler
+            function handleMobileLayout() {
+                if (window.innerWidth <= 767) {
+                    document.body.classList.add('mobile-view');
+                } else {
+                    document.body.classList.remove('mobile-view');
+                }
+            }
+
+            window.addEventListener('load', handleMobileLayout);
+            window.addEventListener('resize', handleMobileLayout);
         });
     </script>
 </body>
