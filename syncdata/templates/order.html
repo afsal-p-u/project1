@@ -729,7 +729,7 @@
                     <div class="product-name">${escapeHtml(product.name || '')}</div>
                     <div class="product-description">${escapeHtml(description)}</div>
                     <div class="product-specs">Code: ${escapeHtml(product.code || '')}</div>
-                    <div class="product-price">₹${product.price ? product.price.toLocaleString() : product.mrp ? product.mrp.toLocaleString() : '0'}</div>
+                   <div class="product-price">₹${(product.batch?.salesprice ?? product.batch?.bmrp ?? 0).toLocaleString()}</div>
                     <div class="in-cart-quantity" id="in-cart-${product.code}" 
                         style="${cartQuantities[product.code] > 0 ? '' : 'display: none;'}">
                         In cart: ${cartQuantities[product.code]}

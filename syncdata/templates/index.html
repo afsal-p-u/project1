@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>Dashboard Overview</title>
     <style>
-        * {
+              * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -13,7 +13,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #6477b3 0%, #3b82f6 100%);
+    background: linear-gradient(135deg, #f5f3ff 0%, #ddd6fe 100%);
             min-height: 100vh;
             padding: 20px;
             -webkit-tap-highlight-color: transparent;
@@ -326,21 +326,26 @@
             min-width: 600px;
         }
 
-        th, td {
-            padding: 12px 15px;
+            th, td {
+            padding: 14px 16px;
             text-align: left;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
         }
-
         th {
-            background-color: #f8f9fa;
-            font-weight: bold;
-            color: #495057;
-            border-top: 2px solid #007bff;
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            color: white;
+            font-weight: 600;
+            border-top: none;
+            position: sticky;
+            top: 0;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
         }
-
         tr:hover {
-            background-color: #f8f9fa;
+            background-color: rgba(37, 99, 235, 0.05);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
         }
 
         .customer-name {
@@ -487,15 +492,13 @@
             background: rgba(239, 68, 68, 0.1);
             transform: rotate(90deg) scale(1.1);
         }
-
-        .modal-header {
-            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
-            color: white;
-            padding: 25px 30px;
-            border-radius: 20px 20px 0 0;
-            position: relative;
-            overflow: hidden;
-        }
+.modal-header {
+    background:#4682b4; /* Your chosen base color */
+    padding: 25px 30px;
+    border-radius: 16px 16px 0 0;
+    color: #4c1d95; /* Deep purple text for contrast */
+    border-bottom: 1px solid #c4b5fd; /* Slightly darker lavender border */
+}
 
         .modal-header::before {
             content: '';
@@ -1150,6 +1153,20 @@
             margin-right: 2px;
         }
         /*  */
+        /* Add this to your existing CSS */
+        #orderTable th:nth-child(3),
+        #orderTable td:nth-child(3) {
+            text-align: left;
+            min-width: 180px; /* Adjust as needed */
+        }
+
+        .customer-name {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 180px; /* Should match min-width above */
+            display: inline-block;
+        }
 
         
     </style>
@@ -1219,7 +1236,7 @@
                         </tr>
                     </thead>
                     <tbody id="orderTableBody">
-                        <!-- Data will be populated by JavaScript -->
+                        <!-- Populated dynamically -->
                     </tbody>
                 </table>
             </div>
@@ -1227,127 +1244,128 @@
     </div>
 
     <!-- Order History Modal -->
-<div id="orderHistoryModal" class="modal">
-    <div class="modal-content">
-        <span class="close-modal">&times;</span>
-        
-        <div class="modal-header">
-            <h2 class="modal-title">Order Details</h2>
+    <div id="orderHistoryModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            
+            <div class="modal-header">
+                <h2 class="modal-title">Order Details</h2>
 
-            <div class="order-info-grid">
-                <div class="order-info-left">
-                    <div class="info-item">
-                        <span class="info-label">Order ID:</span>
-                        <span class="info-value" id="modalOrderId">ORD-2024-001</span>
+                <div class="order-info-grid">
+                    <div class="order-info-left">
+                        <div class="info-item">
+                            <span class="info-label">Order ID:</span>
+                            <span class="info-value" id="modalOrderId">ORD-2024-001</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Order Date:</span>
+                            <span class="info-value" id="modalOrderDate">2024-07-12</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Customer:</span>
+                            <span class="info-value" id="modalCustomerName">John Doe</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Place:</span>
+                            <span class="info-value" id="modalPlace">Downtown Store</span>
+                        </div>
                     </div>
-                    <div class="info-item">
-                        <span class="info-label">Order Date:</span>
-                        <span class="info-value" id="modalOrderDate">2024-07-12</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Customer:</span>
-                        <span class="info-value" id="modalCustomerName">John Doe</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Place:</span>
-                        <span class="info-value" id="modalPlace">Downtown Store</span>
+
+                    <div class="order-info-right">
+                        <div class="info-item">
+                            <span class="info-label">Created By:</span>
+                            <span class="info-value" id="modalCreatedBy">Admin User</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Created On:</span>
+                            <span class="info-value" id="modalCreatedOn">2024-07-12 10:30 AM</span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="order-info-right">
-                    <div class="info-item">
-                        <span class="info-label">Created By:</span>
-                        <span class="info-value" id="modalCreatedBy">Admin User</span>
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <div class="stat-label">Item Types</div>
+                        <div class="stat-value" id="modalItemTotal">4</div>
                     </div>
-                    <div class="info-item">
-                        <span class="info-label">Created On:</span>
-                        <span class="info-value" id="modalCreatedOn">2024-07-12 10:30 AM</span>
+                    <div class="stat-item">
+                        <div class="stat-label">Total Items</div>
+                        <div class="stat-value" id="modalItemCount">14</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Bill Total</div>
+                        <div class="stat-value rupee" id="modalBillTotal">59.00</div>
                     </div>
                 </div>
             </div>
 
-            <div class="summary-stats">
-                <div class="stat-item">
-                    <div class="stat-label">Item Types</div>
-                    <div class="stat-value" id="modalItemTotal">4</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-label">Total Items</div>
-                    <div class="stat-value" id="modalItemCount">14</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-label">Bill Total</div>
-                    <div class="stat-value rupee" id="modalBillTotal">59.00</div>
+            <div class="modal-body">
+                <div class="modal-table-container">
+                    <table class="order-items-table">
+                        <thead>
+                            <tr>
+                                <th class="text-center">SL No</th>
+                                <th>Item Name</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="modalOrderItemsList">
+                            <!-- Items will be populated here -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </div>
 
-        <div class="modal-body">
-            <div class="modal-table-container">
-                <table class="order-items-table">
-                    <thead>
-                        <tr>
-                            <th class="text-center">SL No</th>
-                            <th>Item Name</th>
-                            <th>Price</th>
-                            <th>Quantity</th>
-                            <th>Total</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="modalOrderItemsList">
-                        <!-- Items will be populated here -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="modal-footer">
-            <div class="total-section">
-                <span style="font-size: 20px; font-weight: 600;">Grand Total:</span>
-                <span class="total-amount rupee" id="modalGrandTotal">59.00</span>
-            </div>
-            <div class="footer-buttons">
-                <button class="btn btn-primary" id="updateOrderBtn">Update Order</button>
-                <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+            <div class="modal-footer">
+                <div class="total-section">
+                    <span style="font-size: 20px; font-weight: 600;">Grand Total:</span>
+                    <span class="total-amount rupee" id="modalGrandTotal">59.00</span>
+                </div>
+                <div class="footer-buttons">
+                    <button class="btn btn-primary" id="updateOrderBtn">Update Order</button>
+                    <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
     <script>
+        /* ========= utility ========= */
         function formatPrice(price) {
             const num = typeof price === 'string' ? parseFloat(price) : price;
-            return num.toFixed(2); // Always show 2 decimal places
+            return num.toFixed(2);
         }
 
-        const userId = localStorage.getItem('user_id');
-        const clientId = localStorage.getItem('client_id');
-        let currentOrderId = null;
-        let currentOrderDetails = null;
-        let currentOrder = null;
+        /* ========= live order list per customer ========= */
+        function getCustomerOrders() {
+            return JSON.parse(localStorage.getItem('orders_all') || '[]');
+        }
+        let orderData = getCustomerOrders();
 
+        /* ========= logout ========= */
         const logoutButton = document.getElementById("logout-btn");
         logoutButton.addEventListener("click", () => {
-            const confirmed = confirm("Are you sure you want to logout?");
-
-            if (confirmed) {
-                localStorage.removeItem("access_token")
-                localStorage.removeItem("user_id")
+            if (confirm("Are you sure you want to logout?")) {
+                localStorage.removeItem("access_token");
+                localStorage.removeItem("user_id");
                 localStorage.removeItem("client_id");
-
-                window.location.href = "/login"
+                window.location.href = "/login";
             }
-        })
+        });
 
         const userInfoText = document.getElementById('userInfoText');
-
+        const userId = localStorage.getItem('user_id');
+        const clientId = localStorage.getItem('client_id');
         if (userId && clientId) {
-            userInfoText.textContent = `ID: ${clientId} | USERID: ${userId}`
+            userInfoText.textContent = `ID: ${clientId} | USERID: ${userId}`;
         } else {
             userInfoText.textContent = "User not logged in";
         }
 
+        /* ========= date helpers ========= */
         function updateCurrentDate() {
             const now = new Date();
             const todayISO = now.toISOString().split('T')[0];
@@ -1355,61 +1373,7 @@
             document.getElementById('toDate').value = todayISO;
         }
 
-        const orderData = [
-            {
-                id: 1,
-                serialNo: "#001",
-                customer: "Acme Corp",
-                phone: "+1 (555) 123-4567",
-                quantity: 125,
-                amount: 2450.00,
-                orderDate: "15/10/2023"
-            },
-            {
-                id: 2,
-                serialNo: "#002",
-                customer: "NextTech",
-                phone: "+1 (555) 234-5678",
-                quantity: 210,
-                amount: 4725.00,
-                orderDate: "16/10/2023"
-            },
-            {
-                id: 3,
-                serialNo: "#003",
-                customer: "SpeedPro",
-                phone: "+1 (555) 345-6789",
-                quantity: 73,
-                amount: 1460.00,
-                orderDate: "17/10/2023"
-            },
-            {
-                id: 4,
-                serialNo: "#004",
-                customer: "TechSolutions",
-                phone: "+1 (555) 456-7890",
-                quantity: 89,
-                amount: 2240.00,
-                orderDate: "18/10/2023"
-            },
-            {
-                id: 5,
-                serialNo: "#005",
-                customer: "InnoWave",
-                phone: "+1 (555) 567-8901",
-                quantity: 134,
-                amount: 3350.00,
-                orderDate: "19/10/2023"
-            }
-        ];
-
-        const modalItems = [
-            { id: 1, name: 'Burger Deluxe', price: 12.00, quantity: 2, total: 24.00 },
-            { id: 2, name: 'French Fries', price: 4.00, quantity: 2, total: 8.00 },
-            { id: 3, name: 'Coke', price: 2.90, quantity: 9, total: 26.10 },
-            { id: 4, name: 'Ice Cream', price: 3.00, quantity: 1, total: 3.00 }
-        ];
-
+        /* ========= populate table ========= */
         function populateTable() {
             const tableBody = document.getElementById('orderTableBody');
             tableBody.innerHTML = '';
@@ -1417,12 +1381,8 @@
             orderData.forEach((order, index) => {
                 const row = document.createElement('tr');
                 row.setAttribute('data-id', order.id);
-
                 const dateParts = order.orderDate.split('/');
-                const isoDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
-                row.setAttribute('data-date', isoDate);
-
-               const formattedAmount = formatPrice(order.amount);
+                row.setAttribute('data-date', `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`);
 
                 row.innerHTML = `
                     <td>${order.serialNo}</td>
@@ -1437,11 +1397,9 @@
                             <span class="unit-label"></span>
                         </div>
                     </td>
-
-                  <td><span class="amount rupee">${formattedAmount}</span></td>
-
+                    <td><span class="amount rupee">${formatPrice(order.amount)}</span></td>
                     <td>
-                        <button class="view-order-btn" onclick="viewOrder(${order.id})">
+                        <button class="view-order-btn" onclick="viewOrder(${index})">
                             Show Items
                         </button>
                     </td>
@@ -1455,7 +1413,7 @@
             });
         }
 
-
+        /* ========= search ========= */
         function setupSearch() {
             document.getElementById('searchInput').addEventListener('input', function () {
                 const filter = this.value.toLowerCase();
@@ -1471,6 +1429,7 @@
             });
         }
 
+        /* ========= date filter ========= */
         function applyDateRangeFilter() {
             const fromDate = document.getElementById('fromDate').value;
             const toDate = document.getElementById('toDate').value;
@@ -1496,9 +1455,7 @@
         function clearDateRangeFilter() {
             document.getElementById('fromDate').value = '';
             document.getElementById('toDate').value = '';
-
             updateCurrentDate();
-
             const rows = document.querySelectorAll('#orderTableBody tr');
             rows.forEach(row => {
                 row.style.display = '';
@@ -1522,55 +1479,50 @@
             });
         }
 
-        function deleteEntry(id) {
-            if (confirm(`Are you sure you want to delete entry #${id}?`)) {
-                const row = document.querySelector(`tr[data-id="${id}"]`);
-                row.remove();
+        /* ========= delete order ========= */
+    function deleteEntry(id) {
+    if (confirm(`Are you sure you want to delete order #${id}?`)) {
+        // 1. read the global list
+        let orders = JSON.parse(localStorage.getItem('orders_all') || '[]');
+        // 2. remove the order
+        orders = orders.filter(o => o.id !== id);
+        // 3. write back
+        localStorage.setItem('orders_all', JSON.stringify(orders));
+        // 4. refresh screen
+        orderData = orders;
+        populateTable();
+    }
+}
 
-                const orderIndex = orderData.findIndex(order => order.id === id);
-                if (orderIndex !== -1) {
-                    orderData.splice(orderIndex, 1);
-                }
-
-                const tableBody = document.getElementById('orderTableBody');
-                const rows = tableBody.querySelectorAll('tr');
-                rows.forEach((row, index) => {
-                    const serialNo = `#${String(index + 1).padStart(3, '0')}`;
-                    row.cells[0].textContent = serialNo;
-                });
-            }
-        }
-
-        function viewOrder(orderId) {
-            const modal = document.getElementById('orderHistoryModal');
-            const order = orderData.find(o => o.id === orderId);
-
+        /* ========= view order modal ========= */
+        function viewOrder(orderIndex) {
+            const order = orderData[orderIndex];
             if (!order) return;
 
-            currentOrderId = orderId;
-            currentOrder   = order;
             currentOrderDetails = {
-                orderId: `ORD-${new Date().getFullYear()}-${String(orderId).padStart(3, '0')}`,
+                orderId: order.serialNo,
                 orderDate: order.orderDate,
                 customerName: order.customer,
-                place: "Main Branch",
-                createdBy: "Admin User",
+                place: '-',
+                createdBy: 'System',
                 createdOn: `${order.orderDate} ${new Date().getHours()}:${String(new Date().getMinutes()).padStart(2, '0')}`,
-                items: JSON.parse(JSON.stringify(modalItems)) // Deep copy
+                items: order.items
             };
 
-            document.getElementById('modalOrderId').textContent = currentOrderDetails.orderId;
+            /* header */
+            document.getElementById('modalOrderId').textContent   = currentOrderDetails.orderId;
             document.getElementById('modalOrderDate').textContent = currentOrderDetails.orderDate;
             document.getElementById('modalCustomerName').textContent = currentOrderDetails.customerName;
-            document.getElementById('modalPlace').textContent = currentOrderDetails.place;
+            document.getElementById('modalPlace').textContent  = currentOrderDetails.place;
             document.getElementById('modalCreatedBy').textContent = currentOrderDetails.createdBy;
             document.getElementById('modalCreatedOn').textContent = currentOrderDetails.createdOn;
 
+            /* totals */
             updateOrderTotals();
 
+            /* items */
             const itemsList = document.getElementById('modalOrderItemsList');
             itemsList.innerHTML = '';
-
             currentOrderDetails.items.forEach((item, index) => {
                 const row = document.createElement('tr');
                 row.setAttribute('data-item-id', item.id);
@@ -1593,12 +1545,12 @@
                 itemsList.appendChild(row);
             });
 
-            modal.style.display = 'block';
+            document.getElementById('orderHistoryModal').style.display = 'block';
         }
 
+        /* ========= modal totals & actions ========= */
         function updateOrderTotals() {
             if (!currentOrderDetails) return;
-
             const itemTotal = currentOrderDetails.items.length;
             const itemCount = currentOrderDetails.items.reduce((sum, item) => sum + item.quantity, 0);
             const billTotal = currentOrderDetails.items.reduce((sum, item) => sum + item.total, 0);
@@ -1610,142 +1562,93 @@
         }
 
         function deleteOrderItem(itemIndex) {
-            if (currentOrderDetails && confirm('Are you sure you want to delete this item?')) {
-                currentOrderDetails.items.splice(itemIndex, 1);
-
-                const itemsList = document.getElementById('modalOrderItemsList');
-                itemsList.innerHTML = '';
-
-                currentOrderDetails.items.forEach((item, index) => {
-                    const row = document.createElement('tr');
-                    row.setAttribute('data-item-id', item.id);
-                    row.innerHTML = `
-                        <td class="text-center">${index + 1}</td>
-                        <td>${item.name}</td>
-                        <td class="text-right rupee">${formatPrice(item.price)}</td>
-                        <td class="text-center">
-                            <div class="quantity-control">
-                                <button class="quantity-btn" onclick="decreaseQuantity(${index})" ${item.quantity <= 1 ? 'disabled' : ''}>-</button>
-                                <span class="quantity-value">${item.quantity}</span>
-                                <button class="quantity-btn" onclick="increaseQuantity(${index})">+</button>
-                            </div>
-                        </td>
-                        <td class="text-right rupee">${formatPrice(item.total)}</td>
-                        <td class="text-right">
-                            <button class="action-btn delete-btn" onclick="deleteOrderItem(${index})" title="Delete Item">🗑️</button>
-                        </td>
-                    `;
-                    itemsList.appendChild(row);
-                });
-
-                updateOrderTotals();
-            }
-        }
-
-        function updateOrder() {
-            if (!currentOrder || !currentOrderDetails) return;
-
-            const newQuantity = currentOrderDetails.items.reduce((sum, i) => sum + i.quantity, 0);
-            const newAmount   = currentOrderDetails.items.reduce((sum, i) => sum + i.total, 0);
-
-            currentOrder.quantity = newQuantity;
-            currentOrder.amount   = newAmount;
-
-            const row = document.querySelector(`tr[data-id="${currentOrderId}"]`);
-            if (row) {
-                row.querySelector('.quantity').textContent = newQuantity;
-                row.querySelector('.amount').textContent   = formatPrice(newAmount);
-                row.querySelector('.amount').className = 'amount rupee';
-            }
-
-            alert('Order updated successfully!');
-            closeModal();
+            if (!currentOrderDetails || !confirm('Are you sure you want to delete this item?')) return;
+            currentOrderDetails.items.splice(itemIndex, 1);
+            updateOrderTotals();
+            viewOrder(orderData.findIndex(o => o.serialNo === currentOrderDetails.orderId));
         }
 
         function increaseQuantity(itemIndex) {
-            if (!currentOrderDetails || itemIndex >= currentOrderDetails.items.length) return;
-
+            if (!currentOrderDetails) return;
             const item = currentOrderDetails.items[itemIndex];
             item.quantity += 1;
             item.total = item.price * item.quantity;
-
-            const quantityElement = document.querySelectorAll('.quantity-value')[itemIndex];
-            quantityElement.textContent = item.quantity;
-
-            const totalElement = document.querySelectorAll('.order-items-table tr')[itemIndex + 1].querySelector('td:nth-child(5)');
-            totalElement.innerHTML = `<span class="rupee">${formatPrice(item.total)}</span>`;
-
-            document.querySelectorAll('.quantity-btn')[itemIndex * 2].disabled = item.quantity <= 1;
-
             updateOrderTotals();
+            viewOrder(orderData.findIndex(o => o.serialNo === currentOrderDetails.orderId));
         }
 
         function decreaseQuantity(itemIndex) {
-            if (!currentOrderDetails || itemIndex >= currentOrderDetails.items.length) return;
-
+            if (!currentOrderDetails) return;
             const item = currentOrderDetails.items[itemIndex];
             if (item.quantity > 1) {
                 item.quantity -= 1;
                 item.total = item.price * item.quantity;
-
-                const quantityElement = document.querySelectorAll('.quantity-value')[itemIndex];
-                quantityElement.textContent = item.quantity;
-
-                const totalElement = document.querySelectorAll('.order-items-table tr')[itemIndex + 1].querySelector('td:nth-child(5)');
-                totalElement.innerHTML = `<span class="rupee">${formatPrice(item.total)}</span>`;
-
-                document.querySelectorAll('.quantity-btn')[itemIndex * 2].disabled = item.quantity <= 1;
-
                 updateOrderTotals();
+                viewOrder(orderData.findIndex(o => o.serialNo === currentOrderDetails.orderId));
             }
         }
+        /* =========  SAVE MODAL CHANGES ========= */
+function saveUpdatedOrder() {
+    const orderIndex = orderData.findIndex(o => o.serialNo === currentOrderDetails.orderId);
+    if (orderIndex === -1) return;
+
+    const newQuantity = currentOrderDetails.items.reduce((sum, i) => sum + i.quantity, 0);
+    const newAmount   = currentOrderDetails.items.reduce((sum, i) => sum + i.total, 0);
+
+    /* 1. update global list */
+    orderData[orderIndex] = {
+        ...orderData[orderIndex],
+        items   : [...currentOrderDetails.items],
+        quantity: newQuantity,
+        amount  : newAmount
+    };
+    localStorage.setItem('orders_all', JSON.stringify(orderData));
+    localStorage.setItem(
+    'cartData',
+    JSON.stringify({
+        [currentOrderDetails.customerName]: currentOrderDetails.items.reduce((acc, item) => {
+            acc[item.id] = item.quantity;   // id == product code
+            return acc;
+        }, {})
+    })
+);
+
+    /* 2. redraw table */
+    populateTable();
+
+    /* 3. close modal */
+    closeModal();
+    alert('Order updated successfully!');
+}
 
         function closeModal() {
             document.getElementById('orderHistoryModal').style.display = 'none';
-            currentOrderId = null;
-            currentOrderDetails = null;
         }
 
+        /* ========= init ========= */
         document.addEventListener('DOMContentLoaded', function () {
             updateCurrentDate();
+            orderData = getCustomerOrders();
             populateTable();
             setupSearch();
             setInterval(updateCurrentDate, 60000);
 
-            const modal = document.getElementById('orderHistoryModal');
-            const closeBtn = document.querySelector('.close-modal');
-
-            if (closeBtn) {
-                closeBtn.onclick = function() {
-                    modal.style.display = 'none';
-                }
-            }
-
-            window.onclick = function(event) {
-                if (event.target == modal) {
-                    modal.style.display = 'none';
-                }
-            }
-
-            document.addEventListener('keydown', function(event) {
-                if (event.key === 'Escape') {
-                    closeModal();
-                }
+            /* refresh on tab focus */
+            window.addEventListener('focus', () => {
+                orderData = getCustomerOrders();
+                populateTable();
             });
 
-            document.getElementById('updateOrderBtn').addEventListener('click', updateOrder);
+            /* modal close handlers */
+            const modal = document.getElementById('orderHistoryModal');
+            const closeBtn = document.querySelector('.close-modal');
+            if (closeBtn) closeBtn.onclick = closeModal;
+            window.onclick = e => { if (e.target === modal) closeModal(); };
+            document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-            // Mobile layout handler
-            function handleMobileLayout() {
-                if (window.innerWidth <= 767) {
-                    document.body.classList.add('mobile-view');
-                } else {
-                    document.body.classList.remove('mobile-view');
-                }
-            }
-
-            window.addEventListener('load', handleMobileLayout);
-            window.addEventListener('resize', handleMobileLayout);
+            document.getElementById('updateOrderBtn').addEventListener('click', () => {
+                saveUpdatedOrder();
+            });
         });
     </script>
 </body>

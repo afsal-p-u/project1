@@ -567,7 +567,6 @@
                 <p><i class="fas fa-map-marker-alt"></i> <span id="displayCustomerPlace"></span></p>
                 <p><i class="fas fa-phone"></i> <span id="displayCustomerPhone"></span></p>
 
-                <!-- <p><i class="fas fa-receipt"></i> Order ID: #ORD001</p> -->
                 <p><i class="fas fa-calendar-alt"></i> Date: <span id="currentDate"></span></p>
             </div>
         </div>
@@ -775,21 +774,19 @@
         cartTotalSpans.forEach(el => el.textContent = totalAmount.toLocaleString());
     }
 
-  function removeFromCart(code) {
-    const cartData = getCustomerCart();
-    delete cartData[code];
-    setCustomerCart(cartData);
+    function removeFromCart(code) {
+        const cartData = getCustomerCart();
+        delete cartData[code];
+        setCustomerCart(cartData);
 
-    // Also update the corresponding product object
-    const product = products.find(p => p.code === code);
-    if (product) {
-        product.quantity = 0;
+        const product = products.find(p => p.code === code);
+        if (product) {
+            product.quantity = 0;
+        }
+
+        loadCartItems();
+        showSuccessMessage("Item removed from cart");
     }
-
-    loadCartItems();
-    showSuccessMessage("Item removed from cart");
-}
-
 
     function showSuccessMessage(msg, type = 'success') {
         const div = document.createElement('div');
@@ -798,6 +795,31 @@
         div.innerHTML = `<i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i> ${msg}`;
         document.body.appendChild(div);
         setTimeout(() => div.remove(), 3000);
+    }
+
+    /* ----------  NEW: store order & redirect  ---------- */
+    function storeCompletedOrder(cartItems) {
+        const customer = JSON.parse(localStorage.getItem('selected_customer') || '{}');
+        const order = {
+            id       : Date.now(),
+            serialNo : `#${String(Date.now()).slice(-3)}`,
+            customer : customer.name || 'Guest',
+            phone    : customer.phone || '-',
+            quantity : cartItems.reduce((sum, p) => sum + p.quantity, 0),
+            amount   : cartItems.reduce((sum, p) => sum + (getPrice(p) * p.quantity), 0),
+            orderDate: new Date().toLocaleDateString('en-GB'),
+            items    : cartItems.map(p => ({
+                id      : p.code,
+                name    : p.name,
+                price   : getPrice(p),
+                quantity: p.quantity,
+                total   : getPrice(p) * p.quantity
+            }))
+        };
+
+        const key = 'orders_all';
+        const prev = JSON.parse(localStorage.getItem(key) || '[]');
+        localStorage.setItem(key, JSON.stringify([order, ...prev]));
     }
 
     function processOrder() {
@@ -812,19 +834,12 @@
         }
 
         setTimeout(() => {
-            let summary = '', total = 0;
-            cartItems.forEach(p => {
-                const price = getPrice(p);
-                const line = `${p.quantity}x ${p.name} = ₹${(p.quantity * price).toLocaleString()}`;
-                summary += line + '\n';
-                total += p.quantity * price;
-            });
-
-            const confirmOrder = confirm(`${summary}\n\nTotal: ₹${total.toLocaleString()}\n\nConfirm order?`);
+            const confirmOrder = confirm("Confirm order?");
             if (confirmOrder) {
+                storeCompletedOrder(cartItems);
                 setCustomerCart({});
                 showSuccessMessage("Order placed successfully!");
-                setTimeout(() => window.location.reload(), 1000);
+                setTimeout(() => window.location.href = '/index/', 1000);
             }
             btn.classList.remove('processing');
         }, 1200);
