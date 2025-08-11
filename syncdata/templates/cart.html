@@ -631,56 +631,76 @@
 
     <script>
     /* ----------  helpers  ---------- */
-    function getCurrentCustomerName(){
+    function getCurrentCustomerName() {
         return JSON.parse(localStorage.getItem('selected_customer') || '{}').name || 'Guest';
     }
-    function getCustomerCart(){
+
+    function getCustomerCart() {
         const all = JSON.parse(localStorage.getItem('cartData') || '{}');
         const cust = getCurrentCustomerName();
         if (!all[cust]) all[cust] = {};
         return all[cust];
     }
-    function setCustomerCart(obj){
+
+    function setCustomerCart(obj) {
         const all = JSON.parse(localStorage.getItem('cartData') || '{}');
         all[getCurrentCustomerName()] = obj;
         localStorage.setItem('cartData', JSON.stringify(all));
     }
-    (function migrateOldKey(){
-        if (localStorage.getItem('cartQuantities') && !localStorage.getItem('cartData')){
+
+    (function migrateOldKey() {
+        if (localStorage.getItem('cartQuantities') && !localStorage.getItem('cartData')) {
             setCustomerCart(JSON.parse(localStorage.getItem('cartQuantities')));
             localStorage.removeItem('cartQuantities');
         }
     })();
-    /* ----------  /helpers  ---------- */
 
+    function showSuccessMessage(msg, type = 'success') {
+        const div = document.createElement('div');
+        div.className = 'success-message';
+        if (type === 'error') div.classList.add('error');
+        div.innerHTML = `<i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i> ${msg}`;
+        document.body.appendChild(div);
+        setTimeout(() => div.remove(), 3000);
+    }
+
+    function getPrice(product) {
+        return product.batch?.salesprice || product.batch?.bmrp || 0;
+    }
+
+    /* ----------  main variables  ---------- */
     let products = [];
 
+    /* ----------  DOM loaded  ---------- */
     document.addEventListener('DOMContentLoaded', function() {
+        // Set current date
         document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-IN', {
             day: 'numeric',
             month: 'long',
             year: 'numeric'
         });
 
+        // Load customer info
+        const customerData = localStorage.getItem('selected_customer');
+        if (customerData) {
+            try {
+                const customer = JSON.parse(customerData);
+                document.getElementById('displayCustomerName').textContent = customer.name || 'N/A';
+                document.getElementById('displayCustomerPlace').textContent = customer.place || '';
+                document.getElementById('displayCustomerPhone').textContent = customer.phone || '';
+            } catch (err) {
+                console.error('Error parsing customer data:', err);
+            }
+        }
+
         fetchProducts();
     });
 
-    const customerData = localStorage.getItem('selected_customer');
-    if (customerData) {
-        try {
-            const customer = JSON.parse(customerData);
-            document.getElementById('displayCustomerName').textContent = customer.name || 'N/A';
-            document.getElementById('displayCustomerPlace').textContent = customer.place || '';
-            document.getElementById('displayCustomerPhone').textContent = customer.phone || '';
-        } catch (err) {
-            console.error('Error parsing customer data:', err);
-        }
-    }
-
+    /* ----------  fetch products  ---------- */
     async function fetchProducts() {
         const token = localStorage.getItem('access_token');
         if (!token) {
-            showErrorMessage("Please login first");
+            showSuccessMessage("Please login first", 'error');
             return;
         }
 
@@ -705,13 +725,14 @@
             loadCartFromStorage();
             loadCartItems();
         } catch (err) {
-            showErrorMessage("Error fetching products: " + err.message);
+            showSuccessMessage("Error fetching products: " + err.message, 'error');
         } finally {
             document.getElementById('loadingSpinner').style.display = 'none';
             document.getElementById('cartItems').style.display = 'block';
         }
     }
 
+    /* ----------  cart functions  ---------- */
     function loadCartFromStorage() {
         const cartData = getCustomerCart();
         products.forEach(product => {
@@ -720,10 +741,6 @@
                 product.total = getPrice(product) * product.quantity;
             }
         });
-    }
-
-    function getPrice(product) {
-        return product.batch?.salesprice || product.batch?.bmrp || 0;
     }
 
     function loadCartItems() {
@@ -788,32 +805,23 @@
         showSuccessMessage("Item removed from cart");
     }
 
-    function showSuccessMessage(msg, type = 'success') {
-        const div = document.createElement('div');
-        div.className = 'success-message';
-        if (type === 'error') div.classList.add('error');
-        div.innerHTML = `<i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i> ${msg}`;
-        document.body.appendChild(div);
-        setTimeout(() => div.remove(), 3000);
-    }
-
-    /* ----------  NEW: store order & redirect  ---------- */
+    /* ----------  order processing  ---------- */
     function storeCompletedOrder(cartItems) {
         const customer = JSON.parse(localStorage.getItem('selected_customer') || '{}');
         const order = {
-            id       : Date.now(),
-            serialNo : `#${String(Date.now()).slice(-3)}`,
-            customer : customer.name || 'Guest',
-            phone    : customer.phone || '-',
-            quantity : cartItems.reduce((sum, p) => sum + p.quantity, 0),
-            amount   : cartItems.reduce((sum, p) => sum + (getPrice(p) * p.quantity), 0),
+            id: Date.now(),
+            serialNo: `#${String(Date.now()).slice(-3)}`,
+            customer: customer.name || 'Guest',
+            phone: customer.phone || '-',
+            quantity: cartItems.reduce((sum, p) => sum + p.quantity, 0),
+            amount: cartItems.reduce((sum, p) => sum + (getPrice(p) * p.quantity), 0),
             orderDate: new Date().toLocaleDateString('en-GB'),
-            items    : cartItems.map(p => ({
-                id      : p.code,
-                name    : p.name,
-                price   : getPrice(p),
+            items: cartItems.map(p => ({
+                id: p.code,
+                name: p.name,
+                price: getPrice(p),
                 quantity: p.quantity,
-                total   : getPrice(p) * p.quantity
+                total: getPrice(p) * p.quantity
             }))
         };
 
@@ -836,14 +844,56 @@
         setTimeout(() => {
             const confirmOrder = confirm("Confirm order?");
             if (confirmOrder) {
-                storeCompletedOrder(cartItems);
+                const customerName = getCurrentCustomerName();
+                let allOrders = JSON.parse(localStorage.getItem('orders_all') || '[]');
+                
+                // Find existing order for this customer
+                let existingOrderIndex = allOrders.findIndex(o => o.customer === customerName);
+                
+                if (existingOrderIndex !== -1) {
+                    // Merge new items with existing order
+                    const existingOrder = allOrders[existingOrderIndex];
+                    
+                    cartItems.forEach(newItem => {
+                        const existingItem = existingOrder.items.find(item => item.id === newItem.code);
+                        if (existingItem) {
+                            existingItem.quantity += newItem.quantity;
+                            existingItem.total = existingItem.price * existingItem.quantity;
+                        } else {
+                            existingOrder.items.push({
+                                id: newItem.code,
+                                name: newItem.name,
+                                price: getPrice(newItem),
+                                quantity: newItem.quantity,
+                                total: getPrice(newItem) * newItem.quantity
+                            });
+                        }
+                    });
+                    
+                    // Update totals
+                    existingOrder.quantity = existingOrder.items.reduce((sum, item) => sum + item.quantity, 0);
+                    existingOrder.amount = existingOrder.items.reduce((sum, item) => sum + item.total, 0);
+                    
+                    // Update the order in the array
+                    allOrders[existingOrderIndex] = existingOrder;
+                } else {
+                    // Create new order if none exists
+                    storeCompletedOrder(cartItems);
+                    allOrders = JSON.parse(localStorage.getItem('orders_all') || '[]');
+                }
+                
+                // Save the updated orders
+                localStorage.setItem('orders_all', JSON.stringify(allOrders));
+                
+                // Clear the cart
                 setCustomerCart({});
+                
                 showSuccessMessage("Order placed successfully!");
                 setTimeout(() => window.location.href = '/index/', 1000);
             }
             btn.classList.remove('processing');
         }, 1200);
     }
-    </script>
+</script>
 </body>
 </html>

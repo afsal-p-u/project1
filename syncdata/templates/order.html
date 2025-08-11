@@ -525,30 +525,7 @@
     </div>
 
     <script>
-    /* ----------  helpers  ---------- */
-    function getCurrentCustomerName(){
-        return JSON.parse(localStorage.getItem('selected_customer') || '{}').name || 'Guest';
-    }
-    function getCustomerCart(){
-        const all = JSON.parse(localStorage.getItem('cartData') || '{}');
-        const cust = getCurrentCustomerName();
-        if (!all[cust]) all[cust] = {};
-        return all[cust];
-    }
-    function setCustomerCart(obj){
-        const all = JSON.parse(localStorage.getItem('cartData') || '{}');
-        all[getCurrentCustomerName()] = obj;
-        localStorage.setItem('cartData', JSON.stringify(all));
-    }
-    (function migrateOldKey(){
-        if (localStorage.getItem('cartQuantities') && !localStorage.getItem('cartData')){
-            setCustomerCart(JSON.parse(localStorage.getItem('cartQuantities')));
-            localStorage.removeItem('cartQuantities');
-        }
-    })();
-    /* ----------  /helpers  ---------- */
-
-    // Global variables
+    /* ----------  Global Variables  ---------- */
     let products = [];
     let cartQuantities = {};
     let selectedQuantities = {};
@@ -557,9 +534,60 @@
     let isSearching = false;
     let searchTerm = '';
 
+    /* ----------  Helper Functions  ---------- */
+    function getCurrentCustomerName() {
+        return JSON.parse(localStorage.getItem('selected_customer') || '{}').name || 'Guest';
+    }
+
+    function getCustomerCart() {
+        const all = JSON.parse(localStorage.getItem('cartData') || '{}');
+        const cust = getCurrentCustomerName();
+        if (!all[cust]) all[cust] = {};
+        return all[cust];
+    }
+
+    function setCustomerCart(obj) {
+        const all = JSON.parse(localStorage.getItem('cartData') || '{}');
+        all[getCurrentCustomerName()] = obj;
+        localStorage.setItem('cartData', JSON.stringify(all));
+    }
+
+    function escapeHtml(unsafe) {
+        if (!unsafe) return '';
+        return unsafe.toString()
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    function showLoading(show) {
+        document.getElementById('loadingSpinner').style.display = show ? 'block' : 'none';
+    }
+
+    function showSuccessMessage(message) {
+        const successDiv = document.createElement('div');
+        successDiv.className = 'success-message';
+        successDiv.textContent = message;
+        document.body.appendChild(successDiv);
+        setTimeout(() => successDiv.remove(), 3000);
+    }
+
+    function showErrorMessage(message) {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'success-message';
+        errorDiv.style.background = 'linear-gradient(135deg, #f44336 0%, #e57373 100%)';
+        errorDiv.textContent = message;
+        document.body.appendChild(errorDiv);
+        setTimeout(() => errorDiv.remove(), 3000);
+    }
+
+    /* ----------  DOM Content Loaded  ---------- */
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('currentDate').textContent = new Date().toLocaleDateString();
-        fetchProducts();
+        
+        // Load customer info
         const customerData = localStorage.getItem('selected_customer');
         if (customerData) {
             try {
@@ -572,6 +600,8 @@
             }
         }
 
+        fetchProducts();
+
         window.addEventListener('storage', handleStorageEvent);
         window.addEventListener('focus', handleWindowFocus);
 
@@ -580,6 +610,7 @@
         });
     });
 
+    /* ----------  Product Functions  ---------- */
     async function fetchProducts() {
         try {
             showLoading(true);
@@ -603,9 +634,9 @@
 
             const data = await response.json();
             products = (data.results || []).map(p => ({
-    ...p,
-    displayPrice: p.batch?.salesprice ?? p.batch?.bmrp ?? 0
-}));
+                ...p,
+                displayPrice: p.batch?.salesprice ?? p.batch?.bmrp ?? 0
+            }));
 
             products.forEach(product => {
                 if (!product.code) return;
@@ -631,19 +662,15 @@
         }
     }
 
-    function showLoading(show) {
-        document.getElementById('loadingSpinner').style.display = show ? 'block' : 'none';
-    }
-
     function loadCartFromLocalStorage() {
-    const saved = getCustomerCart();          // {P001: 3, P002: 1}
-    cartQuantities = {...saved};              // badge & totals
-    Object.keys(saved).forEach(code => {
-        selectedQuantities[code] = saved[code];   // rows show correct qty
-    });
-    updateCartBadge();
-    updateProductHighlights();
-}
+        const saved = getCustomerCart();
+        cartQuantities = {...saved};
+        Object.keys(saved).forEach(code => {
+            selectedQuantities[code] = saved[code];
+        });
+        updateCartBadge();
+        updateProductHighlights();
+    }
 
     function saveCartToLocalStorage() {
         setCustomerCart(cartQuantities);
@@ -669,6 +696,7 @@
         loadProducts();
     }
 
+    /* ----------  Product Display Functions  ---------- */
     function loadProducts() {
         const productList = document.getElementById('productList');
         productList.innerHTML = '';
@@ -729,7 +757,7 @@
                     <div class="product-name">${escapeHtml(product.name || '')}</div>
                     <div class="product-description">${escapeHtml(description)}</div>
                     <div class="product-specs">Code: ${escapeHtml(product.code || '')}</div>
-                   <div class="product-price">₹${(product.batch?.salesprice ?? product.batch?.bmrp ?? 0).toLocaleString()}</div>
+                    <div class="product-price">₹${(product.displayPrice || 0).toLocaleString()}</div>
                     <div class="in-cart-quantity" id="in-cart-${product.code}" 
                         style="${cartQuantities[product.code] > 0 ? '' : 'display: none;'}">
                         In cart: ${cartQuantities[product.code]}
@@ -759,16 +787,7 @@
         }
     }
 
-    function escapeHtml(unsafe) {
-        if (!unsafe) return '';
-        return unsafe.toString()
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-    }
-
+    /* ----------  Quantity Functions  ---------- */
     function enableQuantityInput(productCode) {
         const qtyElement = document.getElementById(`qty-${productCode}`);
         if (!qtyElement) return;
@@ -820,28 +839,6 @@
         }
     }
 
- function addToCart(productCode) {
-    const qty = selectedQuantities[productCode] || 1;      // default 1
-    cartQuantities[productCode] = (cartQuantities[productCode] || 0) + qty;
-
-    const product = products.find(p => p.code === productCode);
-    showSuccessMessage(`${product.name} added (${cartQuantities[productCode]} total)`);
-
-    selectedQuantities[productCode] = 0;   // reset selector
-    updateQuantityDisplay(productCode);
-    updateQuantityButtons(productCode);
-    updateAddToCartButton(productCode);
-    updateCartBadge();
-    updateProductHighlights();
-
-    const inCartEl = document.getElementById(`in-cart-${productCode}`);
-    if (inCartEl) {
-        inCartEl.textContent = `In cart: ${cartQuantities[productCode]}`;
-        inCartEl.style.display = 'block';
-    }
-    saveCartToLocalStorage();
-}
-
     function updateQuantityDisplay(productCode) {
         const qtyElement = document.getElementById(`qty-${productCode}`);
         if (qtyElement) qtyElement.textContent = selectedQuantities[productCode];
@@ -866,6 +863,29 @@
         }
     }
 
+    /* ----------  Cart Functions  ---------- */
+    function addToCart(productCode) {
+        const qty = selectedQuantities[productCode] || 1;
+        cartQuantities[productCode] = (cartQuantities[productCode] || 0) + qty;
+
+        const product = products.find(p => p.code === productCode);
+        showSuccessMessage(`${product.name} added (${cartQuantities[productCode]} total)`);
+
+        selectedQuantities[productCode] = 0;
+        updateQuantityDisplay(productCode);
+        updateQuantityButtons(productCode);
+        updateAddToCartButton(productCode);
+        updateCartBadge();
+        updateProductHighlights();
+
+        const inCartEl = document.getElementById(`in-cart-${productCode}`);
+        if (inCartEl) {
+            inCartEl.textContent = `In cart: ${cartQuantities[productCode]}`;
+            inCartEl.style.display = 'block';
+        }
+        saveCartToLocalStorage();
+    }
+
     function updateCartBadge() {
         const cartBadge = document.getElementById('cartBadge');
         const totalItems = Object.values(cartQuantities).reduce((sum, qty) => sum + qty, 0);
@@ -882,6 +902,20 @@
         });
     }
 
+    function clearCart() {
+        products.forEach(product => {
+            if (product.code) {
+                cartQuantities[product.code] = 0;
+                selectedQuantities[product.code] = 0;
+            }
+        });
+        setCustomerCart({});
+        updateCartBadge();
+        updateProductHighlights();
+        loadProducts();
+    }
+
+    /* ----------  Search Functions  ---------- */
     function searchProduct() {
         searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
         document.getElementById('clearSearchBtn').style.display = searchTerm ? 'block' : 'none';
@@ -903,37 +937,7 @@
         setupPagination();
     }
 
-    function showSuccessMessage(message) {
-        const successDiv = document.createElement('div');
-        successDiv.className = 'success-message';
-        successDiv.textContent = message;
-        document.body.appendChild(successDiv);
-        setTimeout(() => successDiv.remove(), 3000);
-    }
-
-    function showErrorMessage(message) {
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'success-message';
-        errorDiv.style.background = 'linear-gradient(135deg, #f44336 0%, #e57373 100%)';
-        errorDiv.textContent = message;
-        document.body.appendChild(errorDiv);
-        setTimeout(() => errorDiv.remove(), 3000);
-    }
-
-    function clearCart() {
-        products.forEach(product => {
-            if (product.code) {
-                cartQuantities[product.code] = 0;
-                selectedQuantities[product.code] = 0;
-            }
-        });
-        setCustomerCart({});
-        updateCartBadge();
-        updateProductHighlights();
-        loadProducts();
-    }
-
-    // Pagination functions
+    /* ----------  Pagination Functions  ---------- */
     function setupPagination() {
         const paginationDiv = document.getElementById('pagination');
         paginationDiv.innerHTML = '';
@@ -1009,6 +1013,6 @@
             pageInfoDiv.innerHTML = `Showing items ${startIndex} to ${endIndex} of ${products.length}`;
         }
     }
-    </script>
+</script>
 </body>
 </html>

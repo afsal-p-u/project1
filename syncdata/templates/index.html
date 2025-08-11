@@ -13,7 +13,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #f5f3ff 0%, #ddd6fe 100%);
+            background: linear-gradient(135deg, #f5f3ff 0%, #ddd6fe 100%);
             min-height: 100vh;
             padding: 20px;
             -webkit-tap-highlight-color: transparent;
@@ -249,11 +249,12 @@
         }
 
         .controls-section {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-bottom: 20px;
+        display: flex;
+        justify-content: flex-start; /* Aligns items to the left */
+        gap: 15px;
+        margin-bottom: 20px;
         }
+
 
         .search-bar {
             width: 100%;
@@ -286,25 +287,32 @@
             width: 100%;
         }
 
-        .add-btn {
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
-            height: 40px;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            max-width: 100px;
-        }
+      .add-btn {
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        color: white;
+        border: none;
+        padding: 25px 32px; /* Bigger padding */
+        border-radius: 12px; /* Slightly more rounded */
+        font-size: 16px; /* Larger text */
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        height: 40px; /* Taller button */
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        max-width: 500px; /* Wider button */
+    }
+
+     .add-btn {
+    width: 100%;
+    max-width: 700px; /* increase from 500px to 700px */
+    padding: 25px 50px; /* more horizontal padding */
+}
+
 
         .add-btn:hover {
             transform: translateY(-2px);
@@ -407,40 +415,37 @@
         }
 
         /* Enhanced Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
-            animation: modalFadeIn 0.3s ease;
-        }
+       .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    animation: modalFadeIn 0.3s ease;
+    overflow: auto;
+}
 
         @keyframes modalFadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
-
-        .modal-content {
-            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
-            margin: 3% auto;
-            border-radius: 20px;
-            box-shadow: 0 25px 50px rgba(30, 64, 175, 0.25);
-            border: 3px solid transparent;
-            background-clip: padding-box;
-            width: 95%;
-            max-width: 900px;
-            max-height: 90vh;
-            overflow: hidden;
-            position: relative;
-            animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            display: flex;
-            flex-direction: column;
-        }
+.modal-content {
+    background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
 
         @keyframes modalSlideIn {
             from { 
@@ -492,26 +497,34 @@
             background: rgba(239, 68, 68, 0.1);
             transform: rotate(90deg) scale(1.1);
         }
-.modal-header {
-    background:#4682b4; /* Your chosen base color */
-    padding: 25px 30px;
-    border-radius: 16px 16px 0 0;
-    color: #4c1d95; /* Deep purple text for contrast */
-    border-bottom: 1px solid #c4b5fd; /* Slightly darker lavender border */
-}
-
-        .modal-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="70" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
-            opacity: 0.6;
+        .modal-header {
+            background: #618cb8;
+            padding: 8px 15px; /* Reduced vertical padding */
+            border-radius: 12px 12px 0 0; /* Slightly smaller radius */
+            color: white; /* Better contrast */
+            border-bottom: 1px solid rgba(255,255,255,0.2); /* More subtle border */
+            position: relative; /* Needed for ::before positioning */
+            overflow: hidden; /* Contain the background pattern */
         }
 
+            .modal-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 100%; /* Only cover header height */
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 60"><circle cx="20" cy="15" r="1.2" fill="rgba(255,255,255,0.1)"/><circle cx="70" cy="20" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="45" cy="35" r="0.8" fill="rgba(255,255,255,0.1)"/></svg>');
+        opacity: 0.4; /* More subtle */
+        background-size: 50px 20px; /* Better scaling for smaller header */
+    }
         .modal-title {
+        font-size: 18px; /* Slightly smaller */
+        margin: 5px 0; /* Reduced spacing */
+        position: relative; /* Ensure it stays above the background */
+        z-index: 1;
+    }
+            .modal-title {
             color: white;
             font-size: 24px;
             font-weight: 700;
@@ -521,20 +534,35 @@
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
-        .order-info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
-            margin-bottom: 20px;
-            position: relative;
-            z-index: 1;
-        }
+       .order-info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+    gap: 15px;
+    margin-bottom: 15px;
+    position: relative;
+    z-index: 1;
 
-        .order-info-left, .order-info-right {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+    /* Scrolling settings */
+    max-height: 120px;         /* Limit height so it doesn’t push items table down */
+    overflow-y: auto;          /* Vertical scroll */
+    overflow-x: hidden;        /* No horizontal scroll */
+    padding-right: 6px;        /* Space for scrollbar */
+}
+
+/* Optional: nice scrollbar */
+.order-info-grid::-webkit-scrollbar {
+    width: 6px;
+}
+
+.order-info-grid::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.3);
+    border-radius: 3px;
+}
+
+.order-info-grid::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
 
         .info-item {
             display: flex;
@@ -588,12 +616,18 @@
             color: white;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         }
-
         .modal-body {
-            padding: 25px 30px;
-            flex: 1;
-            overflow: auto;
-            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+    padding: 15px 20px; /* Reduced padding to maximize space */
+    flex: 1;
+    overflow: auto;
+    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+    min-height: 40vh; /* Minimum height */
+    max-height: 45vh; /* Increased maximum height */
+}
+
+        .modal-header, .modal-footer {
+            width: 100%;
+            border-radius: 0;
         }
 
         .modal-table-container {
@@ -614,7 +648,7 @@
             padding: 15px 12px;
             text-align: left;
             font-weight: 600;
-            border-bottom: 2px solid #e2e8f0;
+            border-bottom: 2px solid #1854a2;
             color: #1e40af;
             font-size: 14px;
             position: sticky;
@@ -858,12 +892,24 @@
                 width: 320px;
             }
 
-            .controls-section {
+                .controls-section {
                 display: flex;
-                justify-content: center;
+                justify-content: flex-start; /* Align to left */
                 align-items: center;
+                gap: 15px;
                 position: relative;
             }
+
+            .search-bar {
+                max-width: 500px;
+                order: 1; /* Search first */
+            }
+
+            .add-btn-container {
+                margin-left: auto; /* Push Add button to right */
+                order: 2;
+            }
+
 
             .controls-section > div:first-child {
                 flex: 0 0 auto;
@@ -1152,7 +1198,18 @@
             content: "₹";
             margin-right: 2px;
         }
-        /*  */
+                    /* ----- boost table height in modal ----- */
+        #orderHistoryModal .modal-content{
+        max-height:150vh;               /* was 90vh */
+        }
+
+        #orderHistoryModal .modal-body{
+        max-height:none;               /* remove the internal limit */
+        height:100vh;                   /* or 65vh / 70vh as you like */
+        overflow:auto;
+        }
+
+                /*  */
         /* Add this to your existing CSS */
         #orderTable th:nth-child(3),
         #orderTable td:nth-child(3) {
@@ -1167,8 +1224,211 @@
             max-width: 180px; /* Should match min-width above */
             display: inline-block;
         }
+/* ========= Checklist-Style Status Badges ========= */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px 4px 6px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: capitalize;
+    cursor: default;
+    min-width: 80px;
+    transition: all 0.2s ease;
+    user-select: none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
 
-        
+/* Checkbox circle */
+.status-badge::before {
+    content: "";
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    background-color: transparent;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+/* Checkmark for completed status */
+.status-badge.completed::before {
+    background-color: currentColor;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z'/%3E%3C/svg%3E");
+    background-size: 12px;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Status-specific colors */
+.status-badge.completed {
+    background-color: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+.status-badge.pending {
+    background-color: #fef9c3;
+    color: #854d0e;
+    border: 1px solid #fef08a;
+}
+
+.status-badge.cancelled {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+.status-badge.processing {
+    background-color: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+}
+
+.status-badge.shipped {
+    background-color: #e0f2fe;
+    color: #0369a1;
+    border: 1px solid #bae6fd;
+}
+
+.status-badge.refunded {
+    background-color: #f3e8ff;
+    color: #7e22ce;
+    border: 1px solid #e9d5ff;
+}
+
+/* Hover effects */
+.status-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Active/pressed effect */
+.status-badge:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+/* Focus state for accessibility */
+.status-badge:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+}
+
+/* Animation for status changes */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.status-badge.changed {
+    animation: pulse 0.3s ease;
+} 
+/* Make customer details smaller */
+#orderHistoryModal .modal-header {
+    flex: 0 0 auto;
+    padding: 10px 15px;       /* Less padding */
+}
+
+#orderHistoryModal .order-info-grid {
+    gap: 10px;                /* Less gap */
+    margin-bottom: 10px;
+}
+
+#orderHistoryModal .info-item {
+    padding: 4px 8px;         /* Less padding inside each info */
+}
+
+/* Reduce summary stats space */
+#orderHistoryModal .summary-stats {
+    padding: 8px 12px;
+    margin-top: 10px;
+}
+
+/* Make items list section bigger */
+#orderHistoryModal .modal-body {
+    flex: 1 1 auto;
+    height: auto;
+    max-height: calc(100vh - 200px); /* Leaves small space for header/footer */
+    overflow-y: auto;
+}
+.btn-success {
+    background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(22, 163, 74, 0.3);
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(22, 163, 74, 0.4);
+}
+/* ===== Status Badges ===== */
+.status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    min-width: 80px;
+    color: white;
+}
+
+/* Pending = Blue */
+.status-badge.pending {
+    background: #ffffff; /* Blue */
+}
+
+/* Completed = Green */
+.status-badge.completed {
+    background: #16A34A; /* Green */
+}
+
+/* Sold Out = Red */
+.status-badge.sold-out {
+    background: #EF4444; /* Red */
+    border: 1px solid #DC2626; /* Darker red border */
+}
+
+/* ===== Status Dropdown ===== */
+.status-select {
+    padding: 4px 24px 4px 8px;
+    border-radius: 12px;
+    border: 1px solid #f5f5f6;
+    font-size: 12px;
+    font-weight: 600;
+    color: rgb(7, 7, 7);
+    text-align: center;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 6px center;
+    background-size: 12px;
+}
+
+/* Pending Dropdown - Blue */
+.status-select.pending {
+    background-color: #ededed;
+}
+
+/* Completed Dropdown - Green */
+.status-select.completed {
+    background-color: #16A34A;
+}
+
+/* Sold Out Dropdown - Red */
+.status-select.sold-out {
+    background-color: #EF4444;
+    border-color: #DC2626;
+}
+
+
     </style>
 </head>
 <body>
@@ -1225,13 +1485,14 @@
                 <table id="orderTable">
                     <thead>
                         <tr>
-                            <th>Serial No.</th>
+                            <th>Order ID</th>
                             <th>Order Date</th>
                             <th>Customer</th>
                             <th>Phone Number</th>
                             <th>Total Quantity</th>
                             <th>Amount</th>
                             <th>View Order</th>
+                             <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -1250,38 +1511,33 @@
             
             <div class="modal-header">
                 <h2 class="modal-title">Order Details</h2>
+<div class="order-info-grid">
+    <div class="info-item">
+        <span class="info-label">Order ID:</span>
+        <span class="info-value" id="modalOrderId">ORD-2024-001</span>
+    </div>
+    <div class="info-item">
+        <span class="info-label">Order Date:</span>
+        <span class="info-value" id="modalOrderDate">2024-07-12</span>
+    </div>
+    <div class="info-item">
+        <span class="info-label">Created By:</span>
+        <span class="info-value" id="modalCreatedBy">Admin User</span>
+    </div>
+    <div class="info-item">
+        <span class="info-label">Customer:</span>
+        <span class="info-value" id="modalCustomerName">John Doe</span>
+    </div>
+    <div class="info-item">
+        <span class="info-label">Created On:</span>
+        <span class="info-value" id="modalCreatedOn">2024-07-12 10:30 AM</span>
+    </div>
+    <div class="info-item">
+        <span class="info-label">Place:</span>
+        <span class="info-value" id="modalPlace">Downtown Store</span>
+    </div>
+</div>
 
-                <div class="order-info-grid">
-                    <div class="order-info-left">
-                        <div class="info-item">
-                            <span class="info-label">Order ID:</span>
-                            <span class="info-value" id="modalOrderId">ORD-2024-001</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Order Date:</span>
-                            <span class="info-value" id="modalOrderDate">2024-07-12</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Customer:</span>
-                            <span class="info-value" id="modalCustomerName">John Doe</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Place:</span>
-                            <span class="info-value" id="modalPlace">Downtown Store</span>
-                        </div>
-                    </div>
-
-                    <div class="order-info-right">
-                        <div class="info-item">
-                            <span class="info-label">Created By:</span>
-                            <span class="info-value" id="modalCreatedBy">Admin User</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Created On:</span>
-                            <span class="info-value" id="modalCreatedOn">2024-07-12 10:30 AM</span>
-                        </div>
-                    </div>
-                </div>
 
                 <div class="summary-stats">
                     <div class="stat-item">
@@ -1326,6 +1582,7 @@
                 </div>
                 <div class="footer-buttons">
                     <button class="btn btn-primary" id="updateOrderBtn">Update Order</button>
+                    <button class="btn btn-success" id="addProductsFromModal">Add Products</button>
                     <button class="btn btn-secondary" onclick="closeModal()">Close</button>
                 </div>
             </div>
@@ -1333,323 +1590,377 @@
     </div>
 
     <script>
-        /* ========= utility ========= */
-        function formatPrice(price) {
-            const num = typeof price === 'string' ? parseFloat(price) : price;
-            return num.toFixed(2);
-        }
+/* ========= utility ========= */
+function formatPrice(price) {
+    const num = typeof price === 'string' ? parseFloat(price) : price;
+    return num.toFixed(2);
+}
 
-        /* ========= live order list per customer ========= */
-        function getCustomerOrders() {
-            return JSON.parse(localStorage.getItem('orders_all') || '[]');
-        }
-        let orderData = getCustomerOrders();
+/* ========= live order list per customer ========= */
+function getCustomerOrders() {
+    return JSON.parse(localStorage.getItem('orders_all') || '[]');
+}
+let orderData = getCustomerOrders();
 
-        /* ========= logout ========= */
-        const logoutButton = document.getElementById("logout-btn");
-        logoutButton.addEventListener("click", () => {
-            if (confirm("Are you sure you want to logout?")) {
-                localStorage.removeItem("access_token");
-                localStorage.removeItem("user_id");
-                localStorage.removeItem("client_id");
-                window.location.href = "/login";
-            }
+/* ========= logout ========= */
+const logoutButton = document.getElementById("logout-btn");
+logoutButton.addEventListener("click", () => {
+    if (confirm("Are you sure you want to logout?")) {
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("user_id");
+        localStorage.removeItem("client_id");
+        window.location.href = "/login";
+    }
+});
+
+const userInfoText = document.getElementById('userInfoText');
+const userId = localStorage.getItem('user_id');
+const clientId = localStorage.getItem('client_id');
+if (userId && clientId) {
+    userInfoText.textContent = `ID: ${clientId} | USERID: ${userId}`;
+} else {
+    userInfoText.textContent = "User not logged in";
+}
+
+/* ========= date helpers ========= */
+function updateCurrentDate() {
+    const now = new Date();
+    const todayISO = now.toISOString().split('T')[0];
+    document.getElementById('fromDate').value = todayISO;
+    document.getElementById('toDate').value = todayISO;
+}
+
+/* ========= populate table ========= */
+function populateTable() {
+    const tableBody = document.getElementById('orderTableBody');
+    tableBody.innerHTML = '';
+
+    orderData.forEach((order, index) => {
+        const row = document.createElement('tr');
+        row.setAttribute('data-id', order.id);
+        const dateParts = order.orderDate.split('/');
+        row.setAttribute('data-date', `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`);
+
+        // Ensure every order has a status; default to "Pending"
+        if (!order.status) order.status = 'Pending';
+
+        row.innerHTML = `
+            <td>${order.serialNo}</td>
+            <td><span class="order-date">${order.orderDate}</span></td>
+            <td><div class="customer-name">${order.customer}</div></td>
+            <td class="customer-phone">${order.phone}</td>
+            <td><div class="quantity-wrapper"><span class="quantity">${order.quantity}</span></div></td>
+            <td><span class="amount rupee">${formatPrice(order.amount)}</span></td>
+            <td>
+                <button class="view-order-btn" onclick="viewOrder(${index})">Show Items</button>
+            </td>
+            <!-- STATUS COLUMN WITH MANUAL SELECTOR -->
+            <td>
+                <select class="status-select ${order.status.toLowerCase().replace(' ', '-')}" 
+                    onchange="changeOrderStatus(${index}, this.value)">
+                    <option value="Pending"   ${order.status === 'Pending'   ? 'selected' : ''}>Pending</option>
+                    <option value="Completed" ${order.status === 'Completed' ? 'selected' : ''}>Completed</option>
+                    <option value="Sold Out"  ${order.status === 'Sold Out'  ? 'selected' : ''}>Sold Out</option>
+                </select>
+            </td>
+
+            <td>
+                <div class="actions">
+                    <button class="action-btn delete-btn" onclick="deleteEntry(${order.id})">🗑️</button>
+                </div>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+/* ========= search ========= */
+function setupSearch() {
+    document.getElementById('searchInput').addEventListener('input', function () {
+        const filter = this.value.toLowerCase();
+        const rows = document.querySelectorAll('#orderTableBody tr');
+
+        rows.forEach(row => {
+            const customerName = row.querySelector('.customer-name').textContent.toLowerCase();
+            const phoneNumber = row.querySelector('.customer-phone').textContent.toLowerCase();
+            const rowText = customerName + ' ' + phoneNumber;
+
+            row.style.display = rowText.includes(filter) ? '' : 'none';
         });
+    });
+}
 
-        const userInfoText = document.getElementById('userInfoText');
-        const userId = localStorage.getItem('user_id');
-        const clientId = localStorage.getItem('client_id');
-        if (userId && clientId) {
-            userInfoText.textContent = `ID: ${clientId} | USERID: ${userId}`;
+/* ========= date filter ========= */
+function applyDateRangeFilter() {
+    const fromDate = document.getElementById('fromDate').value;
+    const toDate = document.getElementById('toDate').value;
+
+    if (fromDate && toDate) {
+        const fromDateObj = new Date(fromDate);
+        const toDateObj = new Date(toDate);
+
+        if (fromDateObj > toDateObj) {
+            alert('From Date cannot be after To Date');
+            return;
+        }
+
+        filterTableByDateRange(fromDate, toDate);
+    } else {
+        const rows = document.querySelectorAll('#orderTableBody tr');
+        rows.forEach(row => {
+            row.style.display = '';
+        });
+    }
+}
+
+function clearDateRangeFilter() {
+    document.getElementById('fromDate').value = '';
+    document.getElementById('toDate').value = '';
+    updateCurrentDate();
+    const rows = document.querySelectorAll('#orderTableBody tr');
+    rows.forEach(row => {
+        row.style.display = '';
+    });
+}
+
+function filterTableByDateRange(fromDate, toDate) {
+    const fromDateObj = new Date(fromDate);
+    const toDateObj = new Date(toDate);
+
+    const rows = document.querySelectorAll('#orderTableBody tr');
+    rows.forEach(row => {
+        const rowDate = row.getAttribute('data-date');
+        const rowDateObj = new Date(rowDate);
+
+        if (rowDateObj >= fromDateObj && rowDateObj <= toDateObj) {
+            row.style.display = '';
         } else {
-            userInfoText.textContent = "User not logged in";
+            row.style.display = 'none';
         }
+    });
+}
 
-        /* ========= date helpers ========= */
-        function updateCurrentDate() {
-            const now = new Date();
-            const todayISO = now.toISOString().split('T')[0];
-            document.getElementById('fromDate').value = todayISO;
-            document.getElementById('toDate').value = todayISO;
-        }
-
-        /* ========= populate table ========= */
-        function populateTable() {
-            const tableBody = document.getElementById('orderTableBody');
-            tableBody.innerHTML = '';
-
-            orderData.forEach((order, index) => {
-                const row = document.createElement('tr');
-                row.setAttribute('data-id', order.id);
-                const dateParts = order.orderDate.split('/');
-                row.setAttribute('data-date', `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`);
-
-                row.innerHTML = `
-                    <td>${order.serialNo}</td>
-                    <td><span class="order-date">${order.orderDate}</span></td>
-                    <td>
-                        <div class="customer-name">${order.customer}</div>
-                    </td>
-                    <td class="customer-phone">${order.phone}</td>
-                    <td>
-                        <div class="quantity-wrapper">
-                            <span class="quantity">${order.quantity}</span>
-                            <span class="unit-label"></span>
-                        </div>
-                    </td>
-                    <td><span class="amount rupee">${formatPrice(order.amount)}</span></td>
-                    <td>
-                        <button class="view-order-btn" onclick="viewOrder(${index})">
-                            Show Items
-                        </button>
-                    </td>
-                    <td>
-                        <div class="actions">
-                            <button class="action-btn delete-btn" onclick="deleteEntry(${order.id})" title="Delete Entry">🗑️</button>
-                        </div>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
-        }
-
-        /* ========= search ========= */
-        function setupSearch() {
-            document.getElementById('searchInput').addEventListener('input', function () {
-                const filter = this.value.toLowerCase();
-                const rows = document.querySelectorAll('#orderTableBody tr');
-
-                rows.forEach(row => {
-                    const customerName = row.querySelector('.customer-name').textContent.toLowerCase();
-                    const phoneNumber = row.querySelector('.customer-phone').textContent.toLowerCase();
-                    const rowText = customerName + ' ' + phoneNumber;
-
-                    row.style.display = rowText.includes(filter) ? '' : 'none';
-                });
-            });
-        }
-
-        /* ========= date filter ========= */
-        function applyDateRangeFilter() {
-            const fromDate = document.getElementById('fromDate').value;
-            const toDate = document.getElementById('toDate').value;
-
-            if (fromDate && toDate) {
-                const fromDateObj = new Date(fromDate);
-                const toDateObj = new Date(toDate);
-
-                if (fromDateObj > toDateObj) {
-                    alert('From Date cannot be after To Date');
-                    return;
-                }
-
-                filterTableByDateRange(fromDate, toDate);
-            } else {
-                const rows = document.querySelectorAll('#orderTableBody tr');
-                rows.forEach(row => {
-                    row.style.display = '';
-                });
-            }
-        }
-
-        function clearDateRangeFilter() {
-            document.getElementById('fromDate').value = '';
-            document.getElementById('toDate').value = '';
-            updateCurrentDate();
-            const rows = document.querySelectorAll('#orderTableBody tr');
-            rows.forEach(row => {
-                row.style.display = '';
-            });
-        }
-
-        function filterTableByDateRange(fromDate, toDate) {
-            const fromDateObj = new Date(fromDate);
-            const toDateObj = new Date(toDate);
-
-            const rows = document.querySelectorAll('#orderTableBody tr');
-            rows.forEach(row => {
-                const rowDate = row.getAttribute('data-date');
-                const rowDateObj = new Date(rowDate);
-
-                if (rowDateObj >= fromDateObj && rowDateObj <= toDateObj) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        }
-
-        /* ========= delete order ========= */
-    function deleteEntry(id) {
+/* ========= delete order ========= */
+function deleteEntry(id) {
     if (confirm(`Are you sure you want to delete order #${id}?`)) {
-        // 1. read the global list
         let orders = JSON.parse(localStorage.getItem('orders_all') || '[]');
-        // 2. remove the order
         orders = orders.filter(o => o.id !== id);
-        // 3. write back
         localStorage.setItem('orders_all', JSON.stringify(orders));
-        // 4. refresh screen
         orderData = orders;
         populateTable();
     }
 }
 
-        /* ========= view order modal ========= */
-        function viewOrder(orderIndex) {
-            const order = orderData[orderIndex];
-            if (!order) return;
+/* ========= view order modal ========= */
+function viewOrder(orderIndex) {
+    const order = orderData[orderIndex];
+    if (!order) return;
 
-            currentOrderDetails = {
-                orderId: order.serialNo,
-                orderDate: order.orderDate,
-                customerName: order.customer,
-                place: '-',
-                createdBy: 'System',
-                createdOn: `${order.orderDate} ${new Date().getHours()}:${String(new Date().getMinutes()).padStart(2, '0')}`,
-                items: order.items
-            };
-
-            /* header */
-            document.getElementById('modalOrderId').textContent   = currentOrderDetails.orderId;
-            document.getElementById('modalOrderDate').textContent = currentOrderDetails.orderDate;
-            document.getElementById('modalCustomerName').textContent = currentOrderDetails.customerName;
-            document.getElementById('modalPlace').textContent  = currentOrderDetails.place;
-            document.getElementById('modalCreatedBy').textContent = currentOrderDetails.createdBy;
-            document.getElementById('modalCreatedOn').textContent = currentOrderDetails.createdOn;
-
-            /* totals */
-            updateOrderTotals();
-
-            /* items */
-            const itemsList = document.getElementById('modalOrderItemsList');
-            itemsList.innerHTML = '';
-            currentOrderDetails.items.forEach((item, index) => {
-                const row = document.createElement('tr');
-                row.setAttribute('data-item-id', item.id);
-                row.innerHTML = `
-                    <td class="text-center">${index + 1}</td>
-                    <td>${item.name}</td>
-                    <td class="text-right rupee">${formatPrice(item.price)}</td>
-                    <td class="text-center">
-                        <div class="quantity-control">
-                            <button class="quantity-btn" onclick="decreaseQuantity(${index})" ${item.quantity <= 1 ? 'disabled' : ''}>-</button>
-                            <span class="quantity-value">${item.quantity}</span>
-                            <button class="quantity-btn" onclick="increaseQuantity(${index})">+</button>
-                        </div>
-                    </td>
-                    <td class="text-right rupee">${formatPrice(item.total)}</td>
-                    <td class="text-right">
-                        <button class="action-btn delete-btn" onclick="deleteOrderItem(${index})" title="Delete Item">🗑️</button>
-                    </td>
-                `;
-                itemsList.appendChild(row);
-            });
-
-            document.getElementById('orderHistoryModal').style.display = 'block';
-        }
-
-        /* ========= modal totals & actions ========= */
-        function updateOrderTotals() {
-            if (!currentOrderDetails) return;
-            const itemTotal = currentOrderDetails.items.length;
-            const itemCount = currentOrderDetails.items.reduce((sum, item) => sum + item.quantity, 0);
-            const billTotal = currentOrderDetails.items.reduce((sum, item) => sum + item.total, 0);
-
-            document.getElementById('modalItemTotal').textContent = itemTotal;
-            document.getElementById('modalItemCount').textContent = itemCount;
-            document.getElementById('modalBillTotal').textContent = formatPrice(billTotal);
-            document.getElementById('modalGrandTotal').textContent = formatPrice(billTotal);
-        }
-
-        function deleteOrderItem(itemIndex) {
-            if (!currentOrderDetails || !confirm('Are you sure you want to delete this item?')) return;
-            currentOrderDetails.items.splice(itemIndex, 1);
-            updateOrderTotals();
-            viewOrder(orderData.findIndex(o => o.serialNo === currentOrderDetails.orderId));
-        }
-
-        function increaseQuantity(itemIndex) {
-            if (!currentOrderDetails) return;
-            const item = currentOrderDetails.items[itemIndex];
-            item.quantity += 1;
-            item.total = item.price * item.quantity;
-            updateOrderTotals();
-            viewOrder(orderData.findIndex(o => o.serialNo === currentOrderDetails.orderId));
-        }
-
-        function decreaseQuantity(itemIndex) {
-            if (!currentOrderDetails) return;
-            const item = currentOrderDetails.items[itemIndex];
-            if (item.quantity > 1) {
-                item.quantity -= 1;
-                item.total = item.price * item.quantity;
-                updateOrderTotals();
-                viewOrder(orderData.findIndex(o => o.serialNo === currentOrderDetails.orderId));
-            }
-        }
-        /* =========  SAVE MODAL CHANGES ========= */
-function saveUpdatedOrder() {
-    const orderIndex = orderData.findIndex(o => o.serialNo === currentOrderDetails.orderId);
-    if (orderIndex === -1) return;
-
-    const newQuantity = currentOrderDetails.items.reduce((sum, i) => sum + i.quantity, 0);
-    const newAmount   = currentOrderDetails.items.reduce((sum, i) => sum + i.total, 0);
-
-    /* 1. update global list */
-    orderData[orderIndex] = {
-        ...orderData[orderIndex],
-        items   : [...currentOrderDetails.items],
-        quantity: newQuantity,
-        amount  : newAmount
+    currentOrderDetails = {
+        orderId: order.serialNo,
+        orderDate: order.orderDate,
+        customerName: order.customer,
+        place: order.place || '-',
+        createdBy: 'System',
+        createdOn: `${order.orderDate} ${new Date().getHours()}:${String(new Date().getMinutes()).padStart(2, '0')}`,
+        items: order.items
     };
-    localStorage.setItem('orders_all', JSON.stringify(orderData));
-    localStorage.setItem(
-    'cartData',
-    JSON.stringify({
-        [currentOrderDetails.customerName]: currentOrderDetails.items.reduce((acc, item) => {
-            acc[item.id] = item.quantity;   // id == product code
-            return acc;
-        }, {})
-    })
-);
 
-    /* 2. redraw table */
-    populateTable();
+    /* header */
+    document.getElementById('modalOrderId').textContent   = currentOrderDetails.orderId;
+    document.getElementById('modalOrderDate').textContent = currentOrderDetails.orderDate;
+    document.getElementById('modalCustomerName').textContent = currentOrderDetails.customerName;
+    document.getElementById('modalPlace').textContent  = currentOrderDetails.place;
+    document.getElementById('modalCreatedBy').textContent = currentOrderDetails.createdBy;
+    document.getElementById('modalCreatedOn').textContent = currentOrderDetails.createdOn;
 
-    /* 3. close modal */
-    closeModal();
-    alert('Order updated successfully!');
+    /* totals */
+    updateOrderTotals();
+
+    /* items */
+    const itemsList = document.getElementById('modalOrderItemsList');
+    itemsList.innerHTML = '';
+    currentOrderDetails.items.forEach((item, index) => {
+        const row = document.createElement('tr');
+        row.setAttribute('data-item-id', item.id);
+        row.innerHTML = `
+            <td class="text-center">${index + 1}</td>
+            <td>${item.name}</td>
+            <td class="text-right rupee">${formatPrice(item.price)}</td>
+            <td class="text-center">
+                <div class="quantity-control">
+                    <button class="quantity-btn" onclick="decreaseQuantity(${index})" ${item.quantity <= 1 ? 'disabled' : ''}>-</button>
+                    <span class="quantity-value">${item.quantity}</span>
+                    <button class="quantity-btn" onclick="increaseQuantity(${index})">+</button>
+                </div>
+            </td>
+            <td class="text-right rupee">${formatPrice(item.total)}</td>
+            <td class="text-right">
+                <button class="action-btn delete-btn" onclick="deleteOrderItem(${index})" title="Delete Item">🗑️</button>
+            </td>
+        `;
+        itemsList.appendChild(row);
+    });
+
+    document.getElementById('orderHistoryModal').style.display = 'block';
 }
 
-        function closeModal() {
-            document.getElementById('orderHistoryModal').style.display = 'none';
-        }
+/* ========= modal totals & actions ========= */
+function updateOrderTotals() {
+    if (!currentOrderDetails) return;
+    const itemTotal = currentOrderDetails.items.length;
+    const itemCount = currentOrderDetails.items.reduce((sum, item) => sum + item.quantity, 0);
+    const billTotal = currentOrderDetails.items.reduce((sum, item) => sum + item.total, 0);
 
-        /* ========= init ========= */
-        document.addEventListener('DOMContentLoaded', function () {
-            updateCurrentDate();
-            orderData = getCustomerOrders();
-            populateTable();
-            setupSearch();
-            setInterval(updateCurrentDate, 60000);
+    document.getElementById('modalItemTotal').textContent = itemTotal;
+    document.getElementById('modalItemCount').textContent = itemCount;
+    document.getElementById('modalBillTotal').textContent = formatPrice(billTotal);
+    document.getElementById('modalGrandTotal').textContent = formatPrice(billTotal);
+}
 
-            /* refresh on tab focus */
-            window.addEventListener('focus', () => {
-                orderData = getCustomerOrders();
-                populateTable();
-            });
+function deleteOrderItem(itemIndex) {
+    if (!currentOrderDetails || !confirm('Are you sure you want to delete this item?')) return;
+    currentOrderDetails.items.splice(itemIndex, 1);
+    updateOrderTotals();
+    viewOrder(orderData.findIndex(o => o.serialNo === currentOrderDetails.orderId));
+}
 
-            /* modal close handlers */
-            const modal = document.getElementById('orderHistoryModal');
-            const closeBtn = document.querySelector('.close-modal');
-            if (closeBtn) closeBtn.onclick = closeModal;
-            window.onclick = e => { if (e.target === modal) closeModal(); };
-            document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+function increaseQuantity(itemIndex) {
+    if (!currentOrderDetails) return;
+    const item = currentOrderDetails.items[itemIndex];
+    item.quantity += 1;
+    item.total = item.price * item.quantity;
+    updateOrderTotals();
+    viewOrder(orderData.findIndex(o => o.serialNo === currentOrderDetails.orderId));
+}
 
-            document.getElementById('updateOrderBtn').addEventListener('click', () => {
-                saveUpdatedOrder();
-            });
-        });
-    </script>
+function decreaseQuantity(itemIndex) {
+    if (!currentOrderDetails) return;
+    const item = currentOrderDetails.items[itemIndex];
+    if (item.quantity > 1) {
+        item.quantity -= 1;
+        item.total = item.price * item.quantity;
+        updateOrderTotals();
+        viewOrder(orderData.findIndex(o => o.serialNo === currentOrderDetails.orderId));
+    }
+}
+
+/* =========  SAVE MODAL CHANGES ========= */
+  /* =========  SAVE MODAL CHANGES ========= */
+    function saveUpdatedOrder() {
+        const orderIndex = orderData.findIndex(o => o.serialNo === currentOrderDetails.orderId);
+        if (orderIndex === -1) return;
+
+        const newQuantity = currentOrderDetails.items.reduce((sum, i) => sum + i.quantity, 0);
+        const newAmount = currentOrderDetails.items.reduce((sum, i) => sum + i.total, 0);
+
+        /* Update the existing order */
+        orderData[orderIndex] = {
+            ...orderData[orderIndex],
+            items: [...currentOrderDetails.items],
+            quantity: newQuantity,
+            amount: newAmount,
+            orderDate: new Date().toLocaleDateString('en-GB')
+        };
+
+        localStorage.setItem('orders_all', JSON.stringify(orderData));
+        
+        /* Also update the cart data for this customer */
+        const customerName = document.getElementById('modalCustomerName').textContent;
+        const cartData = JSON.parse(localStorage.getItem('cartData') || '{}');
+        cartData[customerName] = currentOrderDetails.items.reduce((acc, item) => {
+            acc[item.id] = item.quantity;
+            return acc;
+        }, {});
+        localStorage.setItem('cartData', JSON.stringify(cartData));
+
+        /* Redraw table and close modal */
+        populateTable();
+        closeModal();
+        showSuccessMessage("Order updated successfully!");
+    }
+
+    function showSuccessMessage(message) {
+        const successDiv = document.createElement('div');
+        successDiv.className = 'success-message';
+        successDiv.textContent = message;
+        document.body.appendChild(successDiv);
+        setTimeout(() => successDiv.remove(), 3000);
+    }
+
+function closeModal() {
+    document.getElementById('orderHistoryModal').style.display = 'none';
+}
+
+/* ========= status change handler ========= */
+function changeOrderStatus(orderIndex, newStatus) {
+    orderData[orderIndex].status = newStatus;
+    localStorage.setItem('orders_all', JSON.stringify(orderData));
+    populateTable();
+}
+
+/* ========= init ========= */
+document.addEventListener('DOMContentLoaded', function () {
+    updateCurrentDate();
+    orderData = getCustomerOrders();
+    populateTable();
+    setupSearch();
+
+    // ✅ Auto-filter to show only today's orders by default
+    const todayISO = new Date().toISOString().split('T')[0];
+    filterTableByDateRange(todayISO, todayISO);
+
+    setInterval(updateCurrentDate, 60000);
+
+
+    /* refresh on tab focus */
+    window.addEventListener('focus', () => {
+        orderData = getCustomerOrders();
+        populateTable();
+    });
+
+    /* modal close handlers */
+    const modal = document.getElementById('orderHistoryModal');
+    const closeBtn = document.querySelector('.close-modal');
+    if (closeBtn) closeBtn.onclick = closeModal;
+    window.onclick = e => { if (e.target === modal) closeModal(); };
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    document.getElementById('updateOrderBtn').addEventListener('click', () => {
+        saveUpdatedOrder();
+    });
+});
+
+function redirectToAddProducts() {
+    window.location.href = "order.html";
+}
+document.getElementById('addProductsFromModal').addEventListener('click', function () {
+    // Optional: pass current order/customer info if needed
+    // Example: store in localStorage so order.html can read it
+    const customerName = document.getElementById('modalCustomerName').textContent;
+    const customerPlace = document.getElementById('modalPlace').textContent;
+    const customerPhone = document.getElementById('modalCustomerPhone')?.textContent || '';
+
+    localStorage.setItem('selected_customer', JSON.stringify({
+        name: customerName,
+        place: customerPlace,
+        phone: customerPhone
+    }));
+    /* merge the modal items into the customer cart */
+const cartData = JSON.parse(localStorage.getItem('cartData') || '{}');
+const custKey = customerName;
+if (!cartData[custKey]) cartData[custKey] = {};
+
+currentOrderDetails.items.forEach(it => {
+    cartData[custKey][it.id] = it.quantity;   // id = product code
+});
+localStorage.setItem('cartData', JSON.stringify(cartData));
+
+    // Redirect to order.html
+    window.location.href = "{% url 'orders' %}";
+});
+
+
+</script>
 </body>
 </html>

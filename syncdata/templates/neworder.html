@@ -398,18 +398,39 @@
     if (!container.contains(e.target)) toggleDropdown(false);
   });
 
-  // Filter dropdown on typing
+  // Filter dropdown on typing - fixed version
   function handleFilter() {
     const keyword = this.value.toLowerCase();
-    const filtered = customerList.filter(c =>
-      c.name.toLowerCase().includes(keyword)
-    );
+    const filtered = customerList.filter(c => {
+      const nameMatch = c.name.toLowerCase().includes(keyword);
+      const phoneMatch = c.phone ? c.phone.toLowerCase().includes(keyword) : false;
+      return nameMatch || phoneMatch;
+    });
     populateDropdown(filtered);
     toggleDropdown(true);
   }
 
-  document.getElementById('customer').addEventListener('input', handleFilter);
-  document.querySelector('.dropdown-search input').addEventListener('input', handleFilter);
+  // Set up event listeners - fixed version
+  document.getElementById('customer').addEventListener('input', function(e) {
+    const keyword = e.target.value.toLowerCase();
+    const filtered = customerList.filter(c => {
+      const nameMatch = c.name.toLowerCase().includes(keyword);
+      const phoneMatch = c.phone ? c.phone.toLowerCase().includes(keyword) : false;
+      return nameMatch || phoneMatch;
+    });
+    populateDropdown(filtered);
+    toggleDropdown(true);
+  });
+
+  document.querySelector('.dropdown-search input').addEventListener('input', function(e) {
+    const keyword = e.target.value.toLowerCase();
+    const filtered = customerList.filter(c => {
+      const nameMatch = c.name.toLowerCase().includes(keyword);
+      const phoneMatch = c.phone ? c.phone.toLowerCase().includes(keyword) : false;
+      return nameMatch || phoneMatch;
+    });
+    populateDropdown(filtered);
+  });
 
   // Close on Escape
   document.addEventListener('keydown', e => {
@@ -463,7 +484,7 @@
             phone: existing.phone
         }));
     }
-});
+  });
 
 </script>
 
