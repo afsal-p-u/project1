@@ -61,7 +61,7 @@
 
         .welcome-text {
             text-align: center;
-            animation: welcomeSlideIn 1s ease-out forwards;
+          
         }
 
         @keyframes welcomeSlideIn {
@@ -287,37 +287,31 @@
             width: 100%;
         }
 
-      .add-btn {
-        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-        color: white;
-        border: none;
-        padding: 25px 32px; /* Bigger padding */
-        border-radius: 12px; /* Slightly more rounded */
-        font-size: 16px; /* Larger text */
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
-        height: 40px; /* Taller button */
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        max-width: 500px; /* Wider button */
-    }
-
      .add-btn {
-    width: 100%;
-    max-width: 700px; /* increase from 500px to 700px */
-    padding: 25px 50px; /* more horizontal padding */
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    /* Consistent sizing */
+    height: 40px;
+    padding: 0 24px;
+    width: auto;
+    min-width: 250px; /* Ensures button doesn't get too narrow */
 }
 
-
-        .add-btn:hover {
-            transform: translateY(-2px);
+            .add-btn:hover {
             box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
-        }
+    }
 
         .data-table {
             width: 100%;
@@ -995,10 +989,7 @@
                 justify-content: center;
             }
 
-            .add-btn {
-                max-width: none;
-            }
-
+           
             table {
                 font-size: 14px;
             }
@@ -1427,7 +1418,229 @@
     background-color: #EF4444;
     border-color: #DC2626;
 }
+/* === Compact Centered Date Filter with Modern Glow === */
+.content-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px; /* Less space below */
+}
 
+.date-section {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.date-range-filter {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 12px;
+    padding: 12px 18px; /* Smaller padding */
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.15);
+    transition: all 0.25s ease;
+    animation: subtleGlow 6s ease-in-out infinite;
+    max-width: 280px; /* Narrower card */
+}
+
+/* Glow Animation */
+@keyframes subtleGlow {
+    0% { box-shadow: 0 4px 15px rgba(59, 130, 246, 0.15); }
+    50% { box-shadow: 0 6px 20px rgba(59, 130, 246, 0.25); }
+    100% { box-shadow: 0 4px 15px rgba(59, 130, 246, 0.15); }
+}
+
+.date-range-filter:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.25);
+}
+
+.date-range-inputs {
+    gap: 6px; /* Less gap between inputs */
+    margin-bottom: 6px; /* Less space under inputs */
+}
+
+.date-range-input input {
+    font-size: 12px; /* Slightly smaller text */
+    padding: 4px;
+}
+
+.date-range-btn {
+    font-size: 11px; /* Smaller buttons */
+    padding: 4px 8px;
+}
+
+.search-bar {
+    flex: 1;
+    max-width: 500px;
+    margin-left: 10px; /* space from left edge */
+}
+
+.add-btn-container {
+    margin-right: 20px; /* space from right edge */
+}
+/* ===== Mobile view: Search + Add button same row ===== */
+@media (max-width: 767px) {
+    .controls-section {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .search-bar {
+        flex: 1;
+        max-width: none; /* allow it to stretch */
+    }
+
+    .search-bar input {
+        width: 100%;
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+
+    .add-btn-container {
+        flex-shrink: 0;
+        width: auto;
+    }
+
+    .add-btn {
+        padding: 10px 15px;
+        font-size: 14px;
+        max-width: none;
+        height: auto;
+        white-space: nowrap;
+    }
+}
+.dashboard-title {
+    text-align: center;
+    font-size: 20px;
+    font-weight: 700;
+    color: #1e3a8a;
+    margin-bottom: 10px; /* small gap before date filter */
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* ===== Lift up search & add button section ===== */
+.content-header {
+    margin-bottom: 0;
+    position: relative;
+    z-index: 1;
+    padding-bottom: 20px; /* Creates space for the lifted controls */
+}
+
+.controls-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: -80px;
+    margin-bottom: 15px;
+    width: 100%;
+    position: relative;
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* Enable pointer events on interactive elements */
+.search-bar, 
+.add-btn-container,
+.search-bar input,
+.add-btn {
+    pointer-events: auto;
+}
+
+/* Make search bar taller & match filter buttons */
+.search-bar {
+    flex: 1;
+}
+
+.search-bar input {
+    width: 100%;
+    height: 40px;
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 2px solid #3b82f6;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(59, 130, 246, 0.1);
+}
+
+.search-bar input:focus {
+    outline: none;
+    border-color: #1e40af;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Adjust "Add Customer" button */
+.add-btn-container {
+    flex-shrink: 0;
+}
+
+.add-btn {
+    height: 40px;
+    padding: 0 20px;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+}
+
+.add-btn:hover {
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+}
+
+/* Ensure date filter buttons match */
+.date-range-btn {
+    height: 40px;
+    padding: 0 15px;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex: 1;
+    max-width: 120px;
+}
+
+/* ===== Mobile View Adjustments ===== */
+@media (max-width: 767px) {
+    .controls-section {
+        margin-top: -80px;
+        gap: 8px;
+    }
+
+    .search-bar input {
+        padding: 10px 12px;
+        font-size: 14px;
+        height: 38px;
+    }
+
+    .add-btn {
+        padding: 0 15px;
+        font-size: 14px;
+        height: 38px;
+        min-width: auto;
+        border-radius: 8px;
+    }
+
+    .date-range-btn {
+        height: 38px;
+        padding: 0 12px;
+    }
+}
 
     </style>
 </head>
@@ -1448,28 +1661,31 @@
         </div>
 
         <div class="main-content">
-            <div class="content-header">
-               <div class="content-title">Dashboard Overview</div>
+            <h2 class="dashboard-title">Dashboard Overview</h2>
 
-                <div class="date-section">
-                    <div class="date-range-filter">
-                        <div class="date-range-filter-label">Filter by Date Range</div>
-                        <div class="date-range-inputs">
-                            <div class="date-range-input">
-                                <label for="fromDate">From</label>
-                                <input type="date" id="fromDate" title="Start date">
-                            </div>
-                            <div class="date-range-input">
-                                <label for="toDate">To</label>
-                                <input type="date" id="toDate" title="End date">
-                            </div>
-                        </div>
-                        <div class="date-range-actions">
-                            <button class="date-range-btn apply" onclick="applyDateRangeFilter()">Apply</button>
-                              <button class="date-range-btn clear" onclick="clearDateRangeFilter()">Back To Dashboard</button>
-                        </div>
-                    </div>
+            
+           <div class="content-header">
+    <div class="date-section">
+        <div class="date-range-filter">
+            <div class="date-range-filter-label">Filter by Date Range</div>
+            <div class="date-range-inputs">
+                <div class="date-range-input">
+                    <label for="fromDate">From</label>
+                    <input type="date" id="fromDate" title="Start date">
                 </div>
+                <div class="date-range-input">
+                    <label for="toDate">To</label>
+                    <input type="date" id="toDate" title="End date">
+                </div>
+            </div>
+            <div class="date-range-actions">
+                <button class="date-range-btn apply" onclick="applyDateRangeFilter()">Apply</button>
+                <button class="date-range-btn clear" onclick="clearDateRangeFilter()">Back To Dashboard</button>
+            </div>
+        </div>
+    </div>
+</div>
+
             </div>
             <div class="controls-section">
                 <div class="search-bar ">
@@ -1477,7 +1693,7 @@
                 </div>
 
                 <div class="add-btn-container">
-                    <a href="{% url 'neworder' %}" class="add-btn">+ Add</a>
+                    <a href="{% url 'neworder' %}" class="add-btn">+ Add Customer</a>
                 </div>
             </div>
 
@@ -1760,7 +1976,7 @@ function viewOrder(orderIndex) {
         orderId: order.serialNo,
         orderDate: order.orderDate,
         customerName: order.customer,
-        place: order.place || '-',
+        place: order.place || 'Unknown', // Provide a default value if place is missing
         createdBy: 'System',
         createdOn: `${order.orderDate} ${new Date().getHours()}:${String(new Date().getMinutes()).padStart(2, '0')}`,
         items: order.items
@@ -1770,7 +1986,7 @@ function viewOrder(orderIndex) {
     document.getElementById('modalOrderId').textContent   = currentOrderDetails.orderId;
     document.getElementById('modalOrderDate').textContent = currentOrderDetails.orderDate;
     document.getElementById('modalCustomerName').textContent = currentOrderDetails.customerName;
-    document.getElementById('modalPlace').textContent  = currentOrderDetails.place;
+    document.getElementById('modalPlace').textContent  = currentOrderDetails.place; // This will now show 'Unknown' if place is missing
     document.getElementById('modalCreatedBy').textContent = currentOrderDetails.createdBy;
     document.getElementById('modalCreatedOn').textContent = currentOrderDetails.createdOn;
 
@@ -1820,18 +2036,86 @@ function updateOrderTotals() {
 
 function deleteOrderItem(itemIndex) {
     if (!currentOrderDetails || !confirm('Are you sure you want to delete this item?')) return;
+    
+    // Get the item being deleted
+    const deletedItem = currentOrderDetails.items[itemIndex];
+    
+    // Remove from current order details
     currentOrderDetails.items.splice(itemIndex, 1);
+    
+    // Find and update the main order data
+    const orderIndex = orderData.findIndex(o => o.serialNo === currentOrderDetails.orderId);
+    if (orderIndex !== -1) {
+        // Update the main order with new items array
+        orderData[orderIndex].items = [...currentOrderDetails.items];
+        
+        // Recalculate totals
+        const newQuantity = currentOrderDetails.items.reduce((sum, item) => sum + item.quantity, 0);
+        const newAmount = currentOrderDetails.items.reduce((sum, item) => sum + item.total, 0);
+        
+        orderData[orderIndex].quantity = newQuantity;
+        orderData[orderIndex].amount = newAmount;
+        
+        // Save to localStorage
+        localStorage.setItem('orders_all', JSON.stringify(orderData));
+    }
+    
+    // Update the cart data to remove this item
+    const customerName = document.getElementById('modalCustomerName').textContent;
+    const cartData = JSON.parse(localStorage.getItem('cartData') || '{}');
+    
+    if (cartData[customerName] && deletedItem) {
+        // Remove the deleted item from cart
+        delete cartData[customerName][deletedItem.id];
+        localStorage.setItem('cartData', JSON.stringify(cartData));
+    }
+    
+    // Update modal display
     updateOrderTotals();
-    viewOrder(orderData.findIndex(o => o.serialNo === currentOrderDetails.orderId));
+    
+    // Refresh the modal view
+    viewOrder(orderIndex);
+    
+    // Refresh the main table
+    populateTable();
+    
+    // Show success message
+    showSuccessMessage(`${deletedItem.name} has been removed from the order`);
 }
 
+// Also update the increaseQuantity and decreaseQuantity functions to sync properly
 function increaseQuantity(itemIndex) {
     if (!currentOrderDetails) return;
     const item = currentOrderDetails.items[itemIndex];
     item.quantity += 1;
     item.total = item.price * item.quantity;
+    
+    // Sync with main order data
+    const orderIndex = orderData.findIndex(o => o.serialNo === currentOrderDetails.orderId);
+    if (orderIndex !== -1) {
+        orderData[orderIndex].items = [...currentOrderDetails.items];
+        
+        // Recalculate totals
+        const newQuantity = currentOrderDetails.items.reduce((sum, item) => sum + item.quantity, 0);
+        const newAmount = currentOrderDetails.items.reduce((sum, item) => sum + item.total, 0);
+        
+        orderData[orderIndex].quantity = newQuantity;
+        orderData[orderIndex].amount = newAmount;
+        
+        localStorage.setItem('orders_all', JSON.stringify(orderData));
+    }
+    
+    // Update cart data
+    const customerName = document.getElementById('modalCustomerName').textContent;
+    const cartData = JSON.parse(localStorage.getItem('cartData') || '{}');
+    if (cartData[customerName]) {
+        cartData[customerName][item.id] = item.quantity;
+        localStorage.setItem('cartData', JSON.stringify(cartData));
+    }
+    
     updateOrderTotals();
-    viewOrder(orderData.findIndex(o => o.serialNo === currentOrderDetails.orderId));
+    viewOrder(orderIndex);
+    populateTable();
 }
 
 function decreaseQuantity(itemIndex) {
@@ -1840,12 +2124,35 @@ function decreaseQuantity(itemIndex) {
     if (item.quantity > 1) {
         item.quantity -= 1;
         item.total = item.price * item.quantity;
+        
+        // Sync with main order data
+        const orderIndex = orderData.findIndex(o => o.serialNo === currentOrderDetails.orderId);
+        if (orderIndex !== -1) {
+            orderData[orderIndex].items = [...currentOrderDetails.items];
+            
+            // Recalculate totals
+            const newQuantity = currentOrderDetails.items.reduce((sum, item) => sum + item.quantity, 0);
+            const newAmount = currentOrderDetails.items.reduce((sum, item) => sum + item.total, 0);
+            
+            orderData[orderIndex].quantity = newQuantity;
+            orderData[orderIndex].amount = newAmount;
+            
+            localStorage.setItem('orders_all', JSON.stringify(orderData));
+        }
+        
+        // Update cart data
+        const customerName = document.getElementById('modalCustomerName').textContent;
+        const cartData = JSON.parse(localStorage.getItem('cartData') || '{}');
+        if (cartData[customerName]) {
+            cartData[customerName][item.id] = item.quantity;
+            localStorage.setItem('cartData', JSON.stringify(cartData));
+        }
+        
         updateOrderTotals();
-        viewOrder(orderData.findIndex(o => o.serialNo === currentOrderDetails.orderId));
+        viewOrder(orderIndex);
+        populateTable();
     }
 }
-
-/* =========  SAVE MODAL CHANGES ========= */
   /* =========  SAVE MODAL CHANGES ========= */
     function saveUpdatedOrder() {
         const orderIndex = orderData.findIndex(o => o.serialNo === currentOrderDetails.orderId);
@@ -1935,31 +2242,70 @@ function redirectToAddProducts() {
     window.location.href = "order.html";
 }
 document.getElementById('addProductsFromModal').addEventListener('click', function () {
-    // Optional: pass current order/customer info if needed
-    // Example: store in localStorage so order.html can read it
+    // Get current order details
     const customerName = document.getElementById('modalCustomerName').textContent;
     const customerPlace = document.getElementById('modalPlace').textContent;
     const customerPhone = document.getElementById('modalCustomerPhone')?.textContent || '';
 
+    // Store customer info for order.html
     localStorage.setItem('selected_customer', JSON.stringify({
         name: customerName,
         place: customerPlace,
         phone: customerPhone
     }));
-    /* merge the modal items into the customer cart */
-const cartData = JSON.parse(localStorage.getItem('cartData') || '{}');
-const custKey = customerName;
-if (!cartData[custKey]) cartData[custKey] = {};
 
-currentOrderDetails.items.forEach(it => {
-    cartData[custKey][it.id] = it.quantity;   // id = product code
-});
-localStorage.setItem('cartData', JSON.stringify(cartData));
+    // Get existing cart data
+    const cartData = JSON.parse(localStorage.getItem('cartData') || '{}');
+    const custKey = customerName;
+    if (!cartData[custKey]) cartData[custKey] = {};
 
-    // Redirect to order.html
+    // Only add current modal items to cart (this represents the current state)
+    // The cart will show current quantities, and when placing order,
+    // only NEW additions beyond the original order will be processed
+    currentOrderDetails.items.forEach(item => {
+        cartData[custKey][item.id] = item.quantity;
+    });
+
+    localStorage.setItem('cartData', JSON.stringify(cartData));
+
+    // Close modal and redirect
+    closeModal();
     window.location.href = "{% url 'orders' %}";
 });
 
+// Also update the saveUpdatedOrder function to handle the original order properly
+function saveUpdatedOrder() {
+    const orderIndex = orderData.findIndex(o => o.serialNo === currentOrderDetails.orderId);
+    if (orderIndex === -1) return;
+
+    const newQuantity = currentOrderDetails.items.reduce((sum, i) => sum + i.quantity, 0);
+    const newAmount = currentOrderDetails.items.reduce((sum, i) => sum + i.total, 0);
+
+    /* Update the existing order */
+    orderData[orderIndex] = {
+        ...orderData[orderIndex],
+        items: [...currentOrderDetails.items],
+        quantity: newQuantity,
+        amount: newAmount,
+        orderDate: new Date().toLocaleDateString('en-GB')
+    };
+
+    localStorage.setItem('orders_all', JSON.stringify(orderData));
+    
+    /* Update cart to reflect current order state */
+    const customerName = document.getElementById('modalCustomerName').textContent;
+    const cartData = JSON.parse(localStorage.getItem('cartData') || '{}');
+    cartData[customerName] = currentOrderDetails.items.reduce((acc, item) => {
+        acc[item.id] = item.quantity;
+        return acc;
+    }, {});
+    localStorage.setItem('cartData', JSON.stringify(cartData));
+
+    /* Redraw table and close modal */
+    populateTable();
+    closeModal();
+    showSuccessMessage("Order updated successfully!");
+}
 
 </script>
 </body>
