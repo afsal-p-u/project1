@@ -865,26 +865,36 @@
 
     /* ----------  Cart Functions  ---------- */
     function addToCart(productCode) {
-        const qty = selectedQuantities[productCode] || 1;
-        cartQuantities[productCode] = (cartQuantities[productCode] || 0) + qty;
+    const qty = selectedQuantities[productCode] || 1;
 
-        const product = products.find(p => p.code === productCode);
-        showSuccessMessage(`${product.name} added (${cartQuantities[productCode]} total)`);
-
-        selectedQuantities[productCode] = 0;
-        updateQuantityDisplay(productCode);
-        updateQuantityButtons(productCode);
-        updateAddToCartButton(productCode);
-        updateCartBadge();
-        updateProductHighlights();
-
-        const inCartEl = document.getElementById(`in-cart-${productCode}`);
-        if (inCartEl) {
-            inCartEl.textContent = `In cart: ${cartQuantities[productCode]}`;
-            inCartEl.style.display = 'block';
+    // If product already in cart, update only if quantity changed
+    if (cartQuantities[productCode]) {
+        if (qty !== cartQuantities[productCode]) {
+            cartQuantities[productCode] = qty;
         }
-        saveCartToLocalStorage();
+    } else {
+        // New product → set quantity
+        cartQuantities[productCode] = qty;
     }
+
+    const product = products.find(p => p.code === productCode);
+    showSuccessMessage(`${product.name} added (${cartQuantities[productCode]} total)`);
+
+    selectedQuantities[productCode] = 0;
+    updateQuantityDisplay(productCode);
+    updateQuantityButtons(productCode);
+    updateAddToCartButton(productCode);
+    updateCartBadge();
+    updateProductHighlights();
+
+    const inCartEl = document.getElementById(`in-cart-${productCode}`);
+    if (inCartEl) {
+        inCartEl.textContent = `In cart: ${cartQuantities[productCode]}`;
+        inCartEl.style.display = 'block';
+    }
+    saveCartToLocalStorage();
+}
+
 
     function updateCartBadge() {
         const cartBadge = document.getElementById('cartBadge');
