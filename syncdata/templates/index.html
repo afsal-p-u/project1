@@ -1446,6 +1446,17 @@
     100% { box-shadow: 0 4px 15px rgba(59, 130, 246, 0.15); }
 }
 
+/* ===== Dashboard Title ===== */
+.dashboard-title {
+    text-align: center;
+    font-size: 20px;
+    font-weight: 700;
+    color: #1e3a8a;
+    margin-bottom: 10px; /* Gap before date filter */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== Date Range Filter Styling ===== */
 .date-range-filter:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(59, 130, 246, 0.25);
@@ -1457,101 +1468,39 @@
 }
 
 .date-range-input input {
-    font-size: 12px; /* Slightly smaller text */
+    font-size: 12px;
     padding: 4px;
 }
 
 .date-range-btn {
-    font-size: 11px; /* Smaller buttons */
+    font-size: 11px;
     padding: 4px 8px;
 }
 
-.search-bar {
-    flex: 1;
-    max-width: 500px;
-    margin-left: 10px; /* space from left edge */
-}
-
-.add-btn-container {
-    margin-right: 20px; /* space from right edge */
-}
-/* ===== Mobile view: Search + Add button same row ===== */
-@media (max-width: 767px) {
-    .controls-section {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        gap: 8px;
-        width: 100%;
-    }
-
-    .search-bar {
-        flex: 1;
-        max-width: none; /* allow it to stretch */
-    }
-
-    .search-bar input {
-        width: 100%;
-        padding: 10px 15px;
-        font-size: 14px;
-    }
-
-    .add-btn-container {
-        flex-shrink: 0;
-        width: auto;
-    }
-
-    .add-btn {
-        padding: 10px 15px;
-        font-size: 14px;
-        max-width: none;
-        height: auto;
-        white-space: nowrap;
-    }
-}
-.dashboard-title {
-    text-align: center;
-    font-size: 20px;
-    font-weight: 700;
-    color: #1e3a8a;
-    margin-bottom: 10px; /* small gap before date filter */
-    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-}
-
-/* ===== Lift up search & add button section ===== */
+/* ===== Content Header ===== */
 .content-header {
-    margin-bottom: 0;
-    position: relative;
-    z-index: 1;
-    padding-bottom: 30px; /* Creates space for the lifted controls */
+    padding-top: 10px; /* Reduced top padding */
+    margin-top: 0;
+    position: relative; /* Allow absolute/relative positioning inside */
 }
 
+/* ===== Controls Section (Search + Add Button) ===== */
 .controls-section {
     display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-top: -100px; /* Increased lift to -100px */
-    margin-bottom: 15px;
+    flex-direction: column; /* Stacked layout */
+    align-items: flex-start;
+    gap: 10px;
     width: 100%;
-    position: relative;
-    z-index: 2;
-    pointer-events: none;
-    padding-left: 20px; /* Added left padding */
-    margin-right: -20px; /* Compensate for padding */
+    position: relative; /* Enable z-index control */
+    top: 20px; /* Lift without overlapping */
+    z-index: 10; /* Keep clickable above others */
 }
 
-/* Enable pointer events on interactive elements */
-.search-bar, 
-.add-btn-container,
-.search-bar input,
-.add-btn {
-    pointer-events: auto;
-}
-
-/* Search bar styling */
+/* ===== Search Bar ===== */
 .search-bar {
-    flex: 1;
-    margin-right: 10px; /* Space between search and button */
+    width: 100%;
+    max-width: 500px; /* Restrict max size on desktop */
+    margin-left: 10px; /* Space from left edge */
 }
 
 .search-bar input {
@@ -1565,12 +1514,13 @@
     box-shadow: 0 2px 10px rgba(59, 130, 246, 0.1);
 }
 
-/* Add Customer button styling */
+/* ===== Add Button Container ===== */
 .add-btn-container {
-    flex-shrink: 0;
-    margin-left: 0; /* Remove any default left margin */
+    margin-top: 10px;
+    margin-right: 20px; /* Space from right edge */
 }
 
+/* ===== Add Button Styling ===== */
 .add-btn {
     height: 40px;
     padding: 0 20px;
@@ -1589,106 +1539,46 @@
     white-space: nowrap;
 }
 
-
+/* ===== Mobile View ===== */
 @media (max-width: 767px) {
+    /* Controls in a row for mobile */
     .controls-section {
-        display: flex;
-        flex-direction: column; /* stack vertically */
-        gap: 10px;
-        margin-top: -30px; /* Adjust this value if needed */
-        padding: 0 12px;
-        width: 100%;
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+        top: 0; /* No lift needed */
+        margin-top: 15px;
     }
 
-    /* Both elements same width */
-    .search-bar,
-    .add-btn-container {
-        width: 100%;
+    .search-bar {
+        flex: 1;
+        max-width: none; /* Allow full stretch */
     }
 
-    /* Search box styling */
     .search-bar input {
-        width: 100%;
-        padding: 12px 15px;
+        padding: 10px 12px;
         font-size: 14px;
-        height: 42px; /* Set the same height as the button */
-        border: 2px solid #2563eb;
-        border-radius: 10px;
-        background: #fff;
-        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.15);
-        transition: all 0.3s ease;
-        margin-bottom: 5px; /* Uplift the search bar */
+        height: 38px;
     }
 
-    .search-bar input:focus {
-        border-color: #1e40af;
-        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
+    .add-btn-container {
+        flex-shrink: 0;
+        width: auto;
+        margin-top: 0;
     }
 
-    /* Add Customer button styling */
     .add-btn {
-        width: 100%;
-        height: 42px; /* Set the same height as the search bar */
-        padding: 0 15px; /* Add padding to match the search bar */
-        font-size: 14px; /* Match the font size of the search bar */
-        font-weight: 600;
-        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-        color: white;
-        border: 2px solid #2563eb; /* Add border to match the search bar */
-        border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.15); /* Match the box shadow of the search bar */
-        transition: all 0.3s ease;
-        cursor: pointer; /* Add pointer cursor on hover */
-        text-align: center; /* Centers the text in the button */
-         margin-left: 10px;
-    }
-
-    .add-btn:hover {
-        background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
-        transform: translateY(-1px);
-        box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+        width: auto;
+        padding: 10px 15px;
+        font-size: 14px;
+        height: 38px;
+        border-radius: 8px;
+        white-space: nowrap;
     }
 }
-/* Apply necessary styles to lift up the search bars */
-.content-header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 15px; /* Adjust this value as needed */
-}
 
-.controls-section {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    margin-bottom: 20px; /* Space below the search bars */
-    margin-top: -90px; /* Adjust this value to position search bars under the date filter */
-    padding-top: 50px; /* Add padding to prevent overlap with date filter */
-    width: 100%;
-    position: relative;
-    z-index: 2;
-}
 
-.search-bar {
-    margin-bottom: 10px;
-    width: 100%;
-}
-
-.search-bar input {
-    width: 100%;
-    padding: 10px;
-    border: 2px solid #3b82f6;
-    border-radius: 8px;
-    font-size: 14px;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 10px rgba(59, 130, 246, 0.1);
-}
-
-/* Optional: Adjust the styles for the date filter container if needed */
-.date-range-filter {
-    margin-bottom: -150px; /* Space below the date filter */
-}
-</style>
+    </style>
 </head>
 <body>
     <div class="container">
@@ -1716,11 +1606,11 @@
             <!-- <div class="date-range-filter-label">Filter by Date Range</div> -->
             <div class="date-range-inputs">
                 <div class="date-range-input">
-                    <!-- <label for="fromDate">From</label> -->
+                    <label for="fromDate">From</label>
                     <input type="date" id="fromDate" title="Start date">
                 </div>
                 <div class="date-range-input">
-                    <!-- <label for="toDate">To</label> -->
+                    <label for="toDate">To</label>
                     <input type="date" id="toDate" title="End date">
                 </div>
             </div>
@@ -1737,11 +1627,11 @@
                 <div class="search-bar ">
                     <input type="text" id="searchInput" placeholder=" Search by Customer Name or Phone Number">
                 </div>
-            <div class="search-bar search-by-id">
-                <input type="text" id="searchByIdInput" placeholder="Search by Entry Number or Order ID">
-            </div>
-                <div class="add-btn-container">
-                    <a href="{% url 'neworder' %}" class="add-btn">+ New Order</a>
+              <div class="search-bar">
+                  <input type="text" id="searchInputOrder" placeholder="Search by Entry Number or Order ID">
+             </div>
+            <div class="add-btn-container">
+                    <a href="{% url 'neworder' %}" class="add-btn">+ Add Customer</a>
                 </div>
             </div>
 
@@ -1773,6 +1663,52 @@
     <div id="orderHistoryModal" class="modal">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
+            
+            <div class="modal-header">
+                <h2 class="modal-title">Order Details</h2>
+<div class="order-info-grid">
+    <div class="info-item">
+        <span class="info-label">Order ID:</span>
+        <span class="info-value" id="modalOrderId">ORD-2024-001</span>
+    </div>
+    <div class="info-item">
+        <span class="info-label">Order Date:</span>
+        <span class="info-value" id="modalOrderDate">2024-07-12</span>
+    </div>
+    <div class="info-item">
+        <span class="info-label">Created By:</span>
+        <span class="info-value" id="modalCreatedBy">Admin User</span>
+    </div>
+    <div class="info-item">
+        <span class="info-label">Customer:</span>
+        <span class="info-value" id="modalCustomerName">John Doe</span>
+    </div>
+    <div class="info-item">
+        <span class="info-label">Created On:</span>
+        <span class="info-value" id="modalCreatedOn">2024-07-12 10:30 AM</span>
+    </div>
+    <div class="info-item">
+        <span class="info-label">Place:</span>
+        <span class="info-value" id="modalPlace">Downtown Store</span>
+    </div>
+</div>
+
+
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <div class="stat-label">Item Types</div>
+                        <div class="stat-value" id="modalItemTotal">4</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Total Items</div>
+                        <div class="stat-value" id="modalItemCount">14</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Bill Total</div>
+                        <div class="stat-value rupee" id="modalBillTotal">59.00</div>
+                    </div>
+                </div>
+            </div>
 
             <div class="modal-body">
                 <div class="modal-table-container">
@@ -1836,7 +1772,8 @@ const userInfoText = document.getElementById('userInfoText');
 const userId = localStorage.getItem('user_id');
 const clientId = localStorage.getItem('client_id');
 if (userId && clientId) {
-    userInfoText.textContent = `ID: ${clientId} | USERID: ${userId}`;
+   userInfoText.innerHTML = `ID: ${clientId}<br>USERID: ${userId}`;
+
 } else {
     userInfoText.textContent = "User not logged in";
 }
@@ -1850,42 +1787,9 @@ function updateCurrentDate() {
 }
 
 /* ========= populate table ========= */
-document.addEventListener('DOMContentLoaded', function () {
-    const userId = localStorage.getItem('user_id');
-    updateCurrentDate();
-    orderData = getCustomerOrders();
-    populateTable();
-    setupSearch();
-
-    // ✅ Auto-filter to show only today's orders by default
-    const todayISO = new Date().toISOString().split('T')[0];
-    filterTableByDateRange(todayISO, todayISO);
-
-    setInterval(updateCurrentDate, 60000);
-
-    // refresh on tab focus
-    window.addEventListener('focus', () => {
-        orderData = getCustomerOrders();
-        populateTable();
-    });
-
-    // modal close handlers
-    const modal = document.getElementById('orderHistoryModal');
-    const closeBtn = document.querySelector('.close-modal');
-    if (closeBtn) closeBtn.onclick = closeModal;
-    window.onclick = e => { if (e.target === modal) closeModal(); };
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-
-    document.getElementById('updateOrderBtn').addEventListener('click', () => {
-        saveUpdatedOrder();
-    });
-});
-
 function populateTable() {
     const tableBody = document.getElementById('orderTableBody');
     tableBody.innerHTML = '';
-
-    const userId = localStorage.getItem('user_id'); // Get userId once and use it for all orders
 
     orderData.forEach((order, index) => {
         const row = document.createElement('tr');
@@ -1896,12 +1800,15 @@ function populateTable() {
         // Ensure every order has a status; default to "Pending"
         if (!order.status) order.status = 'Pending';
 
+        // Get the logged-in user's ID
+        const userId = localStorage.getItem('user_id') || "Unknown";
+
         row.innerHTML = `
             <td>${order.serialNo}</td>
             <td><span class="order-date">${order.orderDate}</span></td>
-            <td>${userId || 'N/A'}</td> <!-- Use userId as Created By -->
+            <td>${userId}</td> <!-- New column data -->
             <td><div class="customer-name">${order.customer}</div></td>
-            <td class="customer-phone">${order.phone || 'N/A'}</td>
+            <td class="customer-phone">${order.phone}</td>
             <td><div class="quantity-wrapper"><span class="quantity">${order.quantity}</span></div></td>
             <td><span class="amount rupee">${formatPrice(order.amount)}</span></td>
             <td>
@@ -1926,14 +1833,8 @@ function populateTable() {
         tableBody.appendChild(row);
     });
 }
-
 /* ========= search ========= */
-document.addEventListener('DOMContentLoaded', function () {
-    setupSearch();
-});
-
 function setupSearch() {
-    // Event listener for searching by customer name or phone number
     document.getElementById('searchInput').addEventListener('input', function () {
         const filter = this.value.toLowerCase();
         const rows = document.querySelectorAll('#orderTableBody tr');
@@ -1941,25 +1842,7 @@ function setupSearch() {
         rows.forEach(row => {
             const customerName = row.querySelector('.customer-name').textContent.toLowerCase();
             const phoneNumber = row.querySelector('.customer-phone').textContent.toLowerCase();
-            const orderID = row.querySelector('td:nth-child(1)').textContent.toLowerCase();
-            const entryNumber = row.getAttribute('data-id').toLowerCase(); // Assuming entry number is stored in data-id attribute
-
-            const rowText = customerName + ' ' + phoneNumber + ' ' + orderID + ' ' + entryNumber;
-
-            row.style.display = rowText.includes(filter) ? '' : 'none';
-        });
-    });
-
-    // Event listener for searching by entry number or order ID
-    document.getElementById('searchByIdInput').addEventListener('input', function () {
-        const filter = this.value.toLowerCase();
-        const rows = document.querySelectorAll('#orderTableBody tr');
-
-        rows.forEach(row => {
-            const orderID = row.querySelector('td:nth-child(1)').textContent.toLowerCase();
-            const entryNumber = row.getAttribute('data-id').toLowerCase(); // Assuming entry number is stored in data-id attribute
-
-            const rowText = orderID + ' ' + entryNumber;
+            const rowText = customerName + ' ' + phoneNumber;
 
             row.style.display = rowText.includes(filter) ? '' : 'none';
         });
