@@ -5,1539 +5,328 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>Dashboard Overview</title>
     <style>
-              * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f3ff 0%, #ddd6fe 100%);
-            min-height: 100vh;
-            padding: 20px;
-            -webkit-tap-highlight-color: transparent;
-            -webkit-touch-callout: none;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.98);
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-        }
-
-        .header {
-            background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
-            color: white;
-            padding: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
-            opacity: 0.3;
-        }
-
-        .header-content {
-            position: relative;
-            z-index: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            width: 100%;
-        }
-
-        .welcome-text {
-            text-align: center;
-          
-        }
-
-        @keyframes welcomeSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .welcome-text h2 {
-            margin: 0;
-            font-size: 24px;
-            font-weight: 700;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            background: linear-gradient(to right, #ffffff, #e0e7ff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: textGlow 2s ease-in-out infinite alternate;
-        }
-
-        @keyframes textGlow {
-            from {
-                text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
-            }
-            to {
-                text-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
-            }
-        }
-
-        .user-info {
-            text-align: center;
-            animation: fadeIn 1s ease-out 0.5s both;
-            order: 1;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .user-info p {
-            margin: 0;
-            font-size: 14px;
-            color: #e0e7ff;
-        }
-
-        .header-actions {
-            display: flex;
-            justify-content: center;
-            order: 3;
-            width: 100%;
-        }
-
-        .main-content {
-            padding: 20px;
-        }
-
-      
-        .content-title {
-            color: #1e40af;
-            font-size: 24px;
-            font-weight: 600;
-            text-align: center;
-            order: 1;
-        }
-
-      
- /* Date Filter Styles */
-    .date-range-filter {
-    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-    border: 2px solid #3b82f6;
-    border-radius: 12px;
-    padding: 15px;
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.15);
-    width: 100%;
-    max-width: 600px; /* Increased width */
-   
+/* ================== RESET & BASE ================== */
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+  background:linear-gradient(135deg,#f5f3ff 0%,#ddd6fe 100%);
+  min-height:100vh;
+  padding:20px;
+  -webkit-tap-highlight-color:transparent;
+  -webkit-touch-callout:none;
+}
+.container{
+  max-width:1400px;margin:0 auto;background:rgba(255,255,255,.98);
+  border-radius:20px;box-shadow:0 20px 40px rgba(0,0,0,.1);overflow:hidden;
+  backdrop-filter:blur(10px);
 }
 
-.date-range-filter-label {
-    font-size: 12px;
-    color: #1e40af;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 10px;
-    font-weight: 600;
-    text-align: center;
+/* ================== HEADER ================== */
+.header{
+  background:linear-gradient(135deg,#1e40af 0%,#2563eb 100%);
+  color:#fff;padding:20px;position:relative;overflow:hidden;
+}
+.header::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+  opacity:.3
+}
+.header-content{
+  position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:15px;width:100%;
+}
+.welcome-text{text-align:center}
+@keyframes textGlow{from{text-shadow:0 0 5px rgba(255,255,255,.5)}to{text-shadow:0 0 15px rgba(255,255,255,.8)}}
+.welcome-text h2{
+  margin:0;font-size:24px;font-weight:700;animation:textGlow 2s ease-in-out infinite alternate;
+  background:linear-gradient(to right,#fff,#e0e7ff);-webkit-background-clip:text;background-clip:text;color:transparent
+}
+.user-info{text-align:center;animation:fadeIn 1s ease-out .5s both;order:1}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.user-info p{margin:0;font-size:14px;color:#e0e7ff}
+.header-actions{display:flex;justify-content:center;order:3;width:100%}
+.logout-button{
+  padding:10px 20px;background:#e63946;color:#fff;border:0;border-radius:6px;font-size:16px;cursor:pointer;
+  transition:background-color .3s ease;width:100%;max-width:120px
+}
+.logout-button:hover{background:#d62828}
+.logout-button:active{background:#b71c1c}
+
+/* ================== MAIN ================== */
+.main-content{padding:20px;position:relative}
+
+/* ======== DATE FILTER (in header band) ======== */
+.content-header{
+  position:absolute; /* let the date card float at the top-right of main content */
+  right:24px;
+  top:-12px;         /* LIFTED a little more as you asked */
+  width:auto;
+}
+.date-section{display:flex}
+.date-range-filter{
+  background:rgba(255,255,255,.15);backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.25);border-radius:12px;padding:12px 18px;
+  box-shadow:0 4px 15px rgba(59,130,246,.15);transition:all .25s ease;
+  animation:subtleGlow 6s ease-in-out infinite;max-width:280px;
+}
+@keyframes subtleGlow{
+  0%{box-shadow:0 4px 15px rgba(59,130,246,.15)}
+  50%{box-shadow:0 6px 20px rgba(59,130,246,.25)}
+  100%{box-shadow:0 4px 15px rgba(59,130,246,.15)}
+}
+.date-range-filter:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(59,130,246,.25)}
+.date-range-inputs{display:flex;gap:10px;margin-bottom:10px}
+.date-range-input{flex:1;display:flex;flex-direction:column;gap:5px}
+.date-range-input label{font-size:11px;color:#1e40af;font-weight:600;text-align:center}
+.date-range-input input{
+  width:100%;border:0;background:transparent;color:#1e40af;font-weight:700;font-size:13px;text-align:center;cursor:pointer;
+  font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;padding:6px;border-bottom:1px solid #dbeafe
+}
+.date-range-input input:focus{outline:none;border-bottom-color:#3b82f6}
+.date-range-input input::-webkit-calendar-picker-indicator{cursor:pointer;color:#1e40af;opacity:.7}
+.date-range-actions{display:flex;gap:10px;justify-content:center}
+.date-range-btn{
+  padding:6px 12px;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s ease;flex:1;max-width:120px
+}
+.date-range-btn.apply{background:#3b82f6;color:#fff}
+.date-range-btn.clear{background:#e2e8f0;color:#1e40af;border:1px solid #3b82f6}
+.date-range-btn:hover{opacity:.9;transform:translateY(-1px)}
+
+/* ======== CONTROLS ROW (Search (stacked) + Add button centered) ======== */
+.controls-section{
+  /* grid lets us stack the two search bars and keep the +New order button centered */
+  display:grid;
+  grid-template-columns: auto auto;    /* col 1: stacked searches, col 2: button */
+  column-gap:24px;
+  align-items:start;
+  margin-top:76px;  /* space below the floating date filter so nothing collides */
+  width:100%;
 }
 
-.date-range-inputs {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
+/* both search bars live in column 1 and naturally stack as two rows */
+.controls-section .search-bar{
+  grid-column:1;
+  width:360px;      /* nice width on desktop; adjust if you want */
+  max-width:100%;
+}
+.search-bar input{
+  width:100%;padding:10px 12px;border:2px solid #3b82f6;border-radius:8px;background:#fff;font-size:14px;outline:none;box-sizing:border-box
+}
+.search-bar + .search-bar{ margin-top:15px; } /* little gap between stacked inputs */
+ 
+.search-bar input:focus{border-color:#2563eb;box-shadow:0 0 5px rgba(59,130,246,.3)}
+.search-bar input:hover{border-color:#2563eb}
+
+/* center the button in column 2 */
+.add-btn-container{
+  grid-column:2;
+  justify-self:center;  /* CENTERED as requested */
+  align-self:start;
+}
+.add-btn{
+  background:linear-gradient(135deg,#2563eb 0%,#1d4ed8 100%);color:#fff;border:0;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;
+  transition:all .3s ease;box-shadow:0 4px 15px rgba(37,99,235,.3);text-decoration:none;display:inline-flex;align-items:center;justify-content:center;
+  white-space:nowrap;height:40px;padding:0 24px;min-width:220px;max-width:500px
+}
+.add-btn:hover{box-shadow:0 6px 20px rgba(37,99,235,.4)}
+
+/* ================== TABLE ================== */
+.data-table{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:20px;border-radius:10px;background:#fff}
+table{width:100%;border-collapse:collapse;min-width:600px}
+th,td{padding:14px 16px;text-align:left;border-bottom:1px solid #e2e8f0;transition:all .2s ease}
+th{
+  background:linear-gradient(135deg,#2563eb 0%,#1e40af 100%);color:#fff;font-weight:600;border-top:none;position:sticky;top:0;
+  text-shadow:0 1px 2px rgba(0,0,0,.2);z-index:1
+}
+tr:hover{background:rgba(37,99,235,.05);transform:translateY(-1px);box-shadow:0 4px 8px rgba(0,0,0,.05)}
+.customer-name{font-weight:700;color:#333}
+.customer-phone{color:#666;font-size:.9em}
+.quantity{font-weight:700;color:#28a745}
+.amount{font-weight:700;color:#007bff}
+.order-date{color:#6c757d}
+.view-order-btn{background:#0056b3;color:#fff;border:0;padding:8px 12px;border-radius:4px;cursor:pointer;font-size:.9em;white-space:nowrap}
+.view-order-btn:hover{background:#5294db}
+.actions{display:flex;gap:8px}
+.action-btn{
+  background:none;border:0;cursor:pointer;font-size:1.1em;padding:5px;border-radius:4px;width:32px;height:32px;display:flex;align-items:center;justify-content:center
 }
 
-.date-range-input {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+/* ================== MODAL ================== */
+.modal{
+  display:none;position:fixed;z-index:1000;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);animation:modalFadeIn .3s ease;overflow:auto
+}
+@keyframes modalFadeIn{from{opacity:0}to{opacity:1}}
+.modal-content{
+  background:linear-gradient(145deg,#fff 0%,#f8fafc 100%);margin:0;border-radius:0;box-shadow:none;border:0;width:100%;height:100vh;overflow:hidden;
+  position:relative;display:flex;flex-direction:column
+}
+.modal-content::before{
+  content:"";position:absolute;inset:0;background:linear-gradient(135deg,#3b82f6,#1e40af);border-radius:20px;padding:3px;
+  mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;z-index:-1
+}
+.close-modal{
+  position:absolute;top:15px;right:20px;font-size:28px;font-weight:700;color:#1e40af;cursor:pointer;transition:all .3s ease;z-index:10;
+  width:35px;height:35px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:rgba(59,130,246,.1)
+}
+.close-modal:hover{color:#ef4444;background:rgba(239,68,68,.1);transform:rotate(90deg) scale(1.1)}
+.modal-header{
+  background:#618cb8;padding:8px 15px;border-radius:12px 12px 0 0;color:#fff;border-bottom:1px solid rgba(255,255,255,.2);position:relative;overflow:hidden
+}
+.modal-header::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:100%;
+  background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 60"><circle cx="20" cy="15" r="1.2" fill="rgba(255,255,255,0.1)"/><circle cx="70" cy="20" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="45" cy="35" r="0.8" fill="rgba(255,255,255,0.1)"/></svg>');
+  opacity:.4;background-size:50px 20px
+}
+.modal-title{color:#fff;font-size:24px;font-weight:700;margin:5px 0 20px;position:relative;z-index:1;text-shadow:0 2px 4px rgba(0,0,0,.2)}
+.order-info-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-bottom:15px;position:relative;z-index:1;max-height:120px;overflow-y:auto;overflow-x:hidden;padding-right:6px
+}
+.order-info-grid::-webkit-scrollbar{width:6px}
+.order-info-grid::-webkit-scrollbar-thumb{background:rgba(0,0,0,.3);border-radius:3px}
+.info-item{display:flex;align-items:center;background:rgba(255,255,255,.2);padding:8px 12px;border-radius:8px;backdrop-filter:blur(10px)}
+.info-label{font-weight:600;color:rgba(255,255,255,.9);width:120px;flex-shrink:0;font-size:14px}
+.info-value{color:#fff;flex-grow:1;font-weight:500}
+.summary-stats{
+  display:flex;justify-content:space-between;background:rgba(255,255,255,.15);padding:15px 20px;border-radius:12px;margin-top:20px;backdrop-filter:blur(10px);position:relative;z-index:1
+}
+.stat-item{text-align:center}
+.stat-label{font-size:12px;color:rgba(255,255,255,.8);margin-bottom:5px;font-weight:500}
+.stat-value{font-size:18px;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.2)}
+.modal-body{
+  padding:15px 20px;flex:1;overflow:auto;background:linear-gradient(135deg,#f8fafc 0%,#fff 100%);min-height:40vh;max-height:45vh
+}
+.modal-header,.modal-footer{width:100%;border-radius:0}
+.modal-table-container{overflow:auto;border-radius:12px;box-shadow:0 8px 25px rgba(0,0,0,.1);background:#fff}
+.order-items-table{width:100%;border-collapse:collapse;min-width:650px}
+.order-items-table th{
+  background:linear-gradient(135deg,#f1f5f9 0%,#e2e8f0 100%);padding:15px 12px;text-align:left;font-weight:600;border-bottom:2px solid #1854a2;color:#1e40af;
+  font-size:14px;position:sticky;top:0;z-index:2
+}
+.order-items-table td{padding:15px 12px;border-bottom:1px solid #f1f5f9;color:#374151;font-size:14px}
+.order-items-table tr:hover{background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 100%)}
+.order-items-table th:nth-child(3),.order-items-table td:nth-child(3){text-align:right}
+.order-items-table th:nth-child(4),.order-items-table td:nth-child(4){text-align:center}
+.order-items-table th:nth-child(5),.order-items-table td:nth-child(5){text-align:right}
+.order-items-table th:nth-child(6),.order-items-table td:nth-child(6){text-align:center}
+.quantity-control{display:flex;align-items:center;justify-content:center;gap:8px;min-width:120px}
+.quantity-btn{
+  width:28px;height:28px;border:2px solid #3b82f6;background:linear-gradient(135deg,#fff 0%,#f8fafc 100%);cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-weight:700;border-radius:6px;font-size:14px;transition:all .2s ease
+}
+.quantity-btn:hover{background:linear-gradient(135deg,#3b82f6 0%,#2563eb 100%);color:#fff;transform:scale(1.05)}
+.quantity-btn:disabled{background:#f1f5f9;color:#9ca3af;cursor:not-allowed;border-color:#e5e7eb;transform:none}
+.quantity-value{font-weight:600;color:#1e40af;min-width:25px;text-align:center}
+.modal-footer{padding:25px 30px;border-top:1px solid #e5e7eb;background:linear-gradient(135deg,#f8fafc 0%,#fff 100%);border-radius:0 0 20px 20px}
+.total-section{
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding:15px 20px;background:linear-gradient(135deg,#1e40af 0%,#3b82f6 100%);
+  border-radius:12px;color:#fff
+}
+.total-amount{font-size:24px;font-weight:700;text-shadow:0 2px 4px rgba(0,0,0,.2)}
+.footer-buttons{display:flex;gap:15px;justify-content:flex-end}
+.btn{padding:12px 24px;border:0;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;transition:all .3s ease;position:relative;overflow:hidden}
+.btn::before{content:"";position:absolute;top:50%;left:50%;width:0;height:0;background:rgba(255,255,255,.2);border-radius:50%;transform:translate(-50%,-50%);transition:width .6s,height .6s}
+.btn:hover::before{width:300px;height:300px}
+.btn-primary{background:linear-gradient(135deg,#3b82f6 0%,#2563eb 100%);color:#fff;box-shadow:0 4px 15px rgba(59,130,246,.3)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(59,130,246,.4)}
+.btn-secondary{background:linear-gradient(135deg,#6b7280 0%,#4b5563 100%);color:#fff;box-shadow:0 4px 15px rgba(107,114,128,.3)}
+.btn-secondary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(107,114,128,.4)}
+
+/* ================== TOAST ================== */
+.success-message{
+  position:fixed;bottom:20px;right:20px;background:#16a34a;color:#fff;padding:10px 14px;border-radius:8px;
+  box-shadow:0 6px 20px rgba(0,0,0,.2);font-size:14px;z-index:9999
 }
 
-.date-range-input label {
-    font-size: 11px;
-    color: #1e40af;
-    font-weight: 600;
-    text-align: center;
+/* ================== DESKTOP HEADER TWEAKS ================== */
+@media (min-width:768px){
+  .header-content{flex-direction:row;justify-content:space-between;align-items:center;flex-wrap:wrap}
+  .welcome-text{position:absolute;left:50%;transform:translateX(-50%);text-align:center;margin-bottom:0;width:auto}
+  .user-info{text-align:left;order:0;width:auto}
+  .header-actions{justify-content:flex-end;order:2;width:auto}
 }
 
-.date-range-input input {
-    width: 100%;
-    border: none;
-    background: transparent;
-    color: #1e40af;
-    font-weight: 700;
-    font-size: 13px;
-    text-align: center;
-    cursor: pointer;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    padding: 6px;
-    border-bottom: 1px solid #dbeafe;
+/* ================== MOBILE ================== */
+@media (max-width:767px){
+  .content-header{
+    position:static; /* date filter returns to normal flow on mobile */
+    margin-top:10px;
+  }
+  .date-range-filter{max-width:100%}
+
+  .controls-section{
+    display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:10px;width:100%;
+  }
+  .controls-section .search-bar{width:100%}
+  .search-bar input{
+    width:100%;padding:12px 14px;border-radius:8px;border:2px solid #3b82f6;background:#f0f7ff;font-size:14px;transition:all .3s ease;outline:none;box-sizing:border-box
+  }
+  .search-bar input:focus{border-color:#2563eb;box-shadow:0 0 8px rgba(37,99,235,.4);background:#fff}
+  .add-btn-container{width:100%;justify-content:center;display:flex}
+  .add-btn{width:100%;max-width:500px;padding:10px 15px;font-size:14px;white-space:nowrap}
 }
 
-.date-range-input input:focus {
-    outline: none;
-    border-bottom-color: #3b82f6;
-}
+     
+/* === Desktop positioning tweak: search bars left, button center, date filter lower === */
+/* === Desktop positioning tweak: wider button, lift everything up === */
+@media (min-width: 768px) {
 
-.date-range-input input::-webkit-calendar-picker-indicator {
-    cursor: pointer;
-    color: #1e40af;
-    opacity: 0.7;
-}
+  /* raise the whole controls section closer to the header */
+  .controls-section {
+    margin-top: 2px !important;  /* smaller = higher */
+     margin-left: 10px;
+  }
 
-.date-range-actions {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-}
+  /* search bars: keep stacked on left */
+  .controls-section .search-bar {
+    width: 460px;      /* adjust if you want wider inputs */
+    max-width: 100%;
+  }
 
-.date-range-btn {
-    padding: 6px 12px;
-    border: none;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    flex: 1;
-    max-width: 120px;
+ 
+/* center button: make wider and lift closer to searches */
+.add-btn-container {
+  grid-column: 1 / span 2;     /* ✅ spans the full row of the grid */
+  display: flex;
+  justify-content: center;     /* ✅ always centers horizontally */
+  margin-top: 2px !important;  /* controls vertical gap below search bars */
+  width: 100%;                 /* ensures it has full width to center inside */
 }
-
-.date-range-btn.apply {
-    background-color: #3b82f6;
-    color: white;
-}
-
-.date-range-btn.clear {
-    background-color: #e2e8f0;
-    color: #1e40af;
-    border: 1px solid #3b82f6;
-}
-
-.date-range-btn:hover {
-    opacity: 0.9;
-    transform: translateY(-1px);
-}
-.date-range-filter {
-    position: relative;
-    top: -20px;
-    pointer-events: auto; /* clicks work on filter */
-}
-
 
 .add-btn {
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    white-space: nowrap;
-    height: 40px;
-    padding: 0 24px;
-    min-width: 300px; /* Ensures button doesn't get too narrow */
-    max-width: 500px; /* Increased max-width for the button */
+  min-width: 300px !important;  /* wider button */
+  max-width: 400px !important;
+  height: 45px;
+  font-size: 16px;
 }
 
-.add-btn:hover {
-    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+  /* lower the date filter slightly so spacing looks balanced */
+  .content-header {
+    top: 45px !important;   /* increase to move it further down */
+    right: 24px;
+  }
 }
 
-        .data-table {
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            margin-top: 20px;
-            border-radius: 10px;
-            background: white;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 600px;
-        }
-
-            th, td {
-            padding: 14px 16px;
-            text-align: left;
-            border-bottom: 1px solid #e2e8f0;
-            transition: all 0.2s ease;
-        }
-        th {
-            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
-            color: white;
-            font-weight: 600;
-            border-top: none;
-            position: sticky;
-            top: 0;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-        }
-        tr:hover {
-            background-color: rgba(37, 99, 235, 0.05);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-            transition: all 0.2s ease;
-        }
-
-        .customer-name {
-            font-weight: bold;
-            color: #333;
-        }
-
-        .customer-phone {
-            color: #666;
-            font-size: 0.9em;
-        }
-
-        .quantity {
-            font-weight: bold;
-            color: #28a745;
-        }
-
-        .amount {
-            font-weight: bold;
-            color: #007bff;
-        }
-
-        .order-date {
-            color: #6c757d;
-        }
-
-        .view-order-btn {
-            background-color:#0056b3;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.9em;
-            white-space: nowrap;
-        }
-
-        .view-order-btn:hover {
-            background-color: #5294db;
-        }
-
-        .actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .action-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 1.1em;
-            padding: 5px;
-            border-radius: 4px;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Enhanced Modal Styles */
-       .modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(8px);
-    animation: modalFadeIn 0.3s ease;
-    overflow: auto;
-}
-
-        @keyframes modalFadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-.modal-content {
-    background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
-    margin: 0;
-    border-radius: 0;
-    box-shadow: none;
-    border: none;
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-}
-
-        @keyframes modalSlideIn {
-            from { 
-                transform: translateY(-50px) scale(0.95);
-                opacity: 0;
-            }
-            to { 
-                transform: translateY(0) scale(1);
-                opacity: 1;
-            }
-        }
-
-        .modal-content::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, #3b82f6, #1e40af);
-            border-radius: 20px;
-            padding: 3px;
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask-composite: exclude;
-            z-index: -1;
-        }
-
-        .close-modal {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 28px;
-            font-weight: bold;
-            color: #1e40af;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            z-index: 10;
-            width: 35px;
-            height: 35px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background: rgba(59, 130, 246, 0.1);
-        }
-
-        .close-modal:hover {
-            color: #ef4444;
-            background: rgba(239, 68, 68, 0.1);
-            transform: rotate(90deg) scale(1.1);
-        }
-        .modal-header {
-            background: #618cb8;
-            padding: 8px 15px; /* Reduced vertical padding */
-            border-radius: 12px 12px 0 0; /* Slightly smaller radius */
-            color: white; /* Better contrast */
-            border-bottom: 1px solid rgba(255,255,255,0.2); /* More subtle border */
-            position: relative; /* Needed for ::before positioning */
-            overflow: hidden; /* Contain the background pattern */
-        }
-
-            .modal-header::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 100%; /* Only cover header height */
-        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 60"><circle cx="20" cy="15" r="1.2" fill="rgba(255,255,255,0.1)"/><circle cx="70" cy="20" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="45" cy="35" r="0.8" fill="rgba(255,255,255,0.1)"/></svg>');
-        opacity: 0.4; /* More subtle */
-        background-size: 50px 20px; /* Better scaling for smaller header */
-    }
-        .modal-title {
-        font-size: 18px; /* Slightly smaller */
-        margin: 5px 0; /* Reduced spacing */
-        position: relative; /* Ensure it stays above the background */
-        z-index: 1;
-    }
-            .modal-title {
-            color: white;
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            position: relative;
-            z-index: 1;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-       .order-info-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
-    gap: 15px;
-    margin-bottom: 15px;
-    position: relative;
-    z-index: 1;
-
-    /* Scrolling settings */
-    max-height: 120px;         /* Limit height so it doesn’t push items table down */
-    overflow-y: auto;          /* Vertical scroll */
-    overflow-x: hidden;        /* No horizontal scroll */
-    padding-right: 6px;        /* Space for scrollbar */
-}
-
-/* Optional: nice scrollbar */
-.order-info-grid::-webkit-scrollbar {
-    width: 6px;
-}
-
-.order-info-grid::-webkit-scrollbar-thumb {
-    background-color: rgba(0,0,0,0.3);
-    border-radius: 3px;
-}
-
-.order-info-grid::-webkit-scrollbar-track {
-    background-color: transparent;
-}
-
-
-        .info-item {
-            display: flex;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 8px 12px;
-            border-radius: 8px;
-            backdrop-filter: blur(10px);
-        }
-
-        .info-label {
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.9);
-            width: 120px;
-            flex-shrink: 0;
-            font-size: 14px;
-        }
-
-        .info-value {
-            color: white;
-            flex-grow: 1;
-            font-weight: 500;
-        }
-
-        .summary-stats {
-            display: flex;
-            justify-content: space-between;
-            background: rgba(255, 255, 255, 0.15);
-            padding: 15px 20px;
-            border-radius: 12px;
-            margin-top: 20px;
-            backdrop-filter: blur(10px);
-            position: relative;
-            z-index: 1;
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 5px;
-            font-weight: 500;
-        }
-
-        .stat-value {
-            font-size: 18px;
-            font-weight: bold;
-            color: white;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-        }
-        .modal-body {
-    padding: 15px 20px; /* Reduced padding to maximize space */
-    flex: 1;
-    overflow: auto;
-    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
-    min-height: 40vh; /* Minimum height */
-    max-height: 45vh; /* Increased maximum height */
-}
-
-        .modal-header, .modal-footer {
-            width: 100%;
-            border-radius: 0;
-        }
-
-        .modal-table-container {
-            overflow: auto;
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-            background: white;
-        }
-
-        .order-items-table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 650px;
-        }
-
-        .order-items-table th {
-            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-            padding: 15px 12px;
-            text-align: left;
-            font-weight: 600;
-            border-bottom: 2px solid #1854a2;
-            color: #1e40af;
-            font-size: 14px;
-            position: sticky;
-            top: 0;
-            z-index: 2;
-        }
-
-        .order-items-table td {
-            padding: 15px 12px;
-            border-bottom: 1px solid #f1f5f9;
-            color: #374151;
-            font-size: 14px;
-        }
-
-        .order-items-table tr:hover {
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-        }
-
-        .order-items-table th:nth-child(3),
-        .order-items-table td:nth-child(3) {
-            text-align: right;
-        }
-
-        .order-items-table th:nth-child(4),
-        .order-items-table td:nth-child(4) {
-            text-align: center;
-        }
-
-        .order-items-table th:nth-child(5),
-        .order-items-table td:nth-child(5) {
-            text-align: right;
-        }
-
-        .order-items-table th:nth-child(6),
-        .order-items-table td:nth-child(6) {
-            text-align: center;
-        }
-
-        .quantity-control {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            min-width: 120px;
-        }
-
-        .quantity-btn {
-            width: 28px;
-            height: 28px;
-            border: 2px solid #3b82f6;
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            border-radius: 6px;
-            font-size: 14px;
-            transition: all 0.2s ease;
-        }
-
-        .quantity-btn:hover {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            color: white;
-            transform: scale(1.05);
-        }
-
-        .quantity-btn:disabled {
-            background: #f1f5f9;
-            color: #9ca3af;
-            cursor: not-allowed;
-            border-color: #e5e7eb;
-            transform: none;
-        }
-
-        .quantity-value {
-            font-weight: 600;
-            color: #1e40af;
-            min-width: 25px;
-            text-align: center;
-        }
-
-        .modal-footer {
-            padding: 25px 30px;
-            border-top: 1px solid #e5e7eb;
-            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
-            border-radius: 0 0 20px 20px;
-        }
-
-        .total-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding: 15px 20px;
-            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-            border-radius: 12px;
-            color: white;
-        }
-
-        .total-amount {
-            font-size: 24px;
-            font-weight: bold;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        .footer-buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: flex-end;
-        }
-
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        .btn:hover::before {
-            width: 300px;
-            height: 300px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            color: white;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
-        }
-
-        .btn-secondary {
-            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
-            color: white;
-            box-shadow: 0 4px 15px rgba(107, 114, 128, 0.3);
-        }
-
-        .btn-secondary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(107, 114, 128, 0.4);
-        }
-
-        .logout-button {
-            padding: 10px 20px;
-            background-color: #e63946;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            width: 100%;
-            max-width: 120px;
-        }
-
-        .logout-button:hover {
-            background-color: #d62828;
-        }
-
-        .logout-button:active {
-            background-color: #b71c1c;
-        }
-
-        /* Desktop Styles */
-        @media (min-width: 768px) {
-    .header-content {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-    }
-
-    .welcome-text {
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-        text-align: center;
-        margin-bottom: 0;
-        width: auto;
-    }
-
-    .user-info {
-        text-align: left;
-        order: 0;
-        width: auto;
-    }
-
-    .header-actions {
-        justify-content: flex-end;
-        order: 2;
-        width: auto;
-    }
-
-
-    .content-title {
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 100%;
-        font-size: 28px;
-    }
-
-    /* SWAP positions on desktop */
-    .date-section {
-        flex-direction: row;
-        justify-content: flex-start; /* move to left */
-        width: auto;
-        order: 0; /* moved after add button */
-        position: relative;
-        z-index: 1;
-    }
-
-    .add-btn-container {
-        width: auto;
-        position: relative; /* keep in flex flow */
-        order: 1; /* moved before date filter */
-    }
-
-    .add-btn {
-        width: auto;
-    }
-}
-
-            .modal-content {
-                margin: 3% auto;
-                padding: 0;
-                width: 90%;
-            }
-
-            .modal-title {
-                font-size: 26px;
-            }
-
-            .order-items-table {
-                font-size: 15px;
-            }
-
-            .total-amount {
-                font-size: 26px;
-            }
-        
-
-        /* Mobile Optimizations */
-        @media (max-width: 767px) {
-            .header {
-                padding: 15px;
-            }
-
-            .welcome-text h2 {
-                font-size: 20px;
-            }
-
-            .user-info p {
-                font-size: 13px;
-            }
-
-            .logout-button {
-                padding: 8px 15px;
-                font-size: 14px;
-            }
-
-            .content-title {
-                font-size: 20px;
-                margin-bottom: 10px;
-            }
-
-            .date-section {
-                width: 100%;
-            }
-
-            
-
-            .controls-section {
-                gap: 10px;
-            }
-
-            .add-btn-container {
-                justify-content: center;
-            }
-
-           
-            table {
-                font-size: 14px;
-            }
-
-            th, td {
-                padding: 8px 10px;
-            }
-
-            .view-order-btn {
-                padding: 12px 15px;
-                font-size: 13px;
-                min-width: 100px;
-            }
-
-            .actions {
-                gap: 5px;
-            }
-
-            .action-btn {
-                width: 34px;
-                height: 34px;
-                font-size: 16px;
-            }
-
-            .modal-content {
-                width: 98%;
-                margin: 2% auto;
-                max-height: 95vh;
-                height: auto;
-            }
-
-            .modal-header {
-                padding: 20px;
-            }
-
-            .modal-title {
-                font-size: 20px;
-            }
-
-            .order-info-grid {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-
-            .summary-stats {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .modal-body {
-                padding: 20px;
-                overflow-y: auto;
-                -webkit-overflow-scrolling: touch;
-            }
-
-            .order-items-table th,
-            .order-items-table td {
-                padding: 12px 8px;
-                font-size: 13px;
-            }
-
-            .modal-footer {
-                padding: 20px;
-            }
-
-            .footer-buttons {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .btn {
-                width: 100%;
-                padding: 10px 15px;
-                font-size: 14px;
-            }
-            
-            /* Ensure SLNO column is visible in mobile view */
-            .order-items-table th:nth-child(1),
-            .order-items-table td:nth-child(1) {
-                display: table-cell;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .header-content {
-                gap: 10px;
-            }
-
-            .welcome-text h2 {
-                font-size: 18px;
-            }
-
-            .logout-button {
-                padding: 6px 12px;
-                font-size: 13px;
-                max-width: 100px;
-            }
-
-            .content-title {
-                font-size: 18px;
-            }
-
-            .date-range-filter {
-                padding: 12px 15px;
-            }
-
-            .date-range-inputs {
-                flex-direction: column;
-                gap: 8px;
-            }
-
-            .date-range-input input {
-                font-size: 14px;
-            }
-
-            .search-bar input {
-                padding: 10px 15px;
-                font-size: 13px;
-            }
-
-            .add-btn {
-                padding: 10px 15px;
-                font-size: 13px;
-            }
-
-            th, td {
-                padding: 6px 8px;
-            }
-
-            .customer-name {
-                font-size: 14px;
-            }
-
-            .customer-phone {
-                font-size: 12px;
-            }
-
-            .view-order-btn {
-                padding: 8px 10px;
-                font-size: 12px;
-            }
-
-            /* Show SLNO column in mobile view */
-            th:nth-child(1),
-            td:nth-child(1) {
-                display: table-cell;
-            }
-            
-            /* Hide less important columns in mobile view */
-            th:nth-child(4),
-            td:nth-child(4) {
-                display: none;
-            }
-        }
-
-        /* Quantity wrapper styles */
-        .quantity-wrapper {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 4px;
-        }
-
-        .quantity {
-            font-weight: bold;
-            color: #28a745;
-            text-align: right;
-            min-width: 40px;
-        }
-
-        .unit-label {
-            color: #6c757d;
-            font-size: 0.9em;
-        }
-
-        /* Delete button in modal */
-        .modal .action-btn.delete-btn {
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 1.1em;
-            padding: 5px;
-            border-radius: 4px;
-            width: 32px;
-            height: 32px;
-        }
-
-        .modal .action-btn.delete-btn:hover {
-            background-color: rgba(220, 53, 69, 0.1);
-        }
-
-        .rupee:before {
-            content: "₹";
-            margin-right: 2px;
-        }
-                    /* ----- boost table height in modal ----- */
-        #orderHistoryModal .modal-content{
-        max-height:150vh;               /* was 90vh */
-        }
-
-        #orderHistoryModal .modal-body{
-        max-height:none;               /* remove the internal limit */
-        height:100vh;                   /* or 65vh / 70vh as you like */
-        overflow:auto;
-        }
-
-                /*  */
-        /* Add this to your existing CSS */
-        #orderTable th:nth-child(3),
-        #orderTable td:nth-child(3) {
-            text-align: left;
-            min-width: 180px; /* Adjust as needed */
-        }
-
-        .customer-name {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 180px; /* Should match min-width above */
-            display: inline-block;
-        }
-/* ========= Checklist-Style Status Badges ========= */
-.status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 10px 4px 6px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: capitalize;
-    cursor: default;
-    min-width: 80px;
-    transition: all 0.2s ease;
-    user-select: none;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-}
-
-/* Checkbox circle */
-.status-badge::before {
-    content: "";
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    border: 2px solid currentColor;
-    background-color: transparent;
-    flex-shrink: 0;
-    transition: all 0.2s ease;
-}
-
-/* Checkmark for completed status */
-.status-badge.completed::before {
-    background-color: currentColor;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z'/%3E%3C/svg%3E");
-    background-size: 12px;
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-/* Status-specific colors */
-.status-badge.completed {
-    background-color: #dcfce7;
-    color: #166534;
-    border: 1px solid #bbf7d0;
-}
-
-.status-badge.pending {
-    background-color: #fef9c3;
-    color: #854d0e;
-    border: 1px solid #fef08a;
-}
-
-.status-badge.cancelled {
-    background-color: #fee2e2;
-    color: #991b1b;
-    border: 1px solid #fecaca;
-}
-
-.status-badge.processing {
-    background-color: #dbeafe;
-    color: #1e40af;
-    border: 1px solid #bfdbfe;
-}
-
-.status-badge.shipped {
-    background-color: #e0f2fe;
-    color: #0369a1;
-    border: 1px solid #bae6fd;
-}
-
-.status-badge.refunded {
-    background-color: #f3e8ff;
-    color: #7e22ce;
-    border: 1px solid #e9d5ff;
-}
-
-/* Hover effects */
-.status-badge:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
-/* Active/pressed effect */
-.status-badge:active {
-    transform: translateY(0);
-    box-shadow: none;
-}
-
-/* Focus state for accessibility */
-.status-badge:focus-visible {
-    outline: 2px solid currentColor;
-    outline-offset: 2px;
-}
-
-/* Animation for status changes */
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-
-.status-badge.changed {
-    animation: pulse 0.3s ease;
-} 
-/* Make customer details smaller */
-#orderHistoryModal .modal-header {
-    flex: 0 0 auto;
-    padding: 10px 15px;       /* Less padding */
-}
-
-#orderHistoryModal .order-info-grid {
-    gap: 10px;                /* Less gap */
-    margin-bottom: 10px;
-}
-
-#orderHistoryModal .info-item {
-    padding: 4px 8px;         /* Less padding inside each info */
-}
-
-/* Reduce summary stats space */
-#orderHistoryModal .summary-stats {
-    padding: 8px 12px;
-    margin-top: 10px;
-}
-
-/* Make items list section bigger */
-#orderHistoryModal .modal-body {
-    flex: 1 1 auto;
-    height: auto;
-    max-height: calc(100vh - 200px); /* Leaves small space for header/footer */
-    overflow-y: auto;
-}
-.btn-success {
-    background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
-    color: white;
-    box-shadow: 0 4px 15px rgba(22, 163, 74, 0.3);
-}
-
-.btn-success:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(22, 163, 74, 0.4);
-}
-/* ===== Status Badges ===== */
-.status-badge {
-    display: inline-block;
-    padding: 4px 12px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 600;
-    text-align: center;
-    min-width: 80px;
-    color: white;
-}
-
-/* Pending = Blue */
-.status-badge.pending {
-    background: #ffffff; /* Blue */
-}
-
-/* Completed = Green */
-.status-badge.completed {
-    background: #16A34A; /* Green */
-}
-
-/* Sold Out = Red */
-.status-badge.sold-out {
-    background: #EF4444; /* Red */
-    border: 1px solid #DC2626; /* Darker red border */
-}
-
-/* ===== Status Dropdown ===== */
+/* === Status Colors === */
 .status-select {
-    padding: 4px 24px 4px 8px;
-    border-radius: 12px;
-    border: 1px solid #f5f5f6;
-    font-size: 12px;
-    font-weight: 600;
-    color: rgb(7, 7, 7);
-    text-align: center;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 6px center;
-    background-size: 12px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-weight: 600;
+  border: none;
+  color: #fff;
 }
 
-/* Pending Dropdown - Blue */
 .status-select.pending {
-    background-color: #ededed;
+  background-color: #facc15; /* Yellow */
+  color: #000;              /* Dark text for contrast */
 }
 
-/* Completed Dropdown - Green */
 .status-select.completed {
-    background-color: #16A34A;
+  background-color: #22c55e; /* Green */
 }
 
-/* Sold Out Dropdown - Red */
 .status-select.sold-out {
-    background-color: #EF4444;
-    border-color: #DC2626;
+  background-color: #ef4444; /* Red */
 }
-/* === Compact Centered Date Filter with Modern Glow === */
-.content-header {
-    display: flex;
-    justify-content: space-between; /* Pushes children to opposite ends */
-    align-items: center;
-    width: 100%;
-}
-.date-section {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-}
-
-.date-range-filter {
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 12px;
-    padding: 12px 18px; /* Smaller padding */
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.15);
-    transition: all 0.25s ease;
-    animation: subtleGlow 6s ease-in-out infinite;
-    max-width: 280px; /* Narrower card */
-}
-
-/* Glow Animation */
-@keyframes subtleGlow {
-    0% { box-shadow: 0 4px 15px rgba(59, 130, 246, 0.15); }
-    50% { box-shadow: 0 6px 20px rgba(59, 130, 246, 0.25); }
-    100% { box-shadow: 0 4px 15px rgba(59, 130, 246, 0.15); }
-}
-
-.date-range-filter:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.25);
-}
-
-.date-range-inputs {
-    gap: 6px; /* Less gap between inputs */
-    margin-bottom: 6px; /* Less space under inputs */
-}
-
-.date-range-input input {
-    font-size: 12px; /* Slightly smaller text */
-    padding: 4px;
-}
-
-.date-range-btn {
-    font-size: 11px; /* Smaller buttons */
-    padding: 4px 8px;
-}
-
-.search-bar {
-    flex: 1;
-    max-width: 500px;
-    margin-left: 10px; /* space from left edge */
-}
-
-.add-btn-container {
-    margin-right: 20px; /* space from right edge */
-}
-/* ===== Mobile view: Search + Add button same row ===== */
-@media (max-width: 767px) {
-    .controls-section {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        gap: 8px;
-        width: 100%;
-    }
-
-    .search-bar {
-        flex: 1;
-        max-width: none; /* allow it to stretch */
-    }
-
-    .search-bar input {
-        width: 100%;
-        padding: 10px 15px;
-        font-size: 14px;
-    }
-
-    .add-btn-container {
-        flex-shrink: 0;
-        width: auto;
-    }
-
-    .add-btn {
-        padding: 10px 15px;
-        font-size: 14px;
-        max-width: none;
-        height: auto;
-        white-space: nowrap;
-    }
-}
-.dashboard-title {
-    text-align: center;
-    font-size: 20px;
-    font-weight: 700;
-    color: #1e3a8a;
-    margin-bottom: 10px; /* small gap before date filter */
-    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-}
-
-/* ===== Search Bars Styling ===== */
-.controls-section {
-    display: flex !important;
-    flex-direction: column !important; /* Always stacked */
-    align-items: flex-start !important;
-    gap: 12px !important;
-    margin-top: 0 !important;
-}
-
-/* Search bar design */
-.controls-section,
-.search-bar {
-    width: 100% !important;
-    max-width: 100% !important;
-}
-
-/* Longer input */
-.search-bar input {
-    width: 100% !important;
-    max-width: 400px !important; /* Adjust as you like */
-    padding: 12px 14px;
-    border-radius: 8px;
-    border: 2px solid #3b82f6;
-    background: #f0f7ff;
-    font-size: 14px;
-    transition: all 0.3s ease;
-    outline: none;
-    box-sizing: border-box;
-}
-
-/* Hover & focus effects */
-.search-bar input:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 8px rgba(37, 99, 235, 0.4);
-    background: #ffffff;
-}
-
-
-/* ===== Desktop Alignment ===== */
-@media (min-width: 768px) {
-    .controls-section {
-        position: absolute !important;
-        top: 100px; /* Adjust until aligned perfectly with Dashboard Overview */
-        left: 30px; /* Move horizontally if needed */
-        z-index: 2;
-    }
-}
-
-
-/* ===== Mobile View ===== */
-@media (max-width: 767px) {
-    .controls-section {
-        position: static !important; /* No lift */
-        width: 100% !important;
-    }
-    .search-bar input {
-        max-width: 100% !important;
-    }
-}
-
-/* ====== Fix for Date Filter Positioning ====== */
-
-/* 1. Ensure the header container is properly structured */
-.content-header {
-    display: flex;
-    justify-content: space-between; /* Pushes children to edges */
-    align-items: center;
-    width: 100%;
-    position: relative; /* Needed for absolute child positioning */
-    padding-top: 40px; /* Space for the centered button */
-}
-
-/* 2. Center the "Add Customer" button */
-.add-btn-container {
-    position: absolute;
-    left: 50%;
-    top: 0;
-    transform: translateX(-50%);
-    z-index: 1;
-}
-
-/* 3. Force the date filter to the right */
-.date-section {
-    margin-left: auto; /* Push to far right */
-    order: 2; /* Ensure it stays right */
-    width: auto; /* Don't stretch */
-}
-
-/* 4. Reset mobile layout */
-@media (max-width: 767px) {
-    .content-header {
-        flex-direction: column;
-        padding-top: 0;
-        gap: 15px;
-    }
-    .add-btn-container {
-        position: static;
-        transform: none;
-        order: 1;
-        width: 100%;
-    }
-    .date-section {
-        order: 2;
-        margin-left: 0;
-        width: 100%;
-    }
-}
+/*  */
 
 
     </style>
@@ -1594,7 +383,11 @@
                 </div>
 
                 <div class="add-btn-container">
-                    <a href="{% url 'neworder' %}" class="add-btn">+ Add Customer</a>
+                     <!-- <a href="{% url 'neworder' %}" class="add-btn">+ Add Customer</a>  -->
+                    <a href="/orders/?mode=new" class="add-btn"> + New order</a>
+
+
+
                 </div>
             </div>
 
@@ -1708,6 +501,9 @@
     </div>
 
     <script>
+/* ========= declare cross-function state ========= */
+let currentOrderDetails = null;
+
 /* ========= utility ========= */
 function formatPrice(price) {
     const num = typeof price === 'string' ? parseFloat(price) : price;
@@ -1838,12 +634,11 @@ function clearDateRangeFilter() {
     document.getElementById('fromDate').value = '';
     document.getElementById('toDate').value = '';
     updateCurrentDate();
-    const rows = document.querySelectorAll('#orderTableBody tr');
-    rows.forEach(row => {
-        row.style.display = '';
-    });
+    
+    // Apply today's filter when going back to dashboard
+    const todayISO = new Date().toISOString().split('T')[0];
+    filterTableByDateRange(todayISO, todayISO);
 }
-
 function filterTableByDateRange(fromDate, toDate) {
     const fromDateObj = new Date(fromDate);
     const toDateObj = new Date(toDate);
@@ -2060,127 +855,8 @@ function decreaseQuantity(itemIndex) {
         populateTable();
     }
 }
-  /* =========  SAVE MODAL CHANGES ========= */
-    function saveUpdatedOrder() {
-        const orderIndex = orderData.findIndex(o => o.serialNo === currentOrderDetails.orderId);
-        if (orderIndex === -1) return;
 
-        const newQuantity = currentOrderDetails.items.reduce((sum, i) => sum + i.quantity, 0);
-        const newAmount = currentOrderDetails.items.reduce((sum, i) => sum + i.total, 0);
-
-        /* Update the existing order */
-        orderData[orderIndex] = {
-            ...orderData[orderIndex],
-            items: [...currentOrderDetails.items],
-            quantity: newQuantity,
-            amount: newAmount,
-            orderDate: new Date().toLocaleDateString('en-GB')
-        };
-
-        localStorage.setItem('orders_all', JSON.stringify(orderData));
-        
-        /* Also update the cart data for this customer */
-        const customerName = document.getElementById('modalCustomerName').textContent;
-        const cartData = JSON.parse(localStorage.getItem('cartData') || '{}');
-        cartData[customerName] = currentOrderDetails.items.reduce((acc, item) => {
-            acc[item.id] = item.quantity;
-            return acc;
-        }, {});
-        localStorage.setItem('cartData', JSON.stringify(cartData));
-
-        /* Redraw table and close modal */
-        populateTable();
-        closeModal();
-        showSuccessMessage("Order updated successfully!");
-    }
-
-    function showSuccessMessage(message) {
-        const successDiv = document.createElement('div');
-        successDiv.className = 'success-message';
-        successDiv.textContent = message;
-        document.body.appendChild(successDiv);
-        setTimeout(() => successDiv.remove(), 3000);
-    }
-
-function closeModal() {
-    document.getElementById('orderHistoryModal').style.display = 'none';
-}
-
-/* ========= status change handler ========= */
-function changeOrderStatus(orderIndex, newStatus) {
-    orderData[orderIndex].status = newStatus;
-    localStorage.setItem('orders_all', JSON.stringify(orderData));
-    populateTable();
-}
-
-/* ========= init ========= */
-document.addEventListener('DOMContentLoaded', function () {
-    updateCurrentDate();
-    orderData = getCustomerOrders();
-    populateTable();
-    setupSearch();
-
-    // ✅ Auto-filter to show only today's orders by default
-    const todayISO = new Date().toISOString().split('T')[0];
-    filterTableByDateRange(todayISO, todayISO);
-
-    setInterval(updateCurrentDate, 60000);
-
-
-    /* refresh on tab focus */
-    window.addEventListener('focus', () => {
-        orderData = getCustomerOrders();
-        populateTable();
-    });
-
-    /* modal close handlers */
-    const modal = document.getElementById('orderHistoryModal');
-    const closeBtn = document.querySelector('.close-modal');
-    if (closeBtn) closeBtn.onclick = closeModal;
-    window.onclick = e => { if (e.target === modal) closeModal(); };
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-
-    document.getElementById('updateOrderBtn').addEventListener('click', () => {
-        saveUpdatedOrder();
-    });
-});
-
-function redirectToAddProducts() {
-    window.location.href = "order.html";
-}
-document.getElementById('addProductsFromModal').addEventListener('click', function () {
-    // Get current order details
-    const customerName = document.getElementById('modalCustomerName').textContent;
-    const customerPlace = document.getElementById('modalPlace').textContent;
-    const customerPhone = document.getElementById('modalCustomerPhone')?.textContent || '';
-
-    // Store customer info for order.html
-    localStorage.setItem('selected_customer', JSON.stringify({
-        name: customerName,
-        place: customerPlace,
-        phone: customerPhone
-    }));
-
-    // Get existing cart data
-    const cartData = JSON.parse(localStorage.getItem('cartData') || '{}');
-    const custKey = customerName;
-    if (!cartData[custKey]) cartData[custKey] = {};
-
-    // Only add current modal items to cart (this represents the current state)
-    // The cart will show current quantities, and when placing order,
-    // only NEW additions beyond the original order will be processed
-    currentOrderDetails.items.forEach(item => {
-        cartData[custKey][item.id] = item.quantity;
-    });
-
-    localStorage.setItem('cartData', JSON.stringify(cartData));
-
-    // Close modal and redirect
-    closeModal();
-    window.location.href = "{% url 'orders' %}";
-});
-
-// Also update the saveUpdatedOrder function to handle the original order properly
+// SAVE MODAL CHANGES (single definition kept)
 function saveUpdatedOrder() {
     const orderIndex = orderData.findIndex(o => o.serialNo === currentOrderDetails.orderId);
     if (orderIndex === -1) return;
@@ -2213,6 +889,110 @@ function saveUpdatedOrder() {
     closeModal();
     showSuccessMessage("Order updated successfully!");
 }
+
+function showSuccessMessage(message) {
+    const successDiv = document.createElement('div');
+    successDiv.className = 'success-message';
+    successDiv.textContent = message;
+    document.body.appendChild(successDiv);
+    setTimeout(() => successDiv.remove(), 3000);
+}
+
+function closeModal() {
+    document.getElementById('orderHistoryModal').style.display = 'none';
+}
+
+/* ========= status change handler ========= */
+function changeOrderStatus(orderIndex, newStatus) {
+    orderData[orderIndex].status = newStatus;
+    localStorage.setItem('orders_all', JSON.stringify(orderData));
+    populateTable();
+    
+    // Re-apply current date filter after status change
+    const fromDate = document.getElementById('fromDate').value;
+    const toDate = document.getElementById('toDate').value;
+    
+    if (fromDate && toDate) {
+        // If date filter is active, maintain it
+        filterTableByDateRange(fromDate, toDate);
+    } else {
+        // If no date filter, apply today's filter
+        const todayISO = new Date().toISOString().split('T')[0];
+        filterTableByDateRange(todayISO, todayISO);
+    }
+}
+
+/* ========= init ========= */
+document.addEventListener('DOMContentLoaded', function () {
+    updateCurrentDate();
+    orderData = getCustomerOrders();
+    populateTable();
+    setupSearch();
+
+    // ✅ Always filter to show only today's orders by default
+    const todayISO = new Date().toISOString().split('T')[0];
+    filterTableByDateRange(todayISO, todayISO);
+
+    setInterval(updateCurrentDate, 60000);
+
+    /* refresh on tab focus */
+    window.addEventListener('focus', () => {
+        orderData = getCustomerOrders();
+        populateTable();
+        // ✅ Re-apply today's filter after refresh
+        const todayISO = new Date().toISOString().split('T')[0];
+        filterTableByDateRange(todayISO, todayISO);
+    });
+    /* modal close handlers */
+    const modal = document.getElementById('orderHistoryModal');
+    const closeBtn = document.querySelector('.close-modal');
+    if (closeBtn) closeBtn.onclick = closeModal;
+    window.onclick = e => { if (e.target === modal) closeModal(); };
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    document.getElementById('updateOrderBtn').addEventListener('click', () => {
+        saveUpdatedOrder();
+    });
+});
+
+function redirectToAddProducts() {
+    window.location.href = "order.html";
+}
+
+document.getElementById('addProductsFromModal').addEventListener('click', function () {
+    // Get current order details
+    const customerName = document.getElementById('modalCustomerName').textContent;
+    const customerPlace = document.getElementById('modalPlace').textContent;
+    const customerPhone = document.getElementById('modalCustomerPhone')?.textContent || '';
+
+    // Store customer info for order.html
+    localStorage.setItem('selected_customer', JSON.stringify({
+        name: customerName,
+        place: customerPlace,
+        phone: customerPhone
+    }));
+
+    // Get existing cart data
+    const cartData = JSON.parse(localStorage.getItem('cartData') || '{}');
+    const custKey = customerName;
+    if (!cartData[custKey]) cartData[custKey] = {};
+
+    // Only add current modal items to cart (this represents the current state)
+    // The cart will show current quantities, and when placing order,
+    // only NEW additions beyond the original order will be processed
+    currentOrderDetails.items.forEach(item => {
+        cartData[custKey][item.id] = item.quantity;
+    });
+
+    localStorage.setItem('cartData', JSON.stringify(cartData));
+
+    // Close modal and redirect (template tag kept as-is, backend untouched)
+    closeModal();
+    window.location.href = "{% url 'orders' %}";
+});
+
+// Search by ID
+
 document.getElementById('searchByIdInput').addEventListener('input', function () {
     const filter = this.value.toLowerCase();
     const rows = document.querySelectorAll('#orderTableBody tr');
@@ -2220,6 +1000,11 @@ document.getElementById('searchByIdInput').addEventListener('input', function ()
         const orderId = row.querySelector('td:first-child')?.textContent.toLowerCase() || '';
         row.style.display = orderId.includes(filter) ? '' : 'none';
     });
+});
+// ========= Add Products button =========
+document.getElementById('addProductsFromModal').addEventListener('click', () => {
+    localStorage.setItem('editing_order', JSON.stringify(currentOrderDetails));
+    window.location.href = '/orders/?mode=edit';
 });
 
 
