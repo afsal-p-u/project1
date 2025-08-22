@@ -11,36 +11,38 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-from decouple import config
 from datetime import timedelta
-from decouple import config, Csv
-
+from decouple import config, Csv  # still available, but defaults provided
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
-
-SECRET_KEY = 'django-insecure-p40y$*p%pnd*dx-=xk@ccv$+^@cmk&4=kw%qqle&do*5@(@0ei'
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = config(
+    'SECRET_KEY',
+    default='django-insecure-p40y$*p%pnd*dx-=xk@ccv$+^@cmk&4=kw%qqle&do*5@(@0ei'
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = ['globalglassapi.imcbs.com', '127.0.0.1', 'localhost','glassx.imcbs.com','glassx.imcbs.com']
+ALLOWED_HOSTS = config(
+    'ALLOWED_HOSTS',
+    default='globalglassapi.imcbs.com,127.0.0.1,localhost,glassx.imcbs.com',
+    cast=Csv()
+)
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=365),
     'AUTH_HEADER_TYPES': ('Bearer',),
-
     'USER_ID_FIELD': 'id',
     'USER_ID_CLAIM': 'user_id',
 }
 
-# Application definition
 
+# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -54,15 +56,12 @@ INSTALLED_APPS = [
     'syncdata',
 ]
 
-
 CORS_ALLOWED_ORIGINS = [
     "https://globalglassapi.imcbs.com",
     "https://glassx.imcbs.com",
     "http://127.0.0.1:8000",
     "http://localhost:3000",  # e.g. React/Next frontend
 ]
-
-
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -104,24 +103,19 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-# Database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Global-Glass',
-        'USER': 'postgres',
-        'PASSWORD': 'info@imc',
-        'HOST': '88.222.212.14',
-        'PORT': '5432',  # can be int 5432 as well
+        'NAME': config('DB_NAME', default='Global-Glass'),
+        'USER': config('DB_USER', default='postgres'),
+        'PASSWORD': config('DB_PASSWORD', default='info@imc'),
+        'HOST': config('DB_HOST', default='88.222.212.14'),
+        'PORT': config('DB_PORT', default='5432'),
     }
 }
 
 
 # Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -139,27 +133,20 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
 STATIC_URL = 'static/'
 
 # Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
+# Logging
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -179,9 +166,9 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': BASE_DIR / 'sync_errors.log',  # Use Path object
+            'filename': BASE_DIR / 'sync_errors.log',
             'formatter': 'verbose',
-            'encoding': 'utf-8',  # Add encoding to handle unicode characters
+            'encoding': 'utf-8',
         },
         'console': {
             'class': 'logging.StreamHandler',
@@ -195,12 +182,11 @@ LOGGING = {
             'level': 'INFO',
             'propagate': True,
         },
-        'syncdata': {  # your app-specific logger
+        'syncdata': {
             'handlers': ['console', 'file'],
             'level': 'DEBUG',
             'propagate': False,
         },
-        # Add a root logger to catch all other logs
         '': {
             'handlers': ['console', 'file'],
             'level': 'INFO',
