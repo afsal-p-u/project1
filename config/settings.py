@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-p40y$*p%pnd*dx-=xk@ccv$+^@cmk&4=kw%qqle&do*5@(@0ei
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', cast=bool)
 
-ALLOWED_HOSTS = ['globalglassapi.imcbs.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['globalglassapi.imcbs.com', '127.0.0.1', 'localhost','glassx.imcbs.com','glassx.imcbs.com']
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=365),
@@ -55,6 +55,7 @@ INSTALLED_APPS = [
 
 CORS_ALLOWED_ORIGINS = [
     "https://globalglassapi.imcbs.com",
+    "https://glassx.imcbs.com",
     "http://127.0.0.1:8000",
     "http://localhost:3000",  # e.g. React/Next frontend
 ]
