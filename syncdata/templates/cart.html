@@ -722,7 +722,7 @@
             const data = await response.json();
             products = data.results || [];
 
-            loadCartFromStorage();
+            await loadCartFromDatabase();
             loadCartItems();
         } catch (err) {
             showSuccessMessage("Error fetching products: " + err.message, 'error');
@@ -733,14 +733,36 @@
     }
 
     /* ----------  cart functions  ---------- */
-    function loadCartFromStorage() {
-        const cartData = getCustomerCart();
-        products.forEach(product => {
-            if (cartData[product.code]) {
-                product.quantity = cartData[product.code];
-                product.total = getPrice(product) * product.quantity;
+    async function loadCartFromDatabase() {
+        try {
+            const customer = JSON.parse(localStorage.getItem('selected_customer') || '{}');
+            const params = new URLSearchParams({
+                user_id: '{{ user.id }}',
+                client_id: '{{ user.client_id }}',
+                customer_name: customer.name || 'Guest'
+            });
+
+            const response = await fetch(`/api/cart/get/?${params}`);
+            const data = await response.json();
+
+            if (data.success && data.cart && data.cart.items) {
+                // Clear existing quantities
+                products.forEach(product => {
+                    product.quantity = 0;
+                });
+
+                // Set quantities from database cart
+                data.cart.items.forEach(item => {
+                    const product = products.find(p => p.code === item.product_code);
+                    if (product) {
+                        product.quantity = item.quantity;
+                        product.total = item.unit_price * item.quantity;
+                    }
+                });
             }
-        });
+        } catch (error) {
+            console.error('Error loading cart from database:', error);
+        }
     }
 
     function loadCartItems() {
@@ -791,144 +813,123 @@
         cartTotalSpans.forEach(el => el.textContent = totalAmount.toLocaleString());
     }
 
-    function removeFromCart(code) {
-        const cartData = getCustomerCart();
-        delete cartData[code];
-        setCustomerCart(cartData);
+    async function removeFromCart(code) {
+        try {
+            const customer = JSON.parse(localStorage.getItem('selected_customer') || '{}');
+            const cartData = {
+                user_id: '{{ user.id }}',
+                client_id: '{{ user.client_id }}',
+                customer_name: customer.name || 'Guest',
+                product_code: code
+            };
 
-        const product = products.find(p => p.code === code);
-        if (product) {
-            product.quantity = 0;
+            const response = await fetch('/api/cart/remove/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(cartData)
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                const product = products.find(p => p.code === code);
+                if (product) {
+                    product.quantity = 0;
+                }
+                loadCartItems();
+                showSuccessMessage("Item removed from cart");
+            } else {
+                throw new Error(data.error || 'Failed to remove from cart');
+            }
+        } catch (error) {
+            console.error('Error removing from cart:', error);
+            showSuccessMessage("Failed to remove from cart: " + error.message, 'error');
         }
-
-        loadCartItems();
-        showSuccessMessage("Item removed from cart");
     }
 
     /* ----------  order processing  ---------- */
-    function storeCompletedOrder(cartItems) {
-        const customer = JSON.parse(localStorage.getItem('selected_customer') || '{}');
-        const order = {
-            id: Date.now(),
-            serialNo: `#${String(Date.now()).slice(-3)}`,
-            customer: customer.name || 'Guest',
-            phone: customer.phone || '-',
-            quantity: cartItems.reduce((sum, p) => sum + p.quantity, 0),
-            amount: cartItems.reduce((sum, p) => sum + (getPrice(p) * p.quantity), 0),
-            orderDate: new Date().toLocaleDateString('en-GB'),
-            items: cartItems.map(p => ({
-                id: p.code,
-                name: p.name,
-                price: getPrice(p),
-                quantity: p.quantity,
-                total: getPrice(p) * p.quantity
-            }))
-        };
+    async function placeOrder() {
+        const btn = document.querySelector('.place-order-btn');
+        btn.classList.add('processing');
 
-        const key = 'orders_all';
-        const prev = JSON.parse(localStorage.getItem(key) || '[]');
-        localStorage.setItem(key, JSON.stringify([order, ...prev]));
+        const cartItems = products.filter(p => p.quantity > 0);
+        if (cartItems.length === 0) {
+            showSuccessMessage("Cart is empty", 'error');
+            btn.classList.remove('processing');
+            return;
+        }
+
+        try {
+            const customer = JSON.parse(localStorage.getItem('selected_customer') || '{}');
+            
+            // Prepare order data
+            const orderData = {
+                user_id: '{{ user.id }}',
+                client_id: '{{ user.client_id }}',
+                customer_name: customer.name || 'Guest',
+                customer_phone: customer.phone || '',
+                customer_address: customer.address || '',
+                items: cartItems.map(p => ({
+                    product_code: p.code,
+                    product_name: p.name,
+                    quantity: p.quantity,
+                    unit_price: getPrice(p)
+                }))
+            };
+
+            // Send order to server
+            const response = await fetch('/api/orders/place/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(orderData)
+            });
+
+            const data = await response.json();
+            
+            if (data.success) {
+                showSuccessMessage("Order placed successfully!");
+                
+                // Clear cart from database
+                try {
+                    const customer = JSON.parse(localStorage.getItem('selected_customer') || '{}');
+                    const clearData = {
+                        user_id: '{{ user.id }}',
+                        client_id: '{{ user.client_id }}',
+                        customer_name: customer.name || 'Guest'
+                    };
+
+                    await fetch('/api/cart/clear/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(clearData)
+                    });
+                } catch (error) {
+                    console.error('Error clearing cart:', error);
+                }
+                
+                setTimeout(() => window.location.href = '/index/', 1000);
+            } else {
+                throw new Error(data.error || 'Failed to place order');
+            }
+        } catch (error) {
+            console.error('Error placing order:', error);
+            showSuccessMessage("Failed to place order: " + error.message, 'error');
+        } finally {
+            btn.classList.remove('processing');
+        }
     }
 
     function processOrder() {
-    const btn = document.querySelector('.place-order-btn');
-    btn.classList.add('processing');
-
-    const cartItems = products.filter(p => p.quantity > 0);
-    if (cartItems.length === 0) {
-        showSuccessMessage("Cart is empty", 'error');
-        btn.classList.remove('processing');
-        return;
-    }
-
-    setTimeout(() => {
         const confirmOrder = confirm("Confirm order?");
         if (confirmOrder) {
-            const customerName = getCurrentCustomerName();
-            let allOrders = JSON.parse(localStorage.getItem('orders_all') || '[]');
-            
-            // Find existing order for this customer
-            let existingOrderIndex = allOrders.findIndex(o => o.customer === customerName);
-            
-            if (existingOrderIndex !== -1) {
-                // Get existing order
-                const existingOrder = allOrders[existingOrderIndex];
-                
-                // Track only NEW items (items that weren't in the original order)
-                const newItemsToAdd = [];
-                
-                cartItems.forEach(newItem => {
-                    const existingItem = existingOrder.items.find(item => item.id === newItem.code);
-                    if (existingItem) {
-                        // Item already exists - only add the DIFFERENCE in quantity
-                        const originalQuantity = existingItem.quantity;
-                        const cartQuantity = newItem.quantity;
-                        
-                        if (cartQuantity > originalQuantity) {
-                            // Only add the extra quantity
-                            const extraQuantity = cartQuantity - originalQuantity;
-                            existingItem.quantity = cartQuantity; // Update to new total
-                            existingItem.total = existingItem.price * existingItem.quantity;
-                            
-                            // Track that we added extra quantity
-                            newItemsToAdd.push({
-                                name: newItem.name,
-                                addedQuantity: extraQuantity
-                            });
-                        }
-                        // If cartQuantity <= originalQuantity, no change needed
-                    } else {
-                        // Completely new item - add it
-                        existingOrder.items.push({
-                            id: newItem.code,
-                            name: newItem.name,
-                            price: getPrice(newItem),
-                            quantity: newItem.quantity,
-                            total: getPrice(newItem) * newItem.quantity
-                        });
-                        
-                        newItemsToAdd.push({
-                            name: newItem.name,
-                            addedQuantity: newItem.quantity
-                        });
-                    }
-                });
-                
-                // Update order totals
-                existingOrder.quantity = existingOrder.items.reduce((sum, item) => sum + item.quantity, 0);
-                existingOrder.amount = existingOrder.items.reduce((sum, item) => sum + item.total, 0);
-                
-                // Update the order in the array
-                allOrders[existingOrderIndex] = existingOrder;
-                
-                // Show success message for only new additions
-                if (newItemsToAdd.length > 0) {
-                    const addedItemsText = newItemsToAdd.map(item => 
-                        `${item.name} (+${item.addedQuantity})`
-                    ).join(', ');
-                    showSuccessMessage(`Added new items: ${addedItemsText}`);
-                } else {
-                    showSuccessMessage("No new items to add - order unchanged");
-                }
-                
-            } else {
-                // Create new order if none exists
-                storeCompletedOrder(cartItems);
-                allOrders = JSON.parse(localStorage.getItem('orders_all') || '[]');
-                showSuccessMessage("New order created successfully!");
-            }
-            
-            // Save the updated orders
-            localStorage.setItem('orders_all', JSON.stringify(allOrders));
-            
-            // Clear the cart
-            setCustomerCart({});
-            
-            setTimeout(() => window.location.href = '/index/', 1000);
+            placeOrder();
         }
-        btn.classList.remove('processing');
-    }, 1200);
-}
+    }
 // 
  
 </script>

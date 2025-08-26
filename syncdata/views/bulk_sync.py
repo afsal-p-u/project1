@@ -13,22 +13,40 @@ from syncdata.serializers import (
 
 logger = logging.getLogger(__name__)
 
-    # new order created by vis
-def new_order_view(request):
-    return render(request, 'neworder.html')
+
 
 def index_view(request):
-    return render(request, 'index.html')
+    context = {
+        'user': {
+            'id': request.user.id if request.user.is_authenticated else None,
+            'username': request.user.username if request.user.is_authenticated else 'Guest',
+            'client_id': getattr(request.user, 'client_id', 'CLIENT_001')
+        }
+    }
+    return render(request, 'index.html', context)
 
 def login_view(request):
     return render(request, 'login.html')
 
 def order_view(request):
-    return render(request, 'order.html')
+    context = {
+        'user': {
+            'id': request.user.id if request.user.is_authenticated else None,
+            'username': request.user.username if request.user.is_authenticated else 'Guest',
+            'client_id': getattr(request.user, 'client_id', 'CLIENT_001')
+        }
+    }
+    return render(request, 'order.html', context)
 
 def cart_view(request):
-   
-    return render(request, 'cart.html')
+    context = {
+        'user': {
+            'id': request.user.id if request.user.is_authenticated else None,
+            'username': request.user.username if request.user.is_authenticated else 'Guest',
+            'client_id': getattr(request.user, 'client_id', 'CLIENT_001')
+        }
+    }
+    return render(request, 'cart.html', context)
 
 
 

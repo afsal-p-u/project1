@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Client(models.Model):
     id = models.CharField(max_length=50, primary_key=True) 
@@ -83,3 +84,59 @@ class AccUsers(models.Model):
     class Meta:
         db_table = 'acc_users'
         managed = False
+
+# New models for order management
+class Order(models.Model):
+    id = models.AutoField(primary_key=True)
+    order_number = models.CharField(max_length=50, unique=True)
+    customer_name = models.CharField(max_length=250)
+    customer_phone = models.CharField(max_length=60, blank=True, null=True)
+    customer_address = models.CharField(max_length=200, blank=True, null=True)
+    total_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    status = models.CharField(max_length=20, default='pending')  # pending, completed, cancelled
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    user_id = models.CharField(max_length=30)
+    client_id = models.CharField(max_length=50)
+    
+    class Meta:
+        db_table = 'orders'
+        ordering = ['-created_at']
+
+class OrderItem(models.Model):
+    id = models.AutoField(primary_key=True)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
+    product_code = models.CharField(max_length=30)
+    product_name = models.CharField(max_length=200)
+    quantity = models.IntegerField()
+    unit_price = models.DecimalField(max_digits=10, decimal_places=2)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    
+    class Meta:
+        db_table = 'order_items'
+
+class Cart(models.Model):
+    id = models.AutoField(primary_key=True)
+    customer_name = models.CharField(max_length=250)
+    customer_phone = models.CharField(max_length=60, blank=True, null=True)
+    customer_address = models.CharField(max_length=200, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    user_id = models.CharField(max_length=30)
+    client_id = models.CharField(max_length=50)
+    
+    class Meta:
+        db_table = 'carts'
+        unique_together = ('customer_name', 'user_id', 'client_id')
+
+class CartItem(models.Model):
+    id = models.AutoField(primary_key=True)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')
+    product_code = models.CharField(max_length=30)
+    product_name = models.CharField(max_length=200)
+    quantity = models.IntegerField(default=1)
+    unit_price = models.DecimalField(max_digits=10, decimal_places=2)
+    
+    class Meta:
+        db_table = 'cart_items'
+        unique_together = ('cart', 'product_code')
