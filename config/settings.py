@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     "corsheaders",
     'syncdata',
+    "orderlist_api",
 ]
 
 CORS_ALLOWED_ORIGINS = [
