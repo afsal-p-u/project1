@@ -13,13 +13,22 @@ from syncdata.serializers import (
 
 logger = logging.getLogger(__name__)
 
+def set_session(request):
+    import json
+    from django.http import JsonResponse
+
+    data = json.loads(request.body)
+    request.session['user_id'] = data.get('user_id')
+    request.session['client_id'] = data.get('client_id')
+    request.session['access_token'] = data.get('token')
+    return JsonResponse({"status": "ok"})
 
 
 def index_view(request):
     context = {
         'user': {
             'id': request.user.id if request.user.is_authenticated else None,
-            'username': request.user.username if request.user.is_authenticated else 'Guest',
+            'username': request.user.id if request.user.is_authenticated else 'Guest',
             'client_id': getattr(request.user, 'client_id', 'CLIENT_001')
         }
     }
@@ -32,7 +41,7 @@ def order_view(request):
     context = {
         'user': {
             'id': request.user.id if request.user.is_authenticated else None,
-            'username': request.user.username if request.user.is_authenticated else 'Guest',
+            'username': request.user.id if request.user.is_authenticated else 'Guest',
             'client_id': getattr(request.user, 'client_id', 'CLIENT_001')
         }
     }

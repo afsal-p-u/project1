@@ -396,7 +396,7 @@ body {
   </div>
 
   <div class="cart-header">
-    <button onclick="window.history.back()" class="back-button">← Back</button>
+    <button onclick="confirmBack()" class="back-button">← Back</button>
 
     <div class="customer-selector">
       <div class="customer-dropdown-container">
@@ -457,6 +457,11 @@ let isSearching = false;
 let searchTerm = '';
 let customerList = [];
 
+function confirmBack() {
+  if (confirm("Are you sure you want to go back? Unsaved changes may be lost.")) {
+    window.history.back();
+  }
+}
 /* ---------------- Util / UI helpers ---------------- */
 function getCurrentCustomerName() {
   return JSON.parse(localStorage.getItem('selected_customer') || '{}').name || 'Guest';
@@ -730,9 +735,10 @@ function updateAddToCartButton(productCode) {
     }
   }
 }
+
 async function addToCart(productCode) {
   const qty = selectedQuantities[productCode] || 1;
-  
+
   try {
     const customer = JSON.parse(localStorage.getItem('selected_customer') || '{}');
     const cartData = {
@@ -747,38 +753,36 @@ async function addToCart(productCode) {
 
     const response = await fetch('/api/cart/add/', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(cartData)
     });
 
     const data = await response.json();
     if (data.success) {
-      if (cartQuantities[productCode]) {
-        if (qty !== cartQuantities[productCode]) cartQuantities[productCode] = qty;
-      } else {
-        cartQuantities[productCode] = qty;
-      }
+      // ✅ Instead of replacing, sync with server
+      cartQuantities[productCode] = (cartQuantities[productCode] || 0) + qty;
+
       const product = products.find(p => p.code === productCode);
       showSuccessMessage(`${product.name} added (${cartQuantities[productCode]} total)`);
 
+      // reset selection back to 0
+      selectedQuantities[productCode] = 0;
       updateQuantityDisplay(productCode);
       updateQuantityButtons(productCode);
       updateAddToCartButton(productCode);
-      updateCartBadge();
-      updateProductHighlights();
 
-      const inCartEl = document.getElementById(`in-cart-${productCode}`);
-      if (inCartEl) { inCartEl.textContent = `In cart: ${cartQuantities[productCode]}`; inCartEl.style.display = 'block'; }
+      // Refresh badge + highlight from server (true single source of truth)
+      await updateCartBadge();
+      await updateProductHighlights();
     } else {
       throw new Error(data.error || 'Failed to add to cart');
     }
   } catch (error) {
     console.error('Error adding to cart:', error);
-    showSuccessMessage("Failed to add to cart: " + error.message, 'error');
+    showErrorMessage("Failed to add to cart: " + error.message);
   }
 }
+
 async function updateCartBadge() {
   try {
     const customer = JSON.parse(localStorage.getItem('selected_customer') || '{}');
@@ -795,19 +799,17 @@ async function updateCartBadge() {
     if (data.success && data.cart && data.cart.items) {
       totalItems = data.cart.items.reduce((sum, item) => sum + item.quantity, 0);
     }
-    
-    // Add current session items
-    const sessionTotal = Object.values(cartQuantities).reduce((sum, qty) => sum + qty, 0);
-    totalItems += sessionTotal;
-    
+
     document.getElementById('cartBadge').textContent = totalItems;
   } catch (error) {
     console.error('Error updating cart badge:', error);
-    // Fallback to session items only
+
+    // Fallback ONLY if API fails
     const sessionTotal = Object.values(cartQuantities).reduce((sum, qty) => sum + qty, 0);
     document.getElementById('cartBadge').textContent = sessionTotal;
   }
 }
+
 
 
 async function updateProductHighlights() {
@@ -1144,7 +1146,8 @@ document.addEventListener('DOMContentLoaded', function () {
   // Reset for new order if ?mode=new
   const urlParams = new URLSearchParams(window.location.search);
   const mode = urlParams.get("mode");
-  if (mode === "new") {
+
+  if (mode === null) {
     localStorage.removeItem('selected_customer');
     localStorage.removeItem('cartData');
     disableProductActions(true);
@@ -1159,6 +1162,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
   window.addEventListener('storage', handleStorageEvent);
   window.addEventListener('focus', handleWindowFocus);
+
+  const userId = localStorage.getItem("user_id") || "Guest";
+  const clientId = localStorage.getItem("client_id") || "CLIENT_001";
+  document.getElementById('loginInfo').innerText = `Welcome ${userId} | ${clientId}`;
 
   document.getElementById('searchInput').addEventListener('keypress', function (e) {
     if (e.key === 'Enter') searchProduct();

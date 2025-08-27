@@ -33,6 +33,7 @@ class LoginView(APIView):
                 "success": False,
                 "message": "Invalid credentials."
             }, status=status.HTTP_401_UNAUTHORIZED)
+        
 
         # ✅ Create token manually and add required claims
         token = AccessToken()

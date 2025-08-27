@@ -195,9 +195,9 @@ def remove_cart_item(request):
     """Remove item from cart"""
     try:
         data = json.loads(request.body)
-        item_id = data.get('item_id')
+        item_id = data.get('product_code')
         
-        cart_item = CartItem.objects.get(id=item_id)
+        cart_item = CartItem.objects.filter(product_code=item_id).first()
         cart_item.delete()
         
         return JsonResponse({
