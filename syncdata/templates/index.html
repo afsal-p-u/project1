@@ -1023,8 +1023,8 @@
 
       // User data (you'll need to pass this from Django)
       const userData = {
-        user_id: "{{ user.id }}",
-        client_id: "{{ user.client_id }}",
+        user_id: localStorage.getItem("user_id"),
+        client_id: localStorage.getItem("client_id"),
       };
 
       // API Base URL
@@ -1074,6 +1074,7 @@
           const response = await fetch(`${API_BASE}/api/orders/get/?${params}`);
           const data = await response.json();
 
+          
           if (data.success) {
             return data;
           } else {
@@ -1199,12 +1200,12 @@
       // UI Functions
       function populateTable(orders = []) {
         const tbody = document.getElementById("orderTableBody");
-        const stats = document.getElementById("tableStats");
+        // const stats = document.getElementById("tableStats");
 
         if (orders.length === 0) {
           tbody.innerHTML =
             '<tr><td colspan="9" style="text-align: center; padding: 40px; color: #64748b;">No orders found</td></tr>';
-          stats.textContent = "No orders";
+          // stats.textContent = "No orders";
           return;
         }
 
@@ -1420,6 +1421,7 @@
       async function loadOrders() {
         const data = await fetchOrders(currentFilters);
         orderData = data.orders;
+        console.log(orderData)
         populateTable(orderData);
       }
 
@@ -1446,7 +1448,7 @@
 
         const userId = localStorage.getItem("user_id") || "Guest";
         const clientId = localStorage.getItem("client_id") || "CLIENT_001";
-        document.getElementById('loginInfo').innerText = `${userId} | ${clientId}`;
+        document.getElementById('loginInfo').innerText = `ID:${clientId} | USERID: ${userId}`;
 
 
         // Date range form handlers

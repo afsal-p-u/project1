@@ -13,16 +13,6 @@ from syncdata.serializers import (
 
 logger = logging.getLogger(__name__)
 
-def set_session(request):
-    import json
-    from django.http import JsonResponse
-
-    data = json.loads(request.body)
-    request.session['user_id'] = data.get('user_id')
-    request.session['client_id'] = data.get('client_id')
-    request.session['access_token'] = data.get('token')
-    return JsonResponse({"status": "ok"})
-
 
 def index_view(request):
     context = {

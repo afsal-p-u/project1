@@ -742,8 +742,8 @@ async function addToCart(productCode) {
   try {
     const customer = JSON.parse(localStorage.getItem('selected_customer') || '{}');
     const cartData = {
-      user_id: '{{ user.id }}',
-      client_id: '{{ user.client_id }}',
+      user_id: localStorage.getItem("user_id"),
+      client_id: localStorage.getItem("client_id"),
       customer_name: customer.name || 'Guest',
       customer_phone: customer.phone || '',
       customer_address: customer.address || '',
@@ -787,8 +787,8 @@ async function updateCartBadge() {
   try {
     const customer = JSON.parse(localStorage.getItem('selected_customer') || '{}');
     const params = new URLSearchParams({
-      user_id: '{{ user.id }}',
-      client_id: '{{ user.client_id }}',
+      user_id: localStorage.getItem("user_id"),
+      client_id: localStorage.getItem("client_id"),
       customer_name: customer.name || 'Guest'
     });
 

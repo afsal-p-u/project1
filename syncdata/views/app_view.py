@@ -73,6 +73,7 @@ class ProductView(APIView):
             return Response({"error": "Client ID not found in token"}, status=400)
 
         products = AccProduct.objects.filter(client_id=client_id).order_by("code")
+        products1 = AccProduct.objects.all()
 
         paginator = PageNumberPagination()
         paginated_products = paginator.paginate_queryset(products, request)

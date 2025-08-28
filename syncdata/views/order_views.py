@@ -250,7 +250,7 @@ def place_order(request):
         customer_name = data.get('customer_name', 'Guest')
         customer_phone = data.get('customer_phone', '')
         customer_address = data.get('customer_address', '')
-        
+
         with transaction.atomic():
             # Get cart
             try:
@@ -261,45 +261,66 @@ def place_order(request):
                 )
             except Cart.DoesNotExist:
                 return JsonResponse({'error': 'Cart not found'}, status=404)
-            
-            # Create order
-            order_number = f"ORD-{datetime.now().strftime('%Y%m%d')}-{uuid.uuid4().hex[:8].upper()}"
-            total_amount = sum(item.unit_price * item.quantity for item in cart.items.all())
-            
-            order = Order.objects.create(
-                order_number=order_number,
-                customer_name=customer_name,
-                customer_phone=customer_phone,
-                customer_address=customer_address,
-                total_amount=total_amount,
-                status='pending',
+
+            # Check for existing pending order for this user
+            order = Order.objects.filter(
                 user_id=user_id,
-                client_id=client_id
-            )
-            
-            # Create order items
-            for cart_item in cart.items.all():
-                OrderItem.objects.create(
-                    order=order,
-                    product_code=cart_item.product_code,
-                    product_name=cart_item.product_name,
-                    quantity=cart_item.quantity,
-                    unit_price=cart_item.unit_price,
-                    total_price=cart_item.unit_price * cart_item.quantity
+                client_id=client_id,
+                customer_name=customer_name,
+                status='pending'
+            ).first()
+
+            if not order:
+                # Create new order if none exists
+                order_number = f"ORD-{datetime.now().strftime('%Y%m%d')}-{uuid.uuid4().hex[:8].upper()}"
+                total_amount = sum(item.unit_price * item.quantity for item in cart.items.all())
+                order = Order.objects.create(
+                    order_number=order_number,
+                    customer_name=customer_name,
+                    customer_phone=customer_phone,
+                    customer_address=customer_address,
+                    total_amount=total_amount,
+                    status='pending',
+                    user_id=user_id,
+                    client_id=client_id
                 )
-            
+
+            # Add/merge cart items into order
+            for cart_item in cart.items.all():
+                order_item = OrderItem.objects.filter(order=order, product_code=cart_item.product_code).first()
+                if order_item:
+                    # Update existing item
+                    order_item.quantity += cart_item.quantity
+                    order_item.total_price += cart_item.unit_price * cart_item.quantity
+                    order_item.save()
+                else:
+                    # Create new item
+                    OrderItem.objects.create(
+                        order=order,
+                        product_code=cart_item.product_code,
+                        product_name=cart_item.product_name,
+                        quantity=cart_item.quantity,
+                        unit_price=cart_item.unit_price,
+                        total_price=cart_item.unit_price * cart_item.quantity
+                    )
+
+            # Update order total amount
+            order.total_amount = sum(item.total_price for item in order.items.all())
+            order.save()
+
             # Clear cart
             cart.delete()
-            
+
             return JsonResponse({
                 'success': True,
                 'message': 'Order placed successfully',
                 'order_id': order.id,
                 'order_number': order.order_number
             })
-            
+
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
 
 @csrf_exempt
 @require_http_methods(["GET"])

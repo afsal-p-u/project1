@@ -57,6 +57,11 @@ INSTALLED_APPS = [
     "orderlist_api",
 ]
 
+CORS_ALLOW_CREDENTIALS = True  # allow cookies (sessionid, csrftoken) to be sent
+SESSION_COOKIE_SAMESITE = None  # allow cross-site cookies
+SESSION_COOKIE_SECURE = False   # True if using HTTPS in production
+
+
 CORS_ALLOWED_ORIGINS = [
     "https://globalglassapi.imcbs.com",
     "https://glassx.imcbs.com",
@@ -75,10 +80,10 @@ REST_FRAMEWORK = {
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
