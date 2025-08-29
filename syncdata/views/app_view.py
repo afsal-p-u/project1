@@ -62,6 +62,10 @@ class CustomerView(APIView):
         
 
 
+from rest_framework.pagination import PageNumberPagination
+
+from rest_framework.pagination import PageNumberPagination
+
 class ProductView(APIView):
     permission_classes = [TokenOnlyPermission]
 
@@ -73,9 +77,10 @@ class ProductView(APIView):
             return Response({"error": "Client ID not found in token"}, status=400)
 
         products = AccProduct.objects.filter(client_id=client_id).order_by("code")
-        products1 = AccProduct.objects.all()
 
+        # Dynamically set the page size to the total number of products
         paginator = PageNumberPagination()
+        paginator.page_size = products.count()  # Set page size to the total number of products
         paginated_products = paginator.paginate_queryset(products, request)
 
         # Fetch all batches in one go
