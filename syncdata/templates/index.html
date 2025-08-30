@@ -1332,7 +1332,7 @@
         }
       }
 
-      async function updateOrderItem(itemId, quantity) {
+      async function updateOrderItem(itemId, quantity, movement) {
         try {
           const response = await fetch(`${API_BASE}/api/orders/update-item/`, {
             method: "POST",
@@ -1346,8 +1346,23 @@
           });
 
           const data = await response.json();
+
           if (data.success) {
             showSuccessMessage("Order item updated successfully");
+
+            let value = parseInt(document.getElementById("modalItemCount").textContent, 10) || 0
+
+            if (movement == "increase") {
+              document.getElementById("modalItemCount").textContent = value + 1
+            } else if (movement == "decrease") {
+              document.getElementById("modalItemCount").textContent = value - 1
+            }
+
+            document.getElementById("modalBillTotal").textContent = formatPrice(
+              data.totalAmount
+            );
+            document.getElementById("modalGrandTotal").textContent =
+              formatPrice(data.totalAmount);
 
             // Update the display without re-rendering the entire table
             const row = document.querySelector(`tr[data-item-id="${itemId}"]`);
@@ -1362,6 +1377,10 @@
               );
               const totalPrice = unitPrice * quantity;
 
+              if (quantity > 1) {
+                row.querySelector(".quantity-btn").disabled = false;
+                // row.querySelector(".quantity-btn negative").styles.remove('disabled');
+              }
               quantityElement.textContent = quantity;
               totalElement.textContent = formatPrice(totalPrice);
             }
@@ -1464,7 +1483,7 @@
           tbody.appendChild(row);
         });
 
-        stats.textContent = `${orders.length} orders`;
+        // stats.textContent = `${orders.length} orders`;
       }
 
       let itemDisplayOrder = new Map(); // To store the initial display order
@@ -1545,7 +1564,7 @@
           <td>${formatPrice(item.unit_price)}</td>
           <td>
             <div class="quantity-control">
-              <button class="quantity-btn" onclick="decreaseQuantity(${
+              <button class="quantity-btn negative" onclick="decreaseQuantity(${
                 item.id
               })" ${item.quantity <= 1 ? "disabled" : ""}>-</button>
               <span class="quantity-value">${item.quantity}</span>
@@ -1590,7 +1609,7 @@
         const quantityElement =
           event.target.parentElement.querySelector(".quantity-value");
         const currentQuantity = parseInt(quantityElement.textContent);
-        updateOrderItem(itemId, currentQuantity + 1);
+        updateOrderItem(itemId, currentQuantity + 1, "increase");
       }
 
       function decreaseQuantity(itemId) {
@@ -1598,7 +1617,7 @@
           event.target.parentElement.querySelector(".quantity-value");
         const currentQuantity = parseInt(quantityElement.textContent);
         if (currentQuantity > 1) {
-          updateOrderItem(itemId, currentQuantity - 1);
+          updateOrderItem(itemId, currentQuantity - 1, "decrease");
         }
       }
 

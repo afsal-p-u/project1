@@ -479,6 +479,7 @@ def update_order_item(request):
         
         return JsonResponse({
             'success': True,
+            'totalAmount': order.total_amount,
             'message': 'Order item updated'
         })
         
