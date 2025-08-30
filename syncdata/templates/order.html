@@ -460,6 +460,7 @@ let customerList = [];
 function confirmBack() {
   if (confirm("Are you sure you want to go back? Unsaved changes may be lost.")) {
     window.history.back();
+    clearCart()
   }
 }
 /* ---------------- Util / UI helpers ---------------- */
@@ -816,8 +817,8 @@ async function updateProductHighlights() {
   try {
     const customer = JSON.parse(localStorage.getItem('selected_customer') || '{}');
     const params = new URLSearchParams({
-      user_id: '{{ user.id }}',
-      client_id: '{{ user.client_id }}',
+      user_id: localStorage.getItem('user_id'),
+      client_id: localStorage.getItem('client_id'),
       customer_name: customer.name || 'Guest'
     });
 
@@ -835,7 +836,7 @@ async function updateProductHighlights() {
       if (!p.code) return;
 
       // combine persisted + session quantities
-      const qty = (existingCart[p.code] || 0) + (cartQuantities[p.code] || 0);
+      const qty = (existingCart[p.code] || 0);
 
       // toggle green highlight
       const row = document.getElementById(`product-${p.code}`);
@@ -858,6 +859,7 @@ async function updateProductHighlights() {
     products.forEach(p => {
       if (!p.code) return;
       const qty = cartQuantities[p.code] || 0;
+
       const row = document.getElementById(`product-${p.code}`);
       if (row) row.classList.toggle('in-cart', qty > 0);
       const inCartEl = document.getElementById(`in-cart-${p.code}`);
@@ -877,8 +879,8 @@ async function clearCart() {
   try {
     const customer = JSON.parse(localStorage.getItem('selected_customer') || '{}');
     const clearData = {
-      user_id: '{{ user.id }}',
-      client_id: '{{ user.client_id }}',
+      user_id: localStorage.getItem('user_id'),
+      client_id: localStorage.getItem('client_id'),
       customer_name: customer.name || 'Guest'
     };
 
@@ -989,7 +991,7 @@ function selectCustomer(customer) {
   document.getElementById('displayCustomerPhone').textContent = customer.phone || '';
   document.getElementById('displayCustomerPlace').textContent = customer.place || customer.address || '';
   // enable actions and load cart context
-  disableProductActions(false);
+  //disableProductActions(false);
   localStorage.setItem('cartData', JSON.stringify({ [customer.name]: {} })); // preserve structure
   loadCartFromLocalStorage();
   // close dropdown if open
@@ -1139,6 +1141,11 @@ dropdownArrow.addEventListener('click', function (e) {
   document.addEventListener('keydown', e => { if (e.key === 'Escape') toggleCustomerDropdown(false); });
 }
 
+window.addEventListener('pageshow', function(event) {
+  updateProductHighlights()
+  updateCartBadge()
+});
+
 /* ---------------- Boot ---------------- */
 document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('currentDate').textContent = new Date().toLocaleDateString();
@@ -1171,6 +1178,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (e.key === 'Enter') searchProduct();
   });
 });
+
 function placeOrder() {
   const editingOrder = JSON.parse(localStorage.getItem('editing_order') || 'null');
   let allOrders = JSON.parse(localStorage.getItem('orders_all') || '[]');

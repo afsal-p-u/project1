@@ -572,7 +572,7 @@
         </div>
 
         <div class="cart-header">
-            <a href="#" class="back-button" onclick="window.history.back(); return false;">
+            <a href="#" class="back-button" onclick="backToProducts()"; return false;">
                 <i class="fas fa-arrow-left"></i> Back to Products 
             </a>
             <h2 class="cart-title">
@@ -823,13 +823,11 @@
         try {
             const customer = JSON.parse(localStorage.getItem('selected_customer') || '{}');
             const cartData = {
-                user_id: '{{ user.id }}',
-                client_id: '{{ user.client_id }}',
+                user_id: localStorage.getItem('user_id'),
+                client_id: localStorage.getItem('client_id'),
                 customer_name: customer.name || 'Guest',
                 product_code: code
             };
-
-            console.log(cartData)
 
             const response = await fetch('/api/cart/remove/', {
                 method: 'POST',
@@ -939,7 +937,13 @@
             placeOrder();
         }
     }
-// 
+
+    function backToProducts() {
+        window.history.back()
+    }
+//
+
+
  
 </script>
 </body>
