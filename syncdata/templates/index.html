@@ -1294,6 +1294,24 @@ async function viewOrder(orderId) {
       document.getElementById("modalCreatedBy").textContent = userData.user_id;
       document.getElementById("modalCreatedOn").textContent = formatDate(order.created_at);
 
+      if (localStorage.getItem('selected_customer') === null) {
+        if (order) {
+          const response = await fetch('/customers/', { headers: { 'Authorization': `Bearer ${localStorage.getItem('access_token')}` } });
+          if (response.ok) customerList = await response.json(); else customerList = [];
+
+          const matchedCustomer = customerList.find(
+            x =>
+              x.client_id == localStorage.getItem('client_id') &&
+              x.name === order.customer_name
+          );
+
+          localStorage.setItem(
+            'selected_customer',
+            JSON.stringify(matchedCustomer)
+          );
+        }
+      }
+
       // Update items table (stable on-screen order)
       const itemsList = document.getElementById("modalOrderItemsList");
       itemsList.innerHTML = "";
@@ -1433,6 +1451,14 @@ async function viewOrder(orderId) {
 
       function logout() {
         window.location.href = "{% url 'login' %}";
+
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("cartData");
+        localStorage.removeItem("client_id");
+        localStorage.removeItem("editing_order");
+        localStorage.removeItem("manual_customers");
+        localStorage.removeItem("selected_customer");
+        localStorage.removeItem("user_id");
       }
 
       // Event Listeners
